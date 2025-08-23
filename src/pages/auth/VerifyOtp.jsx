@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import AuthLayout from "../../layouts/AuthLayout";
 import axios from "axios";
+import { API_BASE_URL } from "../../config";
+import ButtonCustom from "../../components/ButtonCustom";
 
 const VerifyOtp = () => {
     const location = useLocation();
@@ -18,7 +20,7 @@ const VerifyOtp = () => {
 
         setLoading(true);
         try {
-        const res = await axios.post("http://localhost:5000/api/auth/verify-otp", {
+        const res = await axios.post(`${API_BASE_URL}/auth/verify-otp`, {
             email,
             otp,
         });
@@ -44,20 +46,14 @@ const VerifyOtp = () => {
                 className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
             />
-            <button
-                type="submit"
-                className={`w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                disabled={loading}
-            >
-                {loading ? "Verifying..." : "Verify OTP"}
-            </button>
+            <ButtonCustom type="submit" loading={loading}>
+                Verify OTP
+            </ButtonCustom>
             </form>
 
             <div className="mt-4 text-sm text-center text-gray-600">
             Back to{" "}
-            <Link to="/login" className="text-blue-600 hover:underline">
+            <Link to="/login" className="font-semibold text-[#07689F] hover:text-[#FF7E67] transition-colors">
                 Login
             </Link>
             </div>

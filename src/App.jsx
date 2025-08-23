@@ -2,11 +2,11 @@ import { Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import ProfileLayout from "./layouts/ProfileLayout";
 import Home from "./pages/Home";
-import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import VerifyOtp from "./pages/auth/VerifyOtp";
 import ProfilePage from "./pages/user/ProfilePage";
+import LoginPage from "./pages/auth/LoginPage";
 
 
 function App() {
@@ -23,7 +23,7 @@ function App() {
       />
 
       {/* Auth pages (không dùng layout) */}
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/verify-otp" element={<VerifyOtp />} />

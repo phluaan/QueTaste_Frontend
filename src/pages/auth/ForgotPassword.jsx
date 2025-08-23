@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../../layouts/AuthLayout";
-
+import ButtonCustom from "../../components/ButtonCustom";
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false); 
@@ -21,6 +21,7 @@ const ForgotPassword = () => {
             navigate("/verify-otp");
         } catch (error) {
             alert("Có lỗi xảy ra, vui lòng thử lại.");
+            console.log(error);
         } finally {
             setLoading(false);
         }
@@ -29,7 +30,7 @@ const ForgotPassword = () => {
     return (
         <AuthLayout>
             <div className="bg-white p-8 rounded-2xl shadow-md w-96">
-                <h2 className="text-2xl font-semibold text-center mb-6">Forgot Password</h2>
+                <h2 className="text-2xl text-center font-semibold text-[#07689F] mb-5">Forgot Password</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input
                         type="email"
@@ -40,21 +41,13 @@ const ForgotPassword = () => {
                         className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         required
                     />
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className={`w-full py-3 rounded-lg transition ${
-                            loading
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-yellow-500 hover:bg-yellow-600 text-white"
-                        }`}
-                    >
-                        {loading ? "Processing..." : "Reset Password"}
-                    </button>
+                    <ButtonCustom type="submit" loading={loading}>
+                        Reser Password
+                    </ButtonCustom>
                 </form>
                 <div className="mt-4 text-sm text-center text-gray-600">
                     Back to{" "}
-                    <Link to="/login" className="text-blue-600 hover:underline">
+                    <Link to="/login" className="font-semibold text-[#07689F] hover:text-[#FF7E67] transition-colors">
                         Login
                     </Link>
                 </div>

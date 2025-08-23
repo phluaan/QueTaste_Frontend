@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import AuthLayout from "../../layouts/AuthLayout";
 import axios from "axios";
-
+import ButtonCustom from "../../components/ButtonCustom";
+import { API_BASE_URL } from "../../config";
 const Register = () => {
     const [form, setForm] = useState({
         name: "",
@@ -30,7 +31,7 @@ const Register = () => {
 
         setLoading(true);
         try {
-            const res = await axios.post("http://localhost:5000/api/auth/register", {
+            const res = await axios.post(`${API_BASE_URL}/auth/register`, {
                 name: form.name,
                 email: form.email,
                 password: form.password,
@@ -52,7 +53,7 @@ const Register = () => {
     return (
         <AuthLayout>
         <div className="bg-white p-8 rounded-2xl shadow-md w-96">
-            <h2 className="text-2xl font-semibold text-center mb-6">Register</h2>
+            <h2 className="text-3xl text-center font-semibold text-[#07689F] mb-5">Register</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name */}
             <input
@@ -114,20 +115,14 @@ const Register = () => {
                 </span>
             </div>
 
-            <button
-                type="submit"
-                className={`w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-                disabled={loading}
-            >
-                {loading ? "Registering..." : "Register"}
-            </button>
+            <ButtonCustom type="submit" loading={loading}>
+                Register
+            </ButtonCustom>
             </form>
 
             <div className="mt-4 text-sm text-center text-gray-600">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-600 hover:underline">
+            <Link to="/login" className="font-semibold text-[#07689F] hover:text-[#FF7E67] transition-colors">
                 Login
             </Link>
             </div>
