@@ -24,6 +24,27 @@ export const login = createAsyncThunk("auth/login", async (credential, thunkAPI)
     }
 });
 
+export const logoutAsync = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
+    try {
+        const state = thunkAPI.getState().auth; 
+        const refreshToken = state.refreshToken;
+
+        if (!refreshToken) {
+            return thunkAPI.rejectWithValue("No refresh token found");
+        }
+
+        const res = await axios.post(`${API_BASE_URL}/auth/logout`, { refreshToken });
+
+        if (res.data.success) {
+            return true; 
+        } else {
+            return thunkAPI.rejectWithValue(res.data.message);
+        }
+    } catch (err) {
+        return thunkAPI.rejectWithValue(err.response?.data?.message || "Server error");
+    }
+});
+
 const authSlice = createSlice({
     name: "auth",
     initialState,
@@ -64,10 +85,24 @@ const authSlice = createSlice({
             } else {
                 sessionStorage.setItem("accessToken", action.payload.accessToken);
                 sessionStorage.setItem("refreshToken", action.payload.refreshToken);
-  }
+            }
         })
         .addCase(login.rejected, (state, action) => {
             state.loading = false;
+            state.error = action.payload;
+        })
+        .addCase(logoutAsync.fulfilled, (state) => {
+            state.user = null;
+            state.accessToken = null;
+            state.refreshToken = null;
+            state.error = null;
+            state.message = "Logout successful";
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            sessionStorage.removeItem("accessToken");
+            sessionStorage.removeItem("refreshToken");
+        })
+        .addCase(logoutAsync.rejected, (state, action) => {
             state.error = action.payload;
         });
     }

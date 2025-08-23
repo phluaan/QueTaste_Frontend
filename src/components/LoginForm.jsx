@@ -5,6 +5,7 @@ import { login } from "../features/auth/authSlice";
 import { validateLogin } from "../utils/validation";
 import InputField from "./InputField";
 import ButtonCustom from "./ButtonCustom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -12,13 +13,15 @@ const LoginForm = () => {
   const [errors, setErrors] = useState({});
   const { loading, error, accessToken } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  // Nếu login thành công thì navigate sang dashboard/home
   useEffect(() => {
     if (accessToken) {
       console.log("Login success ✅, token:", accessToken);
-      // navigate("/dashboard");
+      navigate("/");
     }
-  }, [accessToken]);
+  }, [accessToken, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,7 +51,7 @@ const LoginForm = () => {
   };
 
   return (
-    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+    <form className="mt-4 space-y-6" onSubmit={handleSubmit}>
       <div className="space-y-4">
         <InputField
           id="email"
@@ -86,20 +89,17 @@ const LoginForm = () => {
             onChange={(e) => setRememberMe(e.target.checked)}
             className="h-4 w-4 text-[#07689F] focus:ring-[#07689F] border-gray-300 rounded"
           />
-          <label
-            htmlFor="remember-me"
-            className="ml-2 block text-sm text-gray-700"
-          >
+          <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
             Remember me
           </label>
         </div>
 
-        <button
-          type="button"
+        <Link
+          to="/forgot-password"
           className="text-sm font-medium text-gray-700 hover:text-[#FF7E67] transition-colors"
         >
           Forgot password?
-        </button>
+        </Link>
       </div>
 
       <ButtonCustom type="submit" loading={loading}>
@@ -108,12 +108,12 @@ const LoginForm = () => {
 
       <p className="text-center text-sm">
         Don't have an account?{" "}
-        <button
-          type="button"
+        <Link
+          to="/register"
           className="font-semibold text-[#07689F] hover:text-[#FF7E67] transition-colors"
         >
-          Create Account
-        </button>
+          Register
+        </Link>
       </p>
     </form>
   );
