@@ -1,14 +1,29 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../../layouts/AuthLayout";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false); 
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Forgot password email:", email);
-        // TODO: call API forgot password
+        setLoading(true);
+
+        try {
+            console.log("Forgot password email:", email);
+
+            // giả lập gọi API
+            await new Promise((res) => setTimeout(res, 1500));
+
+            alert("Email reset password đã được gửi!");
+            navigate("/verify-otp");
+        } catch (error) {
+            alert("Có lỗi xảy ra, vui lòng thử lại.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -23,12 +38,18 @@ const ForgotPassword = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
                     />
                     <button
                         type="submit"
-                        className="w-full bg-yellow-500 text-white py-3 rounded-lg hover:bg-yellow-600 transition"
+                        disabled={loading}
+                        className={`w-full py-3 rounded-lg transition ${
+                            loading
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-yellow-500 hover:bg-yellow-600 text-white"
+                        }`}
                     >
-                        Reset Password
+                        {loading ? "Processing..." : "Reset Password"}
                     </button>
                 </form>
                 <div className="mt-4 text-sm text-center text-gray-600">

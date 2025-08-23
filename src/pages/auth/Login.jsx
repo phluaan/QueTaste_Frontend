@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../../layouts/AuthLayout";
 
 const Login = () => {
     const [form, setForm] = useState({ email: "", password: "" });
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -13,6 +14,7 @@ const Login = () => {
         e.preventDefault();
         console.log("Login info:", form);
         // TODO: call API login
+        navigate("/");
     };
 
     return (
