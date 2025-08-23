@@ -18,7 +18,7 @@ const ForgotPassword = () => {
             await new Promise((res) => setTimeout(res, 1500));
 
             alert("Email reset password đã được gửi!");
-            navigate("/verified-otp");
+            navigate("/verify-otp");
         } catch (error) {
             alert("Có lỗi xảy ra, vui lòng thử lại.");
         } finally {

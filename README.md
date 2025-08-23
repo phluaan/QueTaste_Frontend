@@ -49,9 +49,9 @@
    npm start
    ```
 
-4. Mở trình duyệt tại:  
+4. Mở trình duyệt tại:
    ```
-   http://localhost:3000
+   http://localhost:5173
    ```
 
 ---

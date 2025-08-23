@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import ForgotPassword from "./pages/auth/ForgotPassword";
-import VerifiedOTP from "./pages/auth/VerifiedOTP";
+import VerifyOtp from "./pages/auth/VerifyOtp";
 import ProfilePage from "./pages/user/ProfilePage";
 
 
@@ -26,7 +26,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/verified-otp" element={<VerifiedOTP />} />
+      <Route path="/verify-otp" element={<VerifyOtp />} />
 
       <Route path="/profile" element={<ProfileLayout />}>
         <Route index element={<ProfilePage />} />
