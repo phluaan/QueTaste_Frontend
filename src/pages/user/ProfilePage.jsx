@@ -8,7 +8,7 @@ const ProfilePage = () => {
     phone: "0987654321",
     address: "123 Đường ABC, Quận 1, TP.HCM",
   });
-
+setUser();
   return (
     <div className="bg-white p-8 rounded-2xl shadow-md max-w-xl">
       <div className="flex items-center space-x-6 mb-6">
