@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../redux/slices/authSlice";
+import { register } from "../slices/authSlice";
 import { useNavigate } from "react-router-dom";
-import { validateRegister } from "../utils/validation"; 
+import { validateRegister } from "../../../utils/validation";
 
 const useRegister = () => {
   const [formData, setFormData] = useState({

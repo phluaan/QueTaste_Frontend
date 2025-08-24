@@ -1,8 +1,8 @@
 // src/pages/auth/VerifyOtpPage.jsx
 import React from "react";
 import { useLocation } from "react-router-dom";
-import AuthLayout from "../../layouts/AuthLayout";
-import VerifyOtpForm from "../../components/auth/VerifyOtpForm";
+import AuthLayout from "../components/AuthLayout";
+import VerifyOtpForm from "../components/VerifyOtpForm";
 
 const VerifyOtpPage = () => {
   const location = useLocation();

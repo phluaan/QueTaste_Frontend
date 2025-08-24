@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginApi, logoutApi, registerApi } from "../../services/authService";
-import { setTokens, clearTokens, getAccessToken, getRefreshToken } from "../../utils/storage";
+import { loginApi, logoutApi, registerApi } from "../services/authService";
+import { setTokens, clearTokens, getAccessToken, getRefreshToken } from "../../../utils/storage";
 
 const initialState = {
   user: null,
@@ -48,16 +48,6 @@ export const register = createAsyncThunk("auth/register", async (payload, thunkA
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {
-    logout: (state) => {
-      state.user = null;
-      state.accessToken = null;
-      state.refreshToken = null;
-      state.error = null;
-      state.message = null;
-      clearTokens();
-    },
-  },
   extraReducers: (builder) => {
     builder
         //login

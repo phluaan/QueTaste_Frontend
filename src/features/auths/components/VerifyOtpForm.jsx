@@ -1,9 +1,9 @@
 // src/components/auth/VerifyOtpForm.jsx
 import React from "react";
-import ButtonCustom from "../ButtonCustom";
-import InputField from "../InputField";
-import LinkCustom from "../LinkCustom";
-import useVerifyOtp from "../../hooks/useVerifyOtp";
+import ButtonCustom from "../../../components/ButtonCustom";
+import InputField from "../../../components/InputField";
+import LinkCustom from "../../../components/LinkCustom";
+import useVerifyOtp from "../hooks/useVerifyOtp";
 const VerifyOtpForm = ({ email }) => {
   const { otp, setOtp, loading, handleSubmit } = useVerifyOtp(email);
 

@@ -1,11 +1,10 @@
 // src/components/LoginForm.jsx
 import React from "react";
 import { FaEnvelope, FaLock } from "react-icons/fa";
-import InputField from "../InputField";
-import ButtonCustom from "../ButtonCustom";
-import { Link } from "react-router-dom";
-import useLogin from "../../hooks/useLogin";
-import LinkCustom from "../LinkCustom";
+import InputField from "../../../components/InputField";
+import ButtonCustom from "../../../components/ButtonCustom";
+import useLogin from "../hooks/useLogin";
+import LinkCustom from "../../../components/LinkCustom";
 const LoginForm = () => {
   const {
     formData,

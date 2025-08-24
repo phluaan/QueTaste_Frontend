@@ -1,12 +1,11 @@
 // src/components/auth/RegisterForm.jsx
 import React from "react";
-import { Link } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { FaUser, FaEnvelope, FaLock, FaCheckCircle } from "react-icons/fa";
-import ButtonCustom from "../ButtonCustom";
-import InputField from "../InputField";
-import useRegister from "../../hooks/useRegister";
-import LinkCustom from "../LinkCustom";
+import ButtonCustom from "../../../components/ButtonCustom";
+import InputField from "../../../components/InputField";
+import useRegister from "../hooks/useRegister";
+import LinkCustom from "../../../components/LinkCustom";
 const RegisterForm = () => {
   const {
     formData,

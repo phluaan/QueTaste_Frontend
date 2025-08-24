@@ -1,8 +1,9 @@
 // src/hooks/useLogin.js
+import { validateLogin } from "../../../utils/validation";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../redux/slices/authSlice";
-import { validateLogin } from "../utils/validation";
+import { login } from "../slices/authSlice";
+
 import { useNavigate } from "react-router-dom";
 
 const useLogin = () => {
@@ -26,12 +27,10 @@ const useLogin = () => {
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-        const result = await dispatch(login(formData)).unwrap();
-        if (rememberMe) {
-          localStorage.setItem("accessToken", result.accessToken);
-        } else {
-          sessionStorage.setItem("accessToken", result.accessToken);
-        }
+        await dispatch(login({ 
+          ...formData, 
+          rememberMe 
+        })).unwrap();
       } catch (err) {
         console.error("❌ Login failed: ", err);
       }

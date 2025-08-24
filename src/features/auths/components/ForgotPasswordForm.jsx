@@ -1,9 +1,9 @@
 import React from "react";
-import InputField from "../InputField";
-import ButtonCustom from "../ButtonCustom";
-import LinkCustom from "../LinkCustom";
+import useForgotPassword from "../hooks/useForgotPassword";
+import InputField from "../../../components/InputField";
+import ButtonCustom from "../../../components/ButtonCustom";
+import LinkCustom from "../../../components/LinkCustom";
 import { FaEnvelope } from "react-icons/fa";
-import useForgotPassword from "../../hooks/useForgotPassword";
 
 const ForgotPasswordForm = () => {
   const { email, setEmail, loading, error, handleSubmit } = useForgotPassword();
