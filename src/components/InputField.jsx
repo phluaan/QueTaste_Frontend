@@ -10,6 +10,7 @@ const InputField = ({
   icon: Icon,
   error,
   autoComplete = "off",
+  disabled = false
 }) => {
   return (
     <div>
@@ -33,6 +34,7 @@ const InputField = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
+          disabled={disabled}
           className={`appearance-none rounded-xl block w-full ${
             Icon ? "pl-9" : "pl-3"
           } pr-3 py-3 border ${
