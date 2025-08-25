@@ -1,29 +1,44 @@
 import { useState } from "react";
+import ProfileLayout from "../components/ProfileLayout";
+import ProfileForm from "../components/ProfileForm";
+import ChangePasswordForm from "../components/ChangePasswordForm";
 
 const ProfilePage = () => {
-  const [user, setUser] = useState({
-    avatar: "https://i.pravatar.cc/150?img=12",
-    fullName: "Nguyễn Văn A",
-    email: "nguyenvana@example.com",
-    phone: "0987654321",
-    address: "123 Đường ABC, Quận 1, TP.HCM",
-  });
-setUser();
+  const [activeTab, setActiveTab] = useState("profile");
+
   return (
-    <div className="bg-white p-8 rounded-2xl shadow-md max-w-xl">
-      <div className="flex items-center space-x-6 mb-6">
-        <img src={user.avatar} alt="Avatar" className="w-24 h-24 rounded-full border" />
-        <div>
-          <h2 className="text-2xl font-bold">{user.fullName}</h2>
-          <p className="text-gray-500">{user.email}</p>
-        </div>
+    <ProfileLayout>
+      {/* Sidebar */}
+      <div className="w-1/4 border-r p-6 space-y-4">
+        <h2 className="text-xl font-bold mb-4">Cài đặt tài khoản</h2>
+        <button
+          onClick={() => setActiveTab("profile")}
+          className={`block w-full text-left px-4 py-2 rounded-lg ${
+            activeTab === "profile"
+              ? "bg-red-400 text-white"
+              : "hover:bg-gray-100"
+          }`}
+        >
+          Thông tin cá nhân
+        </button>
+        <button
+          onClick={() => setActiveTab("password")}
+          className={`block w-full text-left px-4 py-2 rounded-lg ${
+            activeTab === "password"
+              ? "bg-red-400 text-white"
+              : "hover:bg-gray-100"
+          }`}
+        >
+          Đổi mật khẩu
+        </button>
       </div>
 
-      <div className="space-y-2 text-gray-700">
-        <p><span className="font-semibold">Số điện thoại:</span> {user.phone}</p>
-        <p><span className="font-semibold">Địa chỉ:</span> {user.address}</p>
+      {/* Nội dung chính */}
+      <div className="w-3/4 p-6 min-h-[50vh]">
+        {activeTab === "profile" && <ProfileForm />}
+        {activeTab === "password" && <ChangePasswordForm />}
       </div>
-    </div>
+    </ProfileLayout>
   );
 };
 

@@ -2,11 +2,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutAsync } from "../../features/auths/slices/authSlice";
 import logo from "../../assets/gauhai.png";
+import { getProfile } from "../../features/user/slices/userSlice";
+import { useEffect } from "react";
+import defaultAvatar from "../../assets/defaultAvatar.jpg";
 
 const Header = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { accessToken } = useSelector((state) => state.auth);
+    const { accessToken} = useSelector((state) => state.auth);
+    const { user } = useSelector((state) => state.user);
 
     const handleLogout = async () => {
         try {
@@ -43,12 +47,24 @@ const Header = () => {
                         </Link>
                     </>
                 ) : (
-                    <button
-                        onClick={handleLogout}
-                        className="px-4 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100"
-                    >
-                        Logout
-                    </button>
+                    <div className="flex items-center gap-3">
+                        {/* Avatar + Tên người dùng */}
+                        <Link to="/profile" className="flex items-center gap-2">
+                            <img
+                                src={user?.avatar || defaultAvatar}
+                                alt="avatar"
+                                className="w-10 h-10 rounded-full border object-cover"
+                            />
+                        </Link>
+
+                        {/* Nút Logout */}
+                        <button
+                            onClick={handleLogout}
+                            className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
+                        >
+                            Logout
+                        </button>
+                    </div>
                 )}
             </div>
         </header>

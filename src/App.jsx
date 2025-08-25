@@ -5,7 +5,6 @@ import RegisterPage from "./features/auths/pages/RegisterPage"
 import ForgotPasswordPage from "./features/auths/pages/ForgotPasswordPage"
 import VerifyOtpPage from "./features/auths/pages/VerifyOtpPage"
 import LoginPage from "./features/auths/pages/LoginPage"
-import ProfileLayout from "./features/user/components/ProfileLayout"
 import ProfilePage from "./features/user/pages/ProfilePage"
 import ResetPasswordPage from "./features/auths/pages/ResetPasswordPage";
 
@@ -29,11 +28,7 @@ function App() {
       <Route path="/reset-password" element={<ResetPasswordPage/>} />
       <Route path="/verify-otp" element={<VerifyOtpPage />} />
 
-      <Route path="/profile" element={< ProfileLayout/>}>
-        <Route index element={<ProfilePage />} />
-        {/* Có thể thêm các route con khác */}
-        {/* <Route path="security" element={<SecurityPage />} /> */}
-        {/* <Route path="settings" element={<SettingsPage />} /> */}
+      <Route path="/profile" element={< ProfilePage/>}>
       </Route>
     </Routes>
     
