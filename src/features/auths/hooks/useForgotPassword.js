@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { forgotPassword } from "../slices/authSlice";
 
 const useForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,13 +16,11 @@ const useForgotPassword = () => {
     setError(null);
 
     try {
-      // Giả lập gọi API
-      await new Promise((res) => setTimeout(res, 1500));
+      await dispatch(forgotPassword(email)).unwrap();
       alert("Reset password email has been sent!");
-      navigate("/verify-otp", { state: { email } });
+      navigate("/reset-password", { state: { email } });
     } catch (err) {
       setError("Something went wrong. Please try again.");
-      console.error("ForgotPassword error: ", err);
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginApi, logoutApi, registerApi } from "../services/authService";
+import { forgotPasswordApi, loginApi, logoutApi, registerApi, resetPasswordApi } from "../services/authService";
 import { setTokens, clearTokens, getAccessToken, getRefreshToken } from "../../../utils/storage";
 
 const initialState = {
@@ -44,7 +44,25 @@ export const register = createAsyncThunk("auth/register", async (payload, thunkA
     return thunkAPI.rejectWithValue(err.response?.data?.message || "Server error");
   }
 });
+export const forgotPassword = createAsyncThunk("auth/forgotPassword", async (email, thunkAPI) => {
+  try {
+    const res = await forgotPasswordApi(email);
+    if (res.success) return res.data;
+    return thunkAPI.rejectWithValue(res.message);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.response?.data?.message || "Server error");
+  }
+});
 
+export const resetPassword = createAsyncThunk("auth/resetPassword", async (payload, thunkAPI) => {
+  try {
+    const res = await resetPasswordApi(payload);
+    if (res.success) return res.data;
+    return thunkAPI.rejectWithValue(res.message);
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.response?.data?.message || "Server error");
+  }
+});
 const authSlice = createSlice({
   name: "auth",
   initialState,

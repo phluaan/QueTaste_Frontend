@@ -1,45 +1,69 @@
-export const validateLogin = (formData) => {
+// Helpers chung
+const isEmailValid = (email) => /\S+@\S+\.\S+/.test(email);
+
+const validateRequired = (field, value, minLength = 0) => {
+  if (!value || !value.trim()) return `${field} is required`;
+  if (minLength > 0 && value.length < minLength) {
+    return `${field} must be at least ${minLength} characters`;
+  }
+  return "";
+};
+
+// Login
+export const validateLogin = ({ email, password }) => {
   const errors = {};
 
-  if (!formData.email) {
-    errors.email = "Email is required";
-  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    errors.email = "Invalid email format";
-  }
+  const emailError = validateRequired("Email", email);
+  if (emailError) errors.email = emailError;
+  else if (!isEmailValid(email)) errors.email = "Invalid email format";
 
-  if (!formData.password) {
-    errors.password = "Password is required";
-  } else if (formData.password.length < 6) {
-    errors.password = "Password must be at least 6 characters";
+  const passwordError = validateRequired("Password", password, 6);
+  if (passwordError) errors.password = passwordError;
+
+  return errors;
+};
+
+// Register
+export const validateRegister = ({ name, email, password, confirmPassword }) => {
+  const errors = {};
+
+  const nameError = validateRequired("Name", name, 2);
+  if (nameError) errors.name = nameError;
+
+  const emailError = validateRequired("Email", email);
+  if (emailError) errors.email = emailError;
+  else if (!isEmailValid(email)) errors.email = "Invalid email format";
+
+  const passwordError = validateRequired("Password", password, 6);
+  if (passwordError) errors.password = passwordError;
+
+  if (!confirmPassword) {
+    errors.confirmPassword = "Confirm Password is required";
+  } else if (password !== confirmPassword) {
+    errors.confirmPassword = "Passwords do not match";
   }
 
   return errors;
 };
 
-export const validateRegister = (formData) => {
-  const errors = {};
-  if (!formData.name.trim()) {
-    errors.name = "Name is required";
-  } else if (formData.name.length < 2) {
-    errors.name = "Name must be at least 2 characters";
-  }
+// Email
+export const validateEmail = (email) => {
+  if (!email) return { email: "Email là bắt buộc" };
+  if (!isEmailValid(email)) return { email: "Email không hợp lệ" };
+  return {};
+};
 
-  if (!formData.email) {
-    errors.email = "Email is required";
-  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    errors.email = "Invalid email format";
-  }
+// Reset Password
+export const validateResetPassword = (newPassword) => {
+  if (!newPassword) return { newPassword: "Mật khẩu mới là bắt buộc" };
+  if (newPassword.length < 6)
+    return { newPassword: "Mật khẩu phải dài ít nhất 6 ký tự" };
+  return {};
+};
 
-  if (!formData.password) {
-    errors.password = "Password is required";
-  } else if (formData.password.length < 6) {
-    errors.password = "Password must be at least 6 characters";
-  }
-
-  if (!formData.confirmPassword) {
-    errors.confirmPassword = "Confirm Password is required";
-  } else if (formData.password !== formData.confirmPassword) {
-    errors.confirmPassword = "Passwords do not match";
-  }
-  return errors;
+// OTP
+export const validateOTP = (otp) => {
+  if (!otp) return { otp: "OTP là bắt buộc" };
+  if (otp.length !== 6) return { otp: "OTP phải có 6 ký tự" };
+  return {};
 };
