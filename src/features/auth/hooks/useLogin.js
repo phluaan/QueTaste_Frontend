@@ -12,7 +12,7 @@ const useLogin = () => {
   const [errors, setErrors] = useState({});
   const { loading, error, accessToken } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (accessToken) {

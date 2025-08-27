@@ -8,10 +8,10 @@ const Sidebar = () => {
     const menus = [
         { name: "Home", icon: <Home size={20} className="text-black" />, path: "/" },
         { name: "Products", icon: <ShoppingBag size={20} className="text-black" />, path: "/products" },
+        { name: "Cart", icon: <ShoppingBag size={20} className="text-black" />, path: "/cart" },
         { name: "Orders", icon: <ShoppingCart size={20} className="text-black" />, path: "/orders" },
         { name: "Settings", icon: <Settings size={20} className="text-black" />, path: "/settings" },
     ];
-
 
     return (
         <div
