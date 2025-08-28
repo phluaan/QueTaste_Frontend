@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutAsync } from "../../features/auths/slices/authSlice";
+import { logoutAsync } from "../../features/auth/slices/authSlice";
 import logo from "../../assets/gauhai.png";
 import defaultAvatar from "../../assets/defaultAvatar.jpg";
 import UserMenu from "./UserMenu";

@@ -1,12 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/HomePage";
-import RegisterPage from "./features/auths/pages/RegisterPage"
-import ForgotPasswordPage from "./features/auths/pages/ForgotPasswordPage"
-import VerifyOtpPage from "./features/auths/pages/VerifyOtpPage"
-import LoginPage from "./features/auths/pages/LoginPage"
+import RegisterPage from "./features/auth/pages/RegisterPage"
+import ForgotPasswordPage from "./features/auth/pages/ForgotPasswordPage"
+import VerifyOtpPage from "./features/auth/pages/VerifyOtpPage"
+import LoginPage from "./features/auth/pages/LoginPage"
 import ProfilePage from "./features/user/pages/ProfilePage"
-import ResetPasswordPage from "./features/auths/pages/ResetPasswordPage";
+import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
+import ProductLayout from "./features/product/layouts/ProductLayout"
+import ProductPage from "./features/product/pages/ProductPage"
 
 function App() {
   return (
@@ -18,6 +20,14 @@ function App() {
           <MainLayout>
             <Home />
           </MainLayout>
+        }
+      />
+      <Route
+        path="/products"
+        element={
+          <ProductLayout>
+            <ProductPage />
+          </ProductLayout>
         }
       />
 
