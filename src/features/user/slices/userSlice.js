@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getProfileApi, updateProfileApi } from "../services/userService";
+import { setUser } from "../../../utils/storage";
 
 export const getProfile = createAsyncThunk("user/getProfile",
   async (_, thunkAPI) => {
@@ -50,6 +51,7 @@ extraReducers: (builder) => {
     .addCase(getProfile.fulfilled, (state, action) => {
       state.loading = false;
       state.user = action.payload;
+      setUser(action.payload);
     })
     .addCase(getProfile.rejected, (state, action) => {
       state.loading = false;

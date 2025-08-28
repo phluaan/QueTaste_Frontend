@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { forgotPasswordApi, loginApi, logoutApi, registerApi, resetPasswordApi } from "../services/authService";
-import { setTokens, clearTokens, getAccessToken, getRefreshToken } from "../../../utils/storage";
+import { setTokens, clearTokens, getAccessToken, getRefreshToken, clearUser } from "../../../utils/storage";
 
 const initialState = {
   user: null,
@@ -95,6 +95,7 @@ const authSlice = createSlice({
         state.error = null;
         state.message = "Logout successful";
         clearTokens();
+        clearUser();
       })
       .addCase(logoutAsync.rejected, (state, action) => {
         state.error = action.payload;

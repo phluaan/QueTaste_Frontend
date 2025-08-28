@@ -2,20 +2,19 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutAsync } from "../../features/auths/slices/authSlice";
 import logo from "../../assets/gauhai.png";
-import { getProfile } from "../../features/user/slices/userSlice";
-import { useEffect } from "react";
 import defaultAvatar from "../../assets/defaultAvatar.jpg";
+import UserMenu from "./UserMenu";
+import { getUser } from "../../utils/storage";
 
 const Header = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { accessToken} = useSelector((state) => state.auth);
-    const { user } = useSelector((state) => state.user);
 
     const handleLogout = async () => {
         try {
             await dispatch(logoutAsync()).unwrap();
-            navigate("/login");
+            navigate("/");
         } catch (err) {
             console.error("Logout failed:", err);
         }
@@ -47,24 +46,7 @@ const Header = () => {
                         </Link>
                     </>
                 ) : (
-                    <div className="flex items-center gap-3">
-                        {/* Avatar + Tên người dùng */}
-                        <Link to="/profile" className="flex items-center gap-2">
-                            <img
-                                src={user?.avatar || defaultAvatar}
-                                alt="avatar"
-                                className="w-10 h-10 rounded-full border object-cover"
-                            />
-                        </Link>
-
-                        {/* Nút Logout */}
-                        <button
-                            onClick={handleLogout}
-                            className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300"
-                        >
-                            Logout
-                        </button>
-                    </div>
+                    <UserMenu defaultAvatar={defaultAvatar} handleLogout={handleLogout} />
                 )}
             </div>
         </header>
