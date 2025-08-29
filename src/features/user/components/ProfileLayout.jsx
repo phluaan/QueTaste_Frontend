@@ -9,8 +9,8 @@ const ProfileLayout = ({ children }) => {
       </header>
 
       {/* Nội dung chính */}
-      <main className="flex-1 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-md max-w-5xl w-full flex">
+      <main className="flex-1 flex">
+        <div className="flex w-full">
           {children}
         </div>
       </main>

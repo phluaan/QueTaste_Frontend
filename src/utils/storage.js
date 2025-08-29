@@ -20,3 +20,18 @@ export const getAccessToken = () =>
 
 export const getRefreshToken = () =>
   localStorage.getItem("refreshToken") || sessionStorage.getItem("refreshToken");
+
+export const setUser = (user) => {
+  const fullName = user.personalInfo?.fullName || "";
+  const avatar = user.avatar || "";
+
+  sessionStorage.setItem("user", JSON.stringify({ personalInfo: { fullName }, avatar }));
+};
+
+export const getUser = () => {
+  return JSON.parse(sessionStorage.getItem("user"));
+};
+
+export const clearUser = () => {
+  sessionStorage.removeItem("user");
+};

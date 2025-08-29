@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "../slices/authSlice";
 
 import { useNavigate } from "react-router-dom";
+import { getProfile } from "../../user/slices/userSlice";
 
 const useLogin = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -31,6 +32,10 @@ const useLogin = () => {
           ...formData, 
           rememberMe 
         })).unwrap();
+        
+        await dispatch(getProfile()).unwrap();
+
+        navigate("/");
       } catch (err) {
         console.error("❌ Login failed: ", err);
       }
