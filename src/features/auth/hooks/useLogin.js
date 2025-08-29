@@ -32,7 +32,10 @@ const useLogin = () => {
           ...formData, 
           rememberMe 
         })).unwrap();
-        dispatch(getProfile());
+        
+        await dispatch(getProfile()).unwrap();
+
+        navigate("/");
       } catch (err) {
         console.error("❌ Login failed: ", err);
       }

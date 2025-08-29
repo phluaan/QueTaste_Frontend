@@ -56,6 +56,23 @@ const handleChange = (e) => {
   }
 };
 
+const handleCancel = (e) => {
+  e.preventDefault();
+  if (!user) return;
+
+  setFormData({
+    fullName: user.personalInfo?.fullName || "",
+    email: user.email || "",
+    phone: user.personalInfo?.phone || "",
+    address: user.personalInfo?.address || "",
+    dateOfBirth: user.personalInfo?.dateOfBirth || "",
+    gender: user.personalInfo?.gender || "",
+    avatarFile: user.avatar || null,
+  });
+
+  setPreviewAvatar(user.avatar || "/default-avatar.png");
+  setErrors({});
+};
 
 
 const handleSubmit = (e) => {
@@ -136,7 +153,7 @@ const handleSubmit = (e) => {
 
 
 
-return { user, formData, handleChange, handleSubmit,validateForm, handleSubmitWithValidation, previewAvatar, errors, setErrors, setFormData, setPreviewAvatar };
+return { user, formData, handleChange, handleCancel, handleSubmit,validateForm, handleSubmitWithValidation, previewAvatar, errors, setErrors, setFormData, setPreviewAvatar };
 };
 
 export default useProfile;

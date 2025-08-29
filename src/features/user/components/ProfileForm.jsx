@@ -3,7 +3,7 @@ import useProfile from "../hooks/useProfile";
 import { FiCamera } from "react-icons/fi";
 
 const ProfileForm = () => {
-  const { user, handleChange, handleSubmit, handleSubmitWithValidation, validateForm, formData, setFormData, previewAvatar, setPreviewAvatar, errors, setErrors } = useProfile();
+  const { user, handleChange, handleSubmit, handleCancel, handleSubmitWithValidation, validateForm, formData, setFormData, previewAvatar, setPreviewAvatar, errors, setErrors } = useProfile();
   
 
   if (!user) return <p>Đang tải...</p>;
@@ -104,18 +104,7 @@ const ProfileForm = () => {
       <div className="flex justify-end gap-4 mt-6">
         <button
           type="button"
-          onClick={() => {
-            setFormData({
-              fullName: user.fullName,
-              phone: user.phone,
-              address: user.address,
-              dateOfBirth: user.dateOfBirth,
-              gender: user.gender,
-              avatarFile: user.avatar || null,
-            });
-            setPreviewAvatar(user.avatar || "/default-avatar.png");
-            setErrors({});
-          }}
+          onClick={handleCancel}
           className="px-4 py-2 rounded-lg bg-gray-300 text-black hover:bg-gray-400"
         >
           Hủy bỏ

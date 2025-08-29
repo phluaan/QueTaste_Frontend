@@ -2,12 +2,15 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, User, LogOut } from "lucide-react";
 import { getUser } from "../../utils/storage";
+import { useDispatch, useSelector } from "react-redux";
+import {getProfile} from "../../features/user/slices/userSlice";
 
 const UserMenu = ({ handleLogout, defaultAvatar }) => {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
-  const user = getUser();
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.accessToken);
 
   // Đóng menu khi click ra ngoài
   useEffect(() => {
@@ -19,6 +22,8 @@ const UserMenu = ({ handleLogout, defaultAvatar }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const user = getUser();
 
   return (
     <div className="relative" ref={menuRef}>
