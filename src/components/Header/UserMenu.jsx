@@ -46,7 +46,7 @@ const UserMenu = ({ handleLogout, defaultAvatar }) => {
         <div className="absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg py-2 z-50">
           <Link
             to="/profile"
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100"
+            className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-primary"
           >
             <User size={18} className="text-gray-600" />
             <span>Thông tin cá nhân</span>
@@ -54,7 +54,7 @@ const UserMenu = ({ handleLogout, defaultAvatar }) => {
 
           <Link
             to="/orders"
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100"
+            className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-primary"
           >
             <ShoppingCart size={18} className="text-gray-600" />
             <span>Đơn hàng của tôi</span>
@@ -63,15 +63,16 @@ const UserMenu = ({ handleLogout, defaultAvatar }) => {
           <button
             onClick={() => {
               handleLogout();
-              navigate("/"); // về trang chủ
+              navigate("/");
             }}
-            className="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+            className="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-primary"
           >
             <LogOut size={18} className="text-gray-600" />
             <span>Đăng xuất</span>
           </button>
         </div>
       )}
+
     </div>
   );
 };

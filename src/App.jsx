@@ -9,6 +9,7 @@ import ProfilePage from "./features/user/pages/ProfilePage"
 import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
 import ProductLayout from "./features/product/layouts/ProductLayout"
 import ProductPage from "./features/product/pages/ProductPage"
+import ProductDetailPage from "./features/product/pages/ProductDetailPage"
 
 function App() {
   return (
@@ -25,9 +26,13 @@ function App() {
       <Route
         path="/products"
         element={
-          <ProductLayout>
-            <ProductPage />
-          </ProductLayout>
+          <ProductPage />
+        }
+      />
+      <Route
+        path="/product/:id"
+        element={
+          <ProductDetailPage />
         }
       />
 
@@ -37,7 +42,6 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage/>} />
       <Route path="/verify-otp" element={<VerifyOtpPage />} />
-
       <Route path="/profile" element={< ProfilePage/>}>
       </Route>
     </Routes>
