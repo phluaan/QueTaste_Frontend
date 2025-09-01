@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
     getAllProductsApi,
+    getProductDetailApi,
     getNewestProductsApi,
     getBestSellingProductsApi,
     getMostViewedProductsApi,
@@ -13,7 +14,8 @@ const initialState = {
     bestSelling: [],
     mostViewed: [],
     topDiscount: [],
-    loading: { all: false, newest: false, best: false, viewed: false, discount: false },
+    productDetail: null,
+    loading: { all: false, newest: false, best: false, viewed: false, discount: false, detail: false },
     error: null
 };
 
@@ -24,6 +26,16 @@ export const fetchAllProducts = createAsyncThunk("product/fetchAll", async (_, t
         if (res.success) return res.data;
         return thunkAPI.rejectWithValue(res.message);
     } catch (err) {
+        return thunkAPI.rejectWithValue(err.message);
+    }
+});
+
+export const fetchProductDetail = createAsyncThunk("product/fetchDetail", async (id, thunkAPI) => {
+    try {
+        const res = await getProductDetailApi(id);
+        if (res.success) return res.data;
+        return thunkAPI.rejectWithValue(res.message);
+    } catch (err){
         return thunkAPI.rejectWithValue(err.message);
     }
 });
@@ -96,7 +108,12 @@ const productSlice = createSlice({
         // top discount
         .addCase(fetchTopDiscountProducts.pending, (state) => { state.loading.discount = true; })
         .addCase(fetchTopDiscountProducts.fulfilled, (state, action) => { state.loading.discount = false; state.topDiscount = action.payload; })
-        .addCase(fetchTopDiscountProducts.rejected, (state, action) => { state.loading.discount = false; state.error = action.payload; });
+        .addCase(fetchTopDiscountProducts.rejected, (state, action) => { state.loading.discount = false; state.error = action.payload; })
+
+        // product detail
+        .addCase(fetchProductDetail.pending, (state) => { state.loading.detail = true; state.error = null;})
+        .addCase(fetchProductDetail.fulfilled, (state, action) => { state.loading.detail = false; state.productDetail = action.payload; state.error = null;})
+        .addCase(fetchProductDetail.rejected, (state, action) => { state.loading.detail = false; state.error = action.payload; });
     }
 });
 

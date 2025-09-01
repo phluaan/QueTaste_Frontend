@@ -1,6 +1,5 @@
 import React from "react";
 import Header from "../../../components/Header/Header";
-import Sidebar from "../../../components/Sidebar/Sidebar";
 
 const ProductLayout = ({ children }) => {
     return (
@@ -8,10 +7,7 @@ const ProductLayout = ({ children }) => {
         {/* Header cố định */}
         <Header />
 
-        {/* Sidebar + Content */}
-        <div className="flex flex-1">
-            {/* Sidebar */}
-            <Sidebar />
+        <div className="flex flex-1 mt-500">
 
             {/* Content */}
             <main className="flex-1 p-6 bg-gray-50">{children}</main>
