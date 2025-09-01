@@ -6,6 +6,11 @@ export const getAllProductsApi = async () => {
     return res.data;
 };
 
+export const getProductDetailApi = async (id)=>{
+    const res = await axios.get(`${API_BASE_URL}/product/${id}`);
+    return res.data;
+}
+
 export const getNewestProductsApi = async () => {
     const res = await axios.get(`${API_BASE_URL}/product/newest`);
     return res.data;

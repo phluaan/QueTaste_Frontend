@@ -8,7 +8,6 @@ const ProfilePage = () => {
 
   return (
 <ProfileLayout>
-  {/* Sidebar */}
   <div className="w-1/4 border-r p-6 space-y-4 bg-white">
     <h2 className="text-xl font-bold mb-4">Cài đặt tài khoản</h2>
     <button

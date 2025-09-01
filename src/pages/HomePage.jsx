@@ -1,6 +1,7 @@
 // src/pages/Home.js
 import React, { useEffect, useState } from "react";
-
+import Footer from "../components/Footer";
+import Header from "../components/Header/Header";
 /* Small reusable ProductCard */
 const ProductCard = ({ p }) => {
     const img = p.images && p.images[0] ? p.images[0] : "https://via.placeholder.com/400x300?text=No+Image";
@@ -81,7 +82,9 @@ const ProductCard = ({ p }) => {
     }, []);
 
     return (
+        
         <main className="min-h-screen bg-gray-50">
+            <Header/>
         {/* HERO */}
         <header className="relative bg-[url('https://images.unsplash.com/photo-1506806732259-39c2d0268443?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=')] bg-cover bg-center">
             <div className="bg-black/45">
@@ -154,18 +157,7 @@ const ProductCard = ({ p }) => {
 
         </div>
 
-        <footer className="mt-12 bg-white border-t">
-            <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-start justify-between gap-6">
-            <div>
-                <div className="text-xl font-bold">QueTaste</div>
-                <p className="text-sm text-gray-600 mt-2">Quảng bá đặc sản quê hương — kết nối nông dân và người tiêu dùng.</p>
-            </div>
-            <div className="text-sm text-gray-600">
-                <div>Liên hệ: chimsedinang@gmail.com</div>
-                <div className="mt-2">© {new Date().getFullYear()} QueTaste</div>
-            </div>
-            </div>
-        </footer>
+        <Footer />
         </main>
     );
 };
