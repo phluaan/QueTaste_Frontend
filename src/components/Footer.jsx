@@ -61,10 +61,10 @@ const Footer = () => {
 
         {/* Certifications row */}
         <div className="flex justify-center space-x-4 pb-3">
-          <img src={vietgap} alt="VietGAP" className="h-20" />
-          <img src={ocop} alt="OCOP" className="h-20" />
-          <img src={iso22000} alt="ISO 22000" className="h-20" />
-          <img src={haccp} alt="HACCP" className="h-20" />
+          <img src={vietgap} alt="VietGAP" className="h-16" />
+          <img src={ocop} alt="OCOP" className="h-16" />
+          <img src={iso22000} alt="ISO 22000" className="h-16" />
+          <img src={haccp} alt="HACCP" className="h-16" />
         </div>
 
         <div className="text-center text-gray-500 pt-4 border-t text-sm">
