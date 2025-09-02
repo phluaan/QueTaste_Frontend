@@ -10,7 +10,7 @@ import App from "./App.jsx";
 
 // Sau khi hoàn thành project, bỏ chế độ StrictMode (Render component 2 lần dẫn đến bug logic - xem product 1 lần +2 view)
 createRoot(document.getElementById("root")).render(
-  <React.StrictMode> 
+  <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
         <App />
