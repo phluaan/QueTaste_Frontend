@@ -39,21 +39,6 @@ const Home = () => {
         </header>
 
         <div className="max-w-6xl mx-auto px-6 py-8">
-            {/* Quick categories */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-            {["Trái cây", "Hải sản", "Đồ uống", "Bánh kẹo"].map((c) => (
-                <button
-                key={c}
-                className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm hover:shadow-md"
-                >
-                <div className="w-12 h-12 bg-indigo-50 rounded-md flex items-center justify-center text-indigo-600 font-bold">
-                    {c[0]}
-                </div>
-                <div className="text-sm font-semibold">{c}</div>
-                </button>
-            ))}
-            </div>
-
             {/* About / mission */}
             <section id="about" className="mt-12 bg-white rounded-lg p-6 shadow">
             <h3 className="text-xl font-bold">Vì sao chọn QueTaste?</h3>
