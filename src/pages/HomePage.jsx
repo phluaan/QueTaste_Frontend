@@ -2,8 +2,12 @@
 import React from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header/Header";
+import usePost from "../features/post/hooks/usePost";
+import PostCard from "../features/post/components/PostCard";
 
 const Home = () => {
+    const { allPosts, loading, error } = usePost();
+
     return (
         <main className="min-h-screen bg-gray-50">
         <Header />
@@ -38,7 +42,25 @@ const Home = () => {
             </div>
         </header>
 
-        <div className="max-w-6xl mx-auto px-6 py-8">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+            {/* Bài viết nổi bật */}
+            <section id="posts" className="mt-12">
+            <h3 className="text-xl font-bold mb-4">Bài viết nổi bật</h3>
+            {loading ? (
+                <p>Loading...</p>
+            ) : error ? (
+                <p className="text-red-500">{error}</p>
+            ) : allPosts.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                {allPosts.map((post) => (
+                    <PostCard key={post._id} post={post} />
+                ))}
+                </div>
+            ) : (
+                <p>Chưa có bài viết nào</p>
+            )}
+            </section>
+
             {/* About / mission */}
             <section id="about" className="mt-12 bg-white rounded-lg p-6 shadow">
             <h3 className="text-xl font-bold">Vì sao chọn QueTaste?</h3>

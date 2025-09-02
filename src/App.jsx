@@ -10,6 +10,7 @@ import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
 import ProductLayout from "./features/product/layouts/ProductLayout"
 import ProductPage from "./features/product/pages/ProductPage"
 import ProductDetailPage from "./features/product/pages/ProductDetailPage"
+import PostDetailPage from "./features/post/pages/PostDetailPage";
 
 function App() {
   return (
@@ -33,6 +34,13 @@ function App() {
         path="/product/:id"
         element={
           <ProductDetailPage />
+        }
+      />
+
+      <Route
+        path="/post/:slug"
+        element={
+          <PostDetailPage />
         }
       />
 
