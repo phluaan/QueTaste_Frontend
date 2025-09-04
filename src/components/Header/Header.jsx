@@ -33,7 +33,7 @@ const Header = () => {
 
   return (
     <nav className="bg-neutral shadow-md fixed top-0 w-full z-50">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 ">
         {/* Container gom tất cả vào giữa */}
         <div className="flex items-center justify-center h-16 space-x-8">
           {/* Logo */}
