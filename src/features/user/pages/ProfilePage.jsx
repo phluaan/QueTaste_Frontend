@@ -8,7 +8,8 @@ const ProfilePage = () => {
 
   return (
 <ProfileLayout>
-  <div className="w-1/4 border-r p-6 space-y-4 bg-white">
+  
+  <div className="w-1/4 border-r p-6 space-y-4 bg-white ">
     <h2 className="text-xl font-bold mb-4">Cài đặt tài khoản</h2>
     <button
       onClick={() => setActiveTab("profile")}
