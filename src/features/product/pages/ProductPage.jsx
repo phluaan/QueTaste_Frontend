@@ -6,11 +6,12 @@ import Footer from "../../../components/Footer"; // thêm import
 
 const ProductPage = () => {
   const {
-    search,
-    setSearch,
-    filterCriteria,
-    setFilterCriteria,
-    displayedProducts,
+    search, setSearch,
+    filterCriteria, setFilterCriteria,
+    priceFilter, setPriceFilter,
+    ratingFilter, setRatingFilter,
+    regionFilter, setRegionFilter,
+    products,
     loading,
   } = useProduct();
 
@@ -62,15 +63,23 @@ const ProductPage = () => {
               <option value="discount">4 sản phẩm khuyến mãi</option>
             </select>
 
-            <select className="w-full border rounded px-3 py-2">
+            <select 
+              value={priceFilter}
+              onChange={(e) => setPriceFilter(e.target.value)}
+              className="w-full border rounded px-3 py-2"
+              >
               <option value="">Giá cả</option>
-              <option value="low-high">Thấp hơn 100k</option>
-              <option value="low-high">Từ 100k đến 200k</option>
-              <option value="low-high">Từ 200k đến 500k</option>
-              <option value="low-high">Lớn hơn 500k</option>
+              <option value="lt100">Thấp hơn 100k</option>
+              <option value="100-200">Từ 100k đến 200k</option>
+              <option value="200-500">Từ 200k đến 500k</option>
+              <option value="gt500">Lớn hơn 500k</option>
             </select>
 
-            <select className="w-full border rounded px-3 py-2">
+            <select 
+              value={ratingFilter}
+              onChange={(e) => setRatingFilter(e.target.value)}
+              className="w-full border rounded px-3 py-2"
+              >
               <option value="">Đánh giá</option>
               <option value="5">⭐ 5 sao</option>
               <option value="4">⭐ 4 sao trở lên</option>
@@ -79,7 +88,11 @@ const ProductPage = () => {
               <option value="1">⭐ 1 sao trở lên</option>
             </select>
 
-            <select className="w-full border rounded px-3 py-2">
+            <select 
+              value={regionFilter}
+              onChange={(e) => setRegionFilter(e.target.value)}
+              className="w-full border rounded px-3 py-2"
+              >
               <option value="">Vùng miền</option>
               <option value="north">Miền Bắc</option>
               <option value="central">Miền Trung</option>
@@ -92,8 +105,8 @@ const ProductPage = () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {loading[filterCriteria || "all"] ? (
             <p>Loading...</p>
-          ) : displayedProducts.length > 0 ? (
-            displayedProducts.map((p) => <ProductCard key={p._id} p={p} />)
+          ) : products.length > 0 ? (
+            products.map((p) => <ProductCard key={p._id} p={p} />)
           ) : (
             <p>Không có sản phẩm nào</p>
           )}

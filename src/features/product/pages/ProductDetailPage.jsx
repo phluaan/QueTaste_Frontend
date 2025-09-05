@@ -165,7 +165,7 @@ const ProductDetailPage = () => {
 
               <div className="flex items-center space-x-4">
                 <span className="line-through text-gray-400">
-                  ${productDetail.oldPrice}
+                  ${productDetail.price}
                 </span>
                 <span className="text-3xl font-bold text-accent">
                   ${productDetail.salePrice}

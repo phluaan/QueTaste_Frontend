@@ -1,64 +1,78 @@
-// src/hooks/useProduct.js
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchAllProducts,
-  fetchNewestProducts,
-  fetchBestSellingProducts,
-  fetchMostViewedProducts,
-  fetchTopDiscountProducts,
-} from "../slices/productSlice";
+import { fetchAllProducts } from "../slices/productSlice";
 
 const useProduct = () => {
   const dispatch = useDispatch();
-  const {
-    allProducts,
-    newest,
-    bestSelling,
-    mostViewed,
-    topDiscount,
-    loading,
-  } = useSelector((state) => state.product);
+  const { products, loading } = useSelector((state) => state.product);
 
   const [search, setSearch] = useState("");
-  const [filterCriteria, setFilterCriteria] = useState(""); // "" = show all
+  const [filterCriteria, setFilterCriteria] = useState("");
+  const [priceFilter, setPriceFilter] = useState("");
+  const [ratingFilter, setRatingFilter] = useState("");
+  const [regionFilter, setRegionFilter] = useState("");
 
-  // Fetch dữ liệu
+  // gọi API mỗi khi filter thay đổi
   useEffect(() => {
-    dispatch(fetchAllProducts());
-    dispatch(fetchNewestProducts());
-    dispatch(fetchBestSellingProducts());
-    dispatch(fetchMostViewedProducts());
-    dispatch(fetchTopDiscountProducts());
-  }, [dispatch]);
+    const query = {};
 
-  // Chọn bộ lọc hiển thị sản phẩm
-  const getFilteredProducts = () => {
+    // search
+    if (search) query.search = search;
+
+    // sort
     switch (filterCriteria) {
       case "newest":
-        return newest;
+        query.sortBy = "createdAt";
+        query.order = "desc";
+        query.limit = 8;
+        break;
       case "best":
-        return bestSelling;
+        query.sortBy = "totalSold";
+        query.order = "desc";
+        query.limit = 6;
+        break;
       case "views":
-        return mostViewed;
+        query.sortBy = "views";
+        query.order = "desc";
+        query.limit = 8;
+        break;
       case "discount":
-        return topDiscount;
+        query.sortBy = "discount";
+        query.order = "desc";
+        query.limit = 4;
+        break;
       default:
-        return allProducts; // show tất cả sản phẩm nếu không chọn filter
+        break;
     }
-  };
 
-  // Lọc theo search input
-  const displayedProducts = getFilteredProducts().filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
-  );
+    // price
+    if (priceFilter === "lt100") query.maxPrice = 100000;
+    if (priceFilter === "100-200") {
+      query.minPrice = 100000;
+      query.maxPrice = 200000;
+    }
+    if (priceFilter === "200-500") {
+      query.minPrice = 200000;
+      query.maxPrice = 500000;
+    }
+    if (priceFilter === "gt500") query.minPrice = 500000;
+
+    // rating
+    if (ratingFilter) query.rating = ratingFilter;
+
+    // region
+    if (regionFilter) query.region = regionFilter;
+
+    dispatch(fetchAllProducts(query));
+  }, [dispatch, search, filterCriteria, priceFilter, ratingFilter, regionFilter]);
 
   return {
-    search,
-    setSearch,
-    filterCriteria,
-    setFilterCriteria,
-    displayedProducts,
+    search, setSearch,
+    filterCriteria, setFilterCriteria,
+    priceFilter, setPriceFilter,
+    ratingFilter, setRatingFilter,
+    regionFilter, setRegionFilter,
+    products,
     loading,
   };
 };
