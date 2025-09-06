@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllProducts } from "../slices/productSlice";
+import { fetchAllProducts, setPage } from "../slices/productSlice";
 
 const useProduct = () => {
   const dispatch = useDispatch();
-  const { products, loading } = useSelector((state) => state.product);
+  const { products, loading, totalPage, currentPage } = useSelector((state) => state.product);
 
   const [search, setSearch] = useState("");
   const [filterCriteria, setFilterCriteria] = useState("");
@@ -14,7 +14,7 @@ const useProduct = () => {
 
   // gọi API mỗi khi filter thay đổi
   useEffect(() => {
-    const query = {};
+    const query = { page: currentPage, limit: 12 };
 
     // search
     if (search) query.search = search;
@@ -24,22 +24,18 @@ const useProduct = () => {
       case "newest":
         query.sortBy = "createdAt";
         query.order = "desc";
-        query.limit = 8;
         break;
       case "best":
         query.sortBy = "totalSold";
         query.order = "desc";
-        query.limit = 6;
         break;
       case "views":
         query.sortBy = "views";
         query.order = "desc";
-        query.limit = 8;
         break;
       case "discount":
         query.sortBy = "discount";
         query.order = "desc";
-        query.limit = 4;
         break;
       default:
         break;
@@ -64,7 +60,7 @@ const useProduct = () => {
     if (regionFilter) query.region = regionFilter;
 
     dispatch(fetchAllProducts(query));
-  }, [dispatch, search, filterCriteria, priceFilter, ratingFilter, regionFilter]);
+  }, [dispatch, search, filterCriteria, priceFilter, ratingFilter, regionFilter, currentPage]);
 
   return {
     search, setSearch,
@@ -74,6 +70,8 @@ const useProduct = () => {
     regionFilter, setRegionFilter,
     products,
     loading,
+    totalPage, currentPage,
+    setPage: (page) => dispatch(setPage(page)),
   };
 };
 

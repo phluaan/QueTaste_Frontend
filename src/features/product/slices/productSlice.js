@@ -3,6 +3,9 @@ import { getAllProductsApi, getProductDetailApi } from "../services/productServi
 
 const initialState = {
   products: [],
+  total: 0,
+  totalPage: 1,
+  currentPage: 1,
   productDetail: null,
   loading: { list: false, detail: false },
   error: null,
@@ -33,7 +36,11 @@ export const fetchProductDetail = createAsyncThunk("product/fetchDetail", async 
 const productSlice = createSlice({
   name: "product",
   initialState,
-  reducers: {},
+  reducers: {
+    setPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // all products
@@ -44,6 +51,9 @@ const productSlice = createSlice({
       .addCase(fetchAllProducts.fulfilled, (state, action) => {
         state.loading.list = false;
         state.products = action.payload.products;
+        state.total = action.payload.total;
+        state.currentPage = action.payload.currentPage;
+        state.totalPage = action.payload.totalPage;
       })
       .addCase(fetchAllProducts.rejected, (state, action) => {
         state.loading.list = false;
@@ -65,5 +75,5 @@ const productSlice = createSlice({
       });
   },
 });
-
+export const { setPage } = productSlice.actions;
 export default productSlice.reducer;
