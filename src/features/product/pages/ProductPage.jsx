@@ -13,6 +13,7 @@ const ProductPage = () => {
     regionFilter, setRegionFilter,
     products,
     loading,
+    totalPage, currentPage, setPage
   } = useProduct();
 
   return (
@@ -57,10 +58,10 @@ const ProductPage = () => {
               className="w-full border rounded px-3 py-2"
             >
               <option value="">Tiêu chí</option>
-              <option value="newest">8 sản phẩm mới nhất</option>
-              <option value="best">6 sản phẩm bán chạy</option>
-              <option value="views">8 sản phẩm xem nhiều</option>
-              <option value="discount">4 sản phẩm khuyến mãi</option>
+              <option value="newest">Mới</option>
+              <option value="best">Bán chạy</option>
+              <option value="views">Lượt xem</option>
+              <option value="discount">Khuyến mãi</option>
             </select>
 
             <select 
@@ -112,6 +113,81 @@ const ProductPage = () => {
           )}
         </div>
       </div>
+      {/* Pagination */}
+      <div className="flex justify-center mt-6 mb-6 gap-2 items-center">
+        {/* Nút Previous */}
+        <button
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className={`px-3 py-1 rounded border 
+            ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-[#FF7E67] hover:text-white"} 
+            border-[#A2D5F2] bg-[#FAFAFA]`}
+        >
+          &lt;
+        </button>
+
+        {/* Trang 1 */}
+        <button
+          onClick={() => setPage(1)}
+          className={`px-3 py-1 rounded border 
+            ${currentPage === 1 ? "bg-[#07689F] text-white" : "bg-[#FAFAFA] hover:bg-[#FF7E67] hover:text-white"} 
+            border-[#A2D5F2]`}
+        >
+          1
+        </button>
+
+        {/* Dấu ... nếu đang ở trang > 3 */}
+        {currentPage > 3 && <span className="px-2">...</span>}
+
+        {/* Trang lân cận */}
+        {Array.from({ length: totalPage }, (_, i) => i + 1)
+          .filter(
+            (page) =>
+              page === currentPage ||
+              page === currentPage - 1 ||
+              page === currentPage + 1
+          )
+          .map((page) => (
+            page !== 1 && page !== totalPage && (
+              <button
+                key={page}
+                onClick={() => setPage(page)}
+                className={`px-3 py-1 rounded border 
+                  ${currentPage === page ? "bg-[#07689F] text-white" : "bg-[#FAFAFA] hover:bg-[#FF7E67] hover:text-white"} 
+                  border-[#A2D5F2]`}
+              >
+                {page}
+              </button>
+            )
+          ))}
+
+        {/* Dấu ... nếu còn trang ẩn trước trang cuối */}
+        {currentPage < totalPage - 2 && <span className="px-2">...</span>}
+
+        {/* Trang cuối */}
+        {totalPage > 1 && (
+          <button
+            onClick={() => setPage(totalPage)}
+            className={`px-3 py-1 rounded border 
+              ${currentPage === totalPage ? "bg-[#07689F] text-white" : "bg-[#FAFAFA] hover:bg-[#FF7E67] hover:text-white"} 
+              border-[#A2D5F2]`}
+          >
+            {totalPage}
+          </button>
+        )}
+
+        {/* Nút Next */}
+        <button
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPage))}
+          disabled={currentPage === totalPage}
+          className={`px-3 py-1 rounded border 
+            ${currentPage === totalPage ? "opacity-50 cursor-not-allowed" : "hover:bg-[#FF7E67] hover:text-white"} 
+            border-[#A2D5F2] bg-[#FAFAFA]`}
+        >
+          &gt;
+        </button>
+      </div>
+
 
       {/* Footer */}
       <Footer />
