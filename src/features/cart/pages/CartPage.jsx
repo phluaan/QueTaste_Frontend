@@ -1,5 +1,5 @@
 import { FaShoppingCart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CartItem from "../components/CartItem";
 import useCart from "../hooks/useCart";
 import Header from "../../../components/Header/Header";
@@ -7,6 +7,7 @@ import Footer from "../../../components/Footer";
 
 const CartPage = () => {
   const { items, loading, handleUpdate, handleRemove } = useCart();
+  const navigate = useNavigate();
 
   const subtotal = items.reduce(
     (total, item) => total + (item.product.salePrice || item.product.price) * item.quantity,
@@ -71,7 +72,9 @@ const CartPage = () => {
                     </div>
                   </div>
                 </div>
-                <button className="mt-6 w-full bg-[#07689F] hover:bg-[#FF7E67] text-white py-4 rounded-lg font-bold text-lg transition-colors">
+                <button
+                  onClick={() => navigate("/checkout")}
+                  className="mt-6 w-full bg-[#07689F] hover:bg-[#FF7E67] text-white py-4 rounded-lg font-bold text-lg transition-colors">
                   Proceed to Checkout
                 </button>
               </div>

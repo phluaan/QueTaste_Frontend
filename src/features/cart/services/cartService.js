@@ -1,9 +1,9 @@
 import axiosClient from "../../../utils/axiosClient";
 
 export const getCartApi = async () => {
-  const res = await axiosClient.get("/cart");
-  console.log("👉 API /cart response:", res);
-  return res.data;
+    const res = await axiosClient.get("/cart");
+    console.log("👉 API /cart response:", res);
+    return res.data;
 };
 
 export const addToCartApi = async (productId, quantity = 1) => {
