@@ -2,44 +2,47 @@ import { useState } from "react";
 import ProfileLayout from "../components/ProfileLayout";
 import ProfileForm from "../components/ProfileForm";
 import ChangePasswordForm from "../components/ChangePasswordForm";
+import SidebarButton from "../components/SideBarButton";
+import OrderForm from "../components/OrderForm";
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("profile");
 
   return (
-<ProfileLayout>
-  
-  <div className="w-1/4 border-r p-6 space-y-4 bg-white ">
-    <h2 className="text-xl font-bold mb-4">Cài đặt tài khoản</h2>
-    <button
-      onClick={() => setActiveTab("profile")}
-      className={`block w-full text-left px-4 py-2 rounded-lg ${
-        activeTab === "profile"
-          ? "bg-red-400 text-white"
-          : "hover:bg-gray-100"
-      }`}
-    >
-      Thông tin cá nhân
-    </button>
-    <button
-      onClick={() => setActiveTab("password")}
-      className={`block w-full text-left px-4 py-2 rounded-lg ${
-        activeTab === "password"
-          ? "bg-red-400 text-white"
-          : "hover:bg-gray-100"
-      }`}
-    >
-      Đổi mật khẩu
-    </button>
-  </div>
+    <ProfileLayout>
+      {/* Sidebar */}
+      <div className="w-1/5 border-r p-6 space-y-4 bg-white">
+        <h2 className="text-xl font-bold mb-4">Cài đặt tài khoản</h2>
+        <SidebarButton
+          label="Thông tin cá nhân"
+          isActive={activeTab === "profile"}
+          onClick={() => setActiveTab("profile")}
+        />
+        <SidebarButton
+          label="Đổi mật khẩu"
+          isActive={activeTab === "password"}
+          onClick={() => setActiveTab("password")}
+        />
+        <SidebarButton
+          label="Đơn hàng của tôi"
+          isActive={activeTab === "orders"}
+          onClick={() => setActiveTab("orders")}
+        />
+        <SidebarButton
+          label="Lịch sử mua hàng"
+          isActive={activeTab === "history"}
+          onClick={() => setActiveTab("history")}
+        />
+      </div>
 
-  {/* Nội dung chính */}
-  <div className="w-3/4 p-6 min-h-[50vh] bg-white">
-    {activeTab === "profile" && <ProfileForm />}
-    {activeTab === "password" && <ChangePasswordForm />}
-  </div>
-</ProfileLayout>
-
+      {/* Nội dung chính */}
+      <div className="w-4/5 p-6 min-h-[50vh] bg-white">
+        {activeTab === "profile" && <ProfileForm />}
+        {activeTab === "password" && <ChangePasswordForm />}
+        {activeTab === "orders" && <div><OrderForm /></div>}
+        {activeTab === "history" && <div>Lịch sử mua hàng</div>}
+      </div>
+    </ProfileLayout>
   );
 };
 
