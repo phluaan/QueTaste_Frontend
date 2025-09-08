@@ -32,7 +32,7 @@ const ProductPage = () => {
               onChange={(e) => setSearch(e.target.value)}
               className="flex-1 border rounded px-4 py-2"
             />
-            <button className="text-indigo-600">
+            <button className="text-black">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -117,7 +117,7 @@ const ProductPage = () => {
       <div className="flex justify-center mt-6 mb-6 gap-2 items-center">
         {/* Nút Previous */}
         <button
-          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          onClick={() => setPage(Math.max(currentPage - 1, 1))}
           disabled={currentPage === 1}
           className={`px-3 py-1 rounded border 
             ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-[#FF7E67] hover:text-white"} 
@@ -178,7 +178,7 @@ const ProductPage = () => {
 
         {/* Nút Next */}
         <button
-          onClick={() => setPage((prev) => Math.min(prev + 1, totalPage))}
+          onClick={() => setPage(Math.min(currentPage + 1, totalPage))}
           disabled={currentPage === totalPage}
           className={`px-3 py-1 rounded border 
             ${currentPage === totalPage ? "opacity-50 cursor-not-allowed" : "hover:bg-[#FF7E67] hover:text-white"} 
