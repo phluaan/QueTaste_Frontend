@@ -11,7 +11,7 @@ import ProductLayout from "./features/product/layouts/ProductLayout"
 import ProductPage from "./features/product/pages/ProductPage"
 import ProductDetailPage from "./features/product/pages/ProductDetailPage"
 import PostDetailPage from "./features/post/pages/PostDetailPage";
-
+import CartPage from "./features/cart/pages/CartPage";
 function App() {
   return (
     <Routes>
@@ -50,8 +50,9 @@ function App() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage/>} />
       <Route path="/verify-otp" element={<VerifyOtpPage />} />
-      <Route path="/profile" element={< ProfilePage/>}>
-      </Route>
+      <Route path="/profile" element={< ProfilePage/>}></Route>
+      <Route path="/cart" element={< CartPage/>}></Route>
+      
     </Routes>
     
   );

@@ -6,11 +6,16 @@ import logo from "../../assets/gauhai.png";
 import defaultAvatar from "../../assets/defaultAvatar.jpg";
 import UserMenu from "./UserMenu";
 import { FiMenu, FiX } from "react-icons/fi";
+import { HiOutlineShoppingBag } from "react-icons/hi2";
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { accessToken } = useSelector((state) => state.auth);
+
+  // lấy số lượng item từ redux store giỏ hàng
+  const cartItems = useSelector((state) => state.cart.items || []);
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -34,8 +39,7 @@ const Header = () => {
   return (
     <nav className="bg-neutral shadow-md fixed top-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 ">
-        {/* Container gom tất cả vào giữa */}
-        <div className="flex items-center justify-center h-16 space-x-8">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <img src={logo} alt="Logo" className="h-8 w-8" />
@@ -55,9 +59,31 @@ const Header = () => {
             ))}
           </div>
 
-          {/* User Section */}
-          <div className="hidden md:flex items-center space-x-4">
-            {!accessToken ? (
+          {/* User + Cart */}
+          <div className="hidden md:flex items-center space-x-6">
+            {accessToken && (
+              <>
+                {/* Cart Button */}
+                <Link to="/cart" className="relative">
+                  <div className="relative flex items-center justify-center w-10 h-10 rounded-full bg-[#FFE1DA]">
+                    <HiOutlineShoppingBag className="h-6 w-6 text-[#FF7E67]" />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-[#FF7E67] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        {cartCount}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+
+                {/* Divider */}
+                <div className="w-px h-6 bg-gray-300" />
+
+                {/* User menu */}
+                <UserMenu defaultAvatar={defaultAvatar} handleLogout={handleLogout} />
+              </>
+            )}
+
+            {!accessToken && (
               <>
                 <Link
                   to="/login"
@@ -72,8 +98,6 @@ const Header = () => {
                   Register
                 </Link>
               </>
-            ) : (
-              <UserMenu defaultAvatar={defaultAvatar} handleLogout={handleLogout} />
             )}
           </div>
 

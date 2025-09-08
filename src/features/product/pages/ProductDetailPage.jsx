@@ -12,6 +12,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Footer from "../../../components/Footer";
+import Toast from "../../../components/Toast";
 const ProductDetailPage = () => {
   const {
     productDetail,
@@ -36,7 +37,7 @@ const ProductDetailPage = () => {
     <div className="min-h-screen bg-neutral">
       {/* Header */}
       <Header />
-
+      <Toast />
       {/* Main Content */}
       <main className="w-full px-8 pt-24 pb-16 bg-gray-100">
         {/* Breadcrumb */}
