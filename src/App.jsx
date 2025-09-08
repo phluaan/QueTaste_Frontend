@@ -12,6 +12,7 @@ import ProductPage from "./features/product/pages/ProductPage"
 import ProductDetailPage from "./features/product/pages/ProductDetailPage"
 import PostDetailPage from "./features/post/pages/PostDetailPage";
 import CartPage from "./features/cart/pages/CartPage";
+import CheckoutPage from "./features/checkout/pages/CheckoutPage";
 function App() {
   return (
     <Routes>
@@ -51,7 +52,10 @@ function App() {
       <Route path="/reset-password" element={<ResetPasswordPage/>} />
       <Route path="/verify-otp" element={<VerifyOtpPage />} />
       <Route path="/profile" element={< ProfilePage/>}></Route>
-      <Route path="/cart" element={< CartPage/>}></Route>
+      
+      {/* Cart + Checkout */}
+      <Route path="/cart" element={<CartPage />} />
+      <Route path="/checkout" element={<CheckoutPage />} />
       
     </Routes>
     
