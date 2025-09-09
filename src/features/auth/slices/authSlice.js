@@ -66,6 +66,11 @@ export const resetPassword = createAsyncThunk("auth/resetPassword", async (paylo
 const authSlice = createSlice({
   name: "auth",
   initialState,
+  reducers: {
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
         //login
