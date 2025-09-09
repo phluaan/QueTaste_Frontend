@@ -29,7 +29,7 @@ axiosClient.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const res = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-          token: getRefreshToken(), // <-- lấy refreshToken từ storage
+          refreshToken: getRefreshToken(), // <-- lấy refreshToken từ storage
         });
 
         const newAccessToken = res.data.data.accessToken;

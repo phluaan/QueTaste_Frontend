@@ -39,7 +39,6 @@ const CartPage = () => {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Cart Items */}
             <div className="lg:w-2/3">
-              <h2 className="text-2xl font-bold mb-6">Shopping Cart</h2>
               <div className="space-y-4">
                 {items.map((item) => (
                   <CartItem
