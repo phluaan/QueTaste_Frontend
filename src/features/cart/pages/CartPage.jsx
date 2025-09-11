@@ -13,7 +13,7 @@ const CartPage = () => {
     (total, item) => total + (item.product.salePrice || item.product.price) * item.quantity,
     0
   );
-  const delivery = 0;
+  const delivery = 36000;
   const total = subtotal + delivery;
 
   return (
