@@ -16,6 +16,7 @@ import ProductDetailPage from "./features/product/pages/ProductDetailPage";
 import PostDetailPage from "./features/post/pages/PostDetailPage";
 import CartPage from "./features/cart/pages/CartPage";
 import CheckoutPage from "./features/checkout/pages/CheckoutPage";
+import PaymentResultPage from "./features/checkout/pages/PaymentResultPage";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
         {/* Cart + Checkout */}
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/checkout/result" element={<PaymentResultPage />} />
       </Routes>
 
       {/* ✅ ToastContainer global */}

@@ -12,7 +12,9 @@ const CheckoutPage = () => {
     const navigate = useNavigate();
 
     const subtotal = items.reduce(
-        (total, item) => total + (item.product.salePrice || item.product.price) * item.quantity,
+        (total, item) =>
+        total +
+        (item.product.salePrice || item.product.price) * item.quantity,
         0
     );
     const shippingFee = 36000;
@@ -20,10 +22,21 @@ const CheckoutPage = () => {
 
     const onSubmit = async (data) => {
         try {
-            await handleCheckout({ ...data, items });
+        const result = await handleCheckout({ ...data, items });
+
+        if (data.paymentMethod === "momo") {
+            if (result?.payUrl) {
+            // ✅ chuyển hướng sang MoMo sandbox
+            window.location.href = result.payUrl;
+            } else {
+            console.error("MoMo payUrl not found");
+            }
+        } else {
+            // ✅ COD: điều hướng luôn
             navigate("/products");
+        }
         } catch (err) {
-            console.error("Checkout failed:", err);
+        console.error("Checkout failed:", err);
         }
     };
 
@@ -35,7 +48,11 @@ const CheckoutPage = () => {
             <CheckoutForm onSubmit={onSubmit} />
             </div>
             <div className="lg:w-1/3">
-            <OrderSummary subtotal={subtotal} shippingFee={shippingFee} discount={discount} />
+            <OrderSummary
+                subtotal={subtotal}
+                shippingFee={shippingFee}
+                discount={discount}
+            />
             {loading && <p className="text-center mt-4">Processing order...</p>}
             </div>
         </div>
