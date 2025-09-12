@@ -9,7 +9,10 @@ const useCheckout = () => {
     const handleCheckout = async (data) => {
         try {
         const result = await dispatch(createOrder(data)).unwrap();
-        showSuccess("Đặt hàng thành công! 🎉");
+
+        if (data.paymentMethod === "COD") {
+            showSuccess("Đặt hàng thành công! 🎉");
+        }
         return result;
         } catch (err) {
         showError("Đặt hàng thất bại, vui lòng thử lại!");
