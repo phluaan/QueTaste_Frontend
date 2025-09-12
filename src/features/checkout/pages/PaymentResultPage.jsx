@@ -4,6 +4,7 @@ import axiosClient from "../../../utils/axiosClient";
 import { showSuccess, showError } from "../../../utils/toastUtils";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer";
+import { clearCart } from "../../cart/slices/cartSlice";
 
 const PaymentResultPage = () => {
     const location = useLocation();
@@ -21,6 +22,7 @@ const PaymentResultPage = () => {
                 await axiosClient.post("/order/update-status", { orderId, resultCode });
                 if (resultCode === "0") {
                     showSuccess("Thanh toán MoMo thành công 🎉");
+                    dispatch(clearCart());
                 } else {
                     showError("Thanh toán thất bại hoặc bị hủy ❌");
                 }
