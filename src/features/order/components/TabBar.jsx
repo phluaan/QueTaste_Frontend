@@ -1,13 +1,9 @@
-import { useState } from 'react';
-
-// Component Tab bar
-const TabBar = () => {
-  const [activeTab, setActiveTab] = useState("all"); 
+const TabBar = ({ activeTab, onTabChange }) => {
   const tabs = [
     { label: "Tất cả", value: "all" },
     { label: "Chờ xác nhận", value: "pending" },
-    { label: "Vận chuyển", value: "shipping" },
     { label: "Chờ giao hàng", value: "delivering" },
+    { label: "Vận chuyển", value: "shipping" },
     { label: "Hoàn thành", value: "completed" },
     { label: "Đã hủy", value: "cancelled" },
     { label: "Trả hàng/Hoàn tiền", value: "refund" },
@@ -18,7 +14,7 @@ const TabBar = () => {
       {tabs.map((tab) => (
         <button
           key={tab.value}
-          onClick={() => setActiveTab(tab.value)}
+          onClick={() => onTabChange(tab.value)}
           className={`flex-1 text-center py-2 border-b-2 font-medium transition
             ${
               activeTab === tab.value
