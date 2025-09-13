@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { fetchProductDetail } from "../slices/productSlice";
 import { addToCart } from "../../cart/slices/cartSlice";
 import { showSuccess, showError } from "../../../utils/toastUtils"
+import { useNavigate, useLocation } from "react-router-dom";
 
 const useProductDetail = () => {
   const { id } = useParams();
@@ -17,7 +18,10 @@ const useProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("Description");
-
+  const accessToken = useSelector((state) => state.auth.accessToken);
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   useEffect(() => {
     if (id) {
       dispatch(fetchProductDetail(id));
@@ -34,6 +38,12 @@ const useProductDetail = () => {
 
   // Add to Cart
   const handleAddToCart = () => {
+    if (!accessToken) {
+      showError("Please login to continue");
+      navigate("/login", {state: {from: location.pathname}});
+      return;
+    }
+
     if (!productDetail) {
       showError("Product not found!");
       return;
@@ -55,6 +65,7 @@ const useProductDetail = () => {
       })
     );
 
+    
     showSuccess(`${productDetail.name} added to cart!`);
   };
 

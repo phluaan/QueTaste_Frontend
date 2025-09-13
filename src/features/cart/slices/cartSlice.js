@@ -15,7 +15,6 @@ const initialState = {
 export const fetchCart = createAsyncThunk("cart/fetchCart", async (_, thunkAPI) => {
   try {
     const res = await getCartApi();
-    console.log("👉 cartslice:", res.items);
     return res.items;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.message);
@@ -76,13 +75,11 @@ const cartSlice = createSlice({
       })
       .addCase(fetchCart.fulfilled, (state, action) => {
         state.loading = false;
-        console.log("Cart payload:", action.payload);
         state.items = action.payload || [];
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        console.log("❌ FetchCart rejected, error:", action.payload);
       })
 
       .addCase(addToCart.fulfilled, (state, action) => {
