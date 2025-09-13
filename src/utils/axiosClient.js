@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "../redux/store";
-import { logout } from "../features/auth/slices/authSlice";
+import { logout, setAccessToken } from "../features/auth/slices/authSlice";
 import { setTokens, getRefreshToken  } from "./storage";
 import { API_BASE_URL } from "../config";
 
@@ -25,7 +25,7 @@ axiosClient.interceptors.response.use(
     const originalRequest = error.config;
     const state = store.getState();
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
         const res = await axios.post(`${API_BASE_URL}/auth/refresh`, {
@@ -33,7 +33,7 @@ axiosClient.interceptors.response.use(
         });
 
         const newAccessToken = res.data.data.accessToken;
-        store.dispatch({ type: "auth/setAccessToken", payload: newAccessToken }); // hoặc tạo action riêng
+        store.dispatch(setAccessToken(newAccessToken)); // hoặc tạo action riêng
         setTokens(newAccessToken, state.auth.refreshToken, true);
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
