@@ -7,6 +7,8 @@ import defaultAvatar from "../../assets/defaultAvatar.jpg";
 import UserMenu from "./UserMenu";
 import { FiMenu, FiX } from "react-icons/fi";
 import { HiOutlineShoppingBag } from "react-icons/hi2";
+import { useEffect } from "react";
+import { fetchCart } from "../../features/cart/slices/cartSlice";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -15,9 +17,15 @@ const Header = () => {
 
   // lấy số lượng item từ redux store giỏ hàng
   const cartItems = useSelector((state) => state.cart.items || []);
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const cartCount = cartItems.length;
 
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (accessToken) {
+      dispatch(fetchCart());
+    }
+  }, [accessToken, dispatch]);
 
   const handleLogout = async () => {
     try {

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../slices/authSlice";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getProfile } from "../../user/slices/userSlice";
 
 const useLogin = () => {
@@ -14,10 +14,13 @@ const useLogin = () => {
   const { loading, error, accessToken } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const from = location.state?.from || "/";
   useEffect(() => {
     if (accessToken) {
-      navigate("/");
+      console.log("form: " + from);
+      navigate(from, { replace: true });
     }
   }, [accessToken, navigate]);
 
@@ -35,7 +38,6 @@ const useLogin = () => {
         
         await dispatch(getProfile()).unwrap();
 
-        navigate("/");
       } catch (err) {
         console.error("❌ Login failed: ", err);
       }
