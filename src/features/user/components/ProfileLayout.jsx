@@ -11,7 +11,7 @@ const ProfileLayout = ({ children }) => {
 
       {/* Nội dung chính */}
       <main className="flex-1 flex justify-center items-start p-4">
-        <div className="flex bg-white shadow-lg rounded-xl w-full max-w-6xl p-6 gap-4">
+        <div className="flex bg-white shadow-lg rounded-xl w-full p-6 gap-4">
           {children}
         </div>
       </main>

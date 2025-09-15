@@ -49,7 +49,7 @@ const UserMenu = ({ handleLogout, defaultAvatar }) => {
             className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-primary"
           >
             <User size={18} className="text-gray-600" />
-            <span>Thông tin cá nhân</span>
+            <span>Trang cá nhân</span>
           </Link>
 
           <Link
