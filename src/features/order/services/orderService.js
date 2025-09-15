@@ -9,7 +9,31 @@ export const getMyOrdersApi = async (token, params) => {
       },
       params,
     });
-    return response.data;
-  };
+  return response.data;
+};
 
+export const cancelOrderApi = async (token, orderId) => {
+  const response = await axios.post(
+    `${API_BASE_URL}/order/cancel/${orderId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
 
+export const requestCancelOrderApi = async (token, orderId, reason) => {
+  const response = await axios.post(
+    `${API_BASE_URL}/order/request-cancel/${orderId}`,
+    { reason },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};

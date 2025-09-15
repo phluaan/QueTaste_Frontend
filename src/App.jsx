@@ -16,6 +16,8 @@ import ProductDetailPage from "./features/product/pages/ProductDetailPage";
 import PostDetailPage from "./features/post/pages/PostDetailPage";
 import CartPage from "./features/cart/pages/CartPage";
 import CheckoutPage from "./features/checkout/pages/CheckoutPage";
+import AdminDashboard from "./features/admin/pages/AdminDashboard";
+import AdminOrdersPage from "./features/admin/order/pages/AdminOrdersPage";
 
 function App() {
   return (
@@ -45,6 +47,11 @@ function App() {
         {/* Cart + Checkout */}
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+
+        {/* Admin */}
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/orders" element={<AdminOrdersPage />} />
+
       </Routes>
 
       {/* ✅ ToastContainer global */}

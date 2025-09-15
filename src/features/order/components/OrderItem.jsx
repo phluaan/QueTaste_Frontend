@@ -10,13 +10,23 @@ import OrderDetailModal from "./OrderDetailItem";
 import OrderActions from "./OrderActions";
 
 const STATUS_NOTES = {
-  pending: "🛒 Shop đang chuẩn bị đơn hàng cho bạn",
-  shipping: "🚚 Đơn hàng đang được vận chuyển đến kho trung chuyển",
+  // Hai cái dưới này gom thành pending
+  new: "🆕 Đơn hàng vừa được tạo, chờ shop xác nhận",
+  confirmed: "✅ Đơn hàng đã được xác nhận, chuẩn bị xử lý",
+  // Cái dưới là Chờ giao hàng
+  processing: "🛒 Shop đang chuẩn bị đơn hàng cho bạn",
+  // Hai cái dưới là của Vận chuyển
+  shipping: "🚚 Đơn hàng đang trên đường đến kho trung chuyển",
   delivering: "📦 Shipper đang giao hàng, vui lòng giữ điện thoại",
-  completed: "✅ Bạn đã nhận hàng thành công. Đừng quên đánh giá sản phẩm nhé!",
-  cancelled: "❌ Đơn hàng đã bị hủy. Bạn có thể mua lại nếu muốn",
-  refund: "🔄 Đơn hàng đang trong quá trình xử lý trả hàng/hoàn tiền",
+  //Hoàn thành
+  completed: "🎉 Bạn đã nhận hàng thành công. Đừng quên đánh giá sản phẩm nhé!",
+  //Hủy
+  cancelled: "❌ Đơn hàng đã bị hủy",
+  cancel_requested: "⚠️ Yêu cầu hủy đơn đã được gửi, chờ shop phản hồi",
+  //Hoàn tiền
+  refund: "🔄 Đơn hàng trong quá trình trả hàng/hoàn tiền",
 };
+
 
 const OrderItem = ({ order }) => {
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -33,31 +43,41 @@ const OrderItem = ({ order }) => {
 
         </div>
         <div className="flex flex-col items-end">
-          <span
-            className={`inline-flex items-center gap-1 text-sm px-3 py-1 rounded-full ${
-              order.status === "completed"
-                ? "bg-green-100 text-green-600"
-                : order.status === "pending"
-                ? "bg-yellow-100 text-yellow-600"
-                : order.status === "shipping"
-                ? "bg-blue-100 text-blue-600"
-                : order.status === "delivering"
-                ? "bg-indigo-100 text-indigo-600"
-                : order.status === "cancelled"
-                ? "bg-red-100 text-red-600"
-                : order.status === "refund"
-                ? "bg-purple-100 text-purple-600"
-                : "bg-gray-100 text-gray-500"
-            }`}
-          >
-            {order.status === "pending" && <MdAccessTime size={16} />}
-            {order.status === "shipping" && <FaTruck size={16} />}
-            {order.status === "delivering" && <MdLocalShipping size={16} />}
-            {order.status === "completed" && <MdCheckCircle size={16} />}
-            {order.status === "cancelled" && <MdCancel size={16} />}
-            {order.status === "refund" && <MdReplay size={16} />}
-            {order.statusLabel || order.status}
-          </span>
+        <span
+          className={`inline-flex items-center gap-1 text-sm px-3 py-1 rounded-full ${
+            order.status === "new"
+              ? "bg-yellow-100 text-yellow-600"
+              : order.status === "confirmed"
+              ? "bg-yellow-100 text-yellow-600"
+              : order.status === "processing"
+              ? "bg-blue-100 text-blue-600"
+              : order.status === "shipping"
+              ? "bg-blue-100 text-blue-600"
+              : order.status === "delivering"
+              ? "bg-indigo-100 text-indigo-600"
+              : order.status === "completed"
+              ? "bg-green-100 text-green-600"
+              : order.status === "cancelled"
+              ? "bg-red-100 text-red-600"
+              : order.status === "cancel_requested"
+              ? "bg-orange-100 text-orange-600"
+              : order.status === "refund"
+              ? "bg-purple-100 text-purple-600"
+              : "bg-gray-100 text-gray-500"
+          }`}
+        >
+          {order.status === "new" && <MdAccessTime size={16} />}
+          {order.status === "confirmed" && <MdAccessTime size={16} />}
+          {order.status === "processing" && <FaTruck size={16} />}
+          {order.status === "shipping" && <FaTruck size={16} />}
+          {order.status === "delivering" && <MdLocalShipping size={16} />}
+          {order.status === "completed" && <MdCheckCircle size={16} />}
+          {order.status === "cancelled" && <MdCancel size={16} />}
+          {order.status === "refund" && <MdReplay size={16} />}
+          {order.status === "cancel_requested" && <MdCancel size={16} />}
+          {order.statusLabel || order.status}
+        </span>
+
 
 
         </div>
@@ -131,7 +151,7 @@ const OrderItem = ({ order }) => {
               {order.finalAmount.toLocaleString()}₫
             </span>
           </p>
-          <OrderActions status={order.status} />
+          <OrderActions order={order} />
         </div>
       </div>
 

@@ -1,10 +1,20 @@
-const OrderActions = ({ status }) => {
+import { useState } from "react";
+import useCancelOrder from "../hooks/useCancelOrder";
+import CancelRequestModal from "./CancelRequestModal";
+
+
+const OrderActions = ({ order }) => {
+  const { _id, status } = order;
+  const { handleCancel, handleRequestCancel } = useCancelOrder();
+  const [showCancelModal, setShowCancelModal] = useState(false);
+
   switch (status) {
-    case "pending":
+    case "new":
+    case "confirmed":
       return (
         <div className="flex gap-2">
-          {/* Primary */}
-          <button className="px-4 py-2 rounded text-sm bg-red-500 text-white hover:bg-red-600">
+          {/* Primary - hủy trực tiếp */}
+          <button onClick={() => handleCancel(_id)} className="px-4 py-2 rounded text-sm bg-red-500 text-white hover:bg-red-600">
             Hủy đơn
           </button>
           {/* Secondary */}
@@ -12,6 +22,34 @@ const OrderActions = ({ status }) => {
             Liên hệ người bán
           </button>
         </div>
+      );
+
+    case "processing":
+      return (
+        <>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowCancelModal(true)}
+              className="px-4 py-2 rounded text-sm bg-orange-500 text-white hover:bg-orange-600"
+            >
+              Gửi yêu cầu hủy đơn
+            </button>
+            <button className="px-4 py-2 rounded text-sm border border-gray-300 text-gray-600 hover:bg-gray-100">
+              Liên hệ người bán
+            </button>
+          </div>
+
+          {/* Modal */}
+          <CancelRequestModal
+            open={showCancelModal}
+            onClose={() => setShowCancelModal(false)}
+            order={order}
+            onSubmit={async (reason) => {
+              await handleRequestCancel(order._id, reason); // gọi API từ hook
+              setShowCancelModal(false);
+            }}
+          />
+        </>
       );
 
     case "shipping":

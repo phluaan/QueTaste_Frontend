@@ -2,7 +2,7 @@ const TabBar = ({ activeTab, onTabChange }) => {
   const tabs = [
     { label: "Tất cả", value: "all" },
     { label: "Chờ xác nhận", value: "pending" },
-    { label: "Chờ giao hàng", value: "delivering" },
+    { label: "Chờ giao hàng", value: "processing" },
     { label: "Vận chuyển", value: "shipping" },
     { label: "Hoàn thành", value: "completed" },
     { label: "Đã hủy", value: "cancelled" },
