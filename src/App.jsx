@@ -18,6 +18,7 @@ import CartPage from "./features/cart/pages/CartPage";
 import CheckoutPage from "./features/checkout/pages/CheckoutPage";
 import AdminDashboard from "./features/admin/pages/AdminDashboard";
 import AdminOrdersPage from "./features/admin/order/pages/AdminOrdersPage";
+import PaymentResultPage from "./features/checkout/pages/PaymentResultPage";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/orders" element={<AdminOrdersPage />} />
 
+        <Route path="/checkout/result" element={<PaymentResultPage />} />
       </Routes>
 
       {/* ✅ ToastContainer global */}
