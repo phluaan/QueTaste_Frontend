@@ -1,24 +1,26 @@
-import { Routes, Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import MainLayout from "./layouts/MainLayout";
-import Home from "./pages/HomePage";
-import RegisterPage from "./features/auth/pages/RegisterPage";
+import AdminDashboard from "./features/admin/pages/AdminDashboard";
+import AdminOrdersPage from "./features/admin/pages/AdminOrdersPage";
+import AdminCouponDetailPage from "./features/admin/pages/coupon/AdminCouponDetailPage";
+import AdminCouponsPage from "./features/admin/pages/coupon/AdminCouponListPage";
+import AdminCouponCreatePage from "./features/admin/pages/coupon/AdminCouponCreatePage";
 import ForgotPasswordPage from "./features/auth/pages/ForgotPasswordPage";
-import VerifyOtpPage from "./features/auth/pages/VerifyOtpPage";
 import LoginPage from "./features/auth/pages/LoginPage";
-import ProfilePage from "./features/user/pages/ProfilePage";
+import RegisterPage from "./features/auth/pages/RegisterPage";
 import ResetPasswordPage from "./features/auth/pages/ResetPasswordPage";
-import ProductLayout from "./features/product/layouts/ProductLayout";
-import ProductPage from "./features/product/pages/ProductPage";
-import ProductDetailPage from "./features/product/pages/ProductDetailPage";
-import PostDetailPage from "./features/post/pages/PostDetailPage";
+import VerifyOtpPage from "./features/auth/pages/VerifyOtpPage";
 import CartPage from "./features/cart/pages/CartPage";
 import CheckoutPage from "./features/checkout/pages/CheckoutPage";
-import AdminDashboard from "./features/admin/pages/AdminDashboard";
-import AdminOrdersPage from "./features/admin/order/pages/AdminOrdersPage";
 import PaymentResultPage from "./features/checkout/pages/PaymentResultPage";
+import PostDetailPage from "./features/post/pages/PostDetailPage";
+import ProductDetailPage from "./features/product/pages/ProductDetailPage";
+import ProductPage from "./features/product/pages/ProductPage";
+import ProfilePage from "./features/user/pages/ProfilePage";
+import MainLayout from "./layouts/MainLayout";
+import Home from "./pages/HomePage";
 
 function App() {
   return (
@@ -52,6 +54,9 @@ function App() {
         {/* Admin */}
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/orders" element={<AdminOrdersPage />} />
+        <Route path="/admin/coupons" element={<AdminCouponsPage />} />
+        <Route path="/admin/coupons/:id" element={<AdminCouponDetailPage />} />
+        <Route path="/admin/coupon/create" element={<AdminCouponCreatePage />} />
 
         <Route path="/checkout/result" element={<PaymentResultPage />} />
       </Routes>

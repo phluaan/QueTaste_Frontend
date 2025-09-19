@@ -6,6 +6,7 @@ import postReducer from "../features/post/slices/postSlice";
 import cartReducer from "../features/cart/slices/cartSlice";
 import checkoutReducer from "../features/checkout/slices/checkoutSlice";
 import orderReducer from '../features/order/slices/orderSlice'
+import couponReducer from "../features/coupon/slices/couponSlice";
 
 const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
     post: postReducer,
     cart: cartReducer,
     checkout: checkoutReducer,
-    order: orderReducer
+    order: orderReducer,
+    coupon: couponReducer,
   },
 });
 

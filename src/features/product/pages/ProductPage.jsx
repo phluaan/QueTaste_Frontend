@@ -2,7 +2,7 @@ import React from "react";
 import ProductCard from "../components/ProductCard";
 import useProduct from "../hooks/useProduct";
 import Header from "../../../components/Header/Header";
-import Footer from "../../../components/Footer"; // thêm import
+import Footer from "../../../components/Footer";
 
 const ProductPage = () => {
   const {
