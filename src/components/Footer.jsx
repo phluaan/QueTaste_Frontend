@@ -8,7 +8,7 @@ import haccp from "../assets/haccp.png";
 const Footer = () => {
   return (
     <footer className="bg-white pt-4 pb-2">
-      <div className="w-full px-6">
+      <div className="w-full px-6 mt-5">
         <div className="grid md:grid-cols-4 gap-6 mb-6">
           <div>
             <h4 className="font-semibold mb-3">Quick Links</h4>
