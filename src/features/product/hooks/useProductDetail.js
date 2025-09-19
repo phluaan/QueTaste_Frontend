@@ -6,11 +6,22 @@ import { fetchProductDetail } from "../slices/productSlice";
 import { addToCart } from "../../cart/slices/cartSlice";
 import { showSuccess, showError } from "../../../utils/toastUtils"
 import { useNavigate, useLocation } from "react-router-dom";
+import {
+  fetchRelatedProducts,
+  addViewedProduct,
+  fetchProductStats,
+  fetchViewedProducts
+} from "../slices/extraProductSlice";
+import { fetchFavorites, addFavorite, removeFavorite } from "../slices/favoriteSlice";
 
 const useProductDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  const { related, viewed, stats } = useSelector((state) => state.extraProduct);
+  const { list: favorites } = useSelector((s) => s.favorite);
   const { productDetail, loading, error } = useSelector(
     (state) => state.product
   );
@@ -19,9 +30,19 @@ const useProductDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState("Description");
   const accessToken = useSelector((state) => state.auth.accessToken);
-  const navigate = useNavigate();
-  const location = useLocation();
+
   
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchProductDetail(id));
+      dispatch(fetchRelatedProducts(id));
+      dispatch(addViewedProduct(id));
+      dispatch(fetchFavorites());
+      dispatch(fetchViewedProducts());
+      dispatch(fetchProductStats(id));
+    }
+  }, [id, dispatch]);
+
   useEffect(() => {
     if (id) {
       dispatch(fetchProductDetail(id));
@@ -69,6 +90,18 @@ const useProductDetail = () => {
     showSuccess(`${productDetail.name} added to cart!`);
   };
 
+  const isFavorite = favorites.some((f) => f.productId === productDetail?._id);
+
+  const toggleFavorite = () => {
+    if (!accessToken) {
+      showError("Please login to add favorites");
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+    if (isFavorite) dispatch(removeFavorite(productDetail._id));
+    else dispatch(addFavorite(productDetail._id));
+  };
+
   return {
     productDetail,
     loading,
@@ -81,6 +114,11 @@ const useProductDetail = () => {
     setCurrentImageIndex,
     activeTab,
     setActiveTab,
+    related,
+    viewed,
+    stats,
+    isFavorite,
+    toggleFavorite,
   };
 };
 
