@@ -26,6 +26,7 @@ const useCouponDetail = (mode = "detail") => {
         startDate: "",
         endDate: "",
         status: "active",
+        visibility: "public",
     });
 
     // Nếu là trang detail thì fetch và fill form
@@ -54,6 +55,7 @@ const useCouponDetail = (mode = "detail") => {
             ? new Date(couponDetail.endDate).toISOString().split("T")[0]
             : "",
             status: couponDetail.status || "active",
+            visibility: couponDetail.visibility || "public",
         });
         }
     }, [couponDetail, mode]);

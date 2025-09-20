@@ -166,6 +166,20 @@ const AdminCouponDetailPage = () => {
                 </select>
                 </div>
 
+                {/* Visibility */}
+                <div>
+                <label className="block text-sm font-medium mb-1">Loại hiển thị</label>
+                <select
+                    name="visibility"
+                    value={form.visibility}
+                    onChange={handleChange}
+                    className="w-full border rounded-lg px-3 py-2"
+                >
+                    <option value="public">🌍 Public (mọi người có thể dùng mã)</option>
+                    <option value="private">🔒 Private (chỉ cấp phát cho user qua UserCoupon)</option>
+                </select>
+                </div>
+
                 {/* Save */}
                 <button
                 onClick={handleSave}
