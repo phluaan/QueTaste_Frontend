@@ -1,11 +1,15 @@
+import { useState } from "react";
 import ProfileLayout from "../components/ProfileLayout";
 import ProfileForm from "../components/ProfileForm";
 import ChangePasswordForm from "../components/ChangePasswordForm";
 import SidebarButton from "../components/SideBarButton";
+
 import OrderForm from "../../order/components/OrderForm";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import UserCouponForm from "../components/UserCouponForm";
 
 const ProfilePage = () => {
+
   const [searchParams] = useSearchParams();
   const tabFromUrl = searchParams.get("tab") || "profile";
   const navigate = useNavigate();
@@ -30,6 +34,11 @@ const ProfilePage = () => {
           isActive={tabFromUrl === "orders"}
           onClick={() => navigate("/profile?tab=orders")}
         />
+        <SidebarButton
+          label="Coupon của tôi"
+          isActive={tabFromUrl === "coupons"}
+          onClick={() => navigate("/profile?tab=coupons")}
+        />
       </div>
 
       {/* Nội dung chính */}
@@ -37,6 +46,7 @@ const ProfilePage = () => {
         {tabFromUrl === "profile" && <ProfileForm />}
         {tabFromUrl === "password" && <ChangePasswordForm />}
         {tabFromUrl === "orders" && <OrderForm />}
+        {tabFromUrl === "coupons" && <UserCouponForm />}
       </div>
     </ProfileLayout>
   );

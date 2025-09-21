@@ -16,13 +16,24 @@ const useLogin = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from || "/";
   useEffect(() => {
     if (accessToken) {
-      console.log("form: " + from);
-      navigate(from, { replace: true });
+      // Sau khi login -> lấy profile
+      dispatch(getProfile())
+        .unwrap()
+        .then((profile) => {
+          if (profile.role === "admin") {
+            navigate("/admin", { replace: true });
+          } else {
+            const from = location.state?.from || "/";
+            navigate(from, { replace: true });
+          }
+        })
+        .catch((err) => {
+          console.error("❌ Get profile failed:", err);
+        });
     }
-  }, [accessToken, navigate]);
+  }, [accessToken, dispatch, navigate, location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
