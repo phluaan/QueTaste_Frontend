@@ -82,9 +82,6 @@ const OrderActions = ({ order }) => {
           <button className="px-4 py-2 rounded text-sm bg-blue-500 text-white hover:bg-blue-600">
             Mua lại
           </button>
-          <button className="px-4 py-2 rounded text-sm bg-yellow-500 text-white hover:bg-yellow-600">
-            Đánh giá
-          </button>
           <button className="px-4 py-2 rounded text-sm border border-gray-300 text-gray-600 hover:bg-gray-100">
             Trả hàng/Hoàn tiền
           </button>

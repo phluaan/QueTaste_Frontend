@@ -7,7 +7,8 @@ import favoriteReducer from "../features/product/slices/favoriteSlice";
 import postReducer from "../features/post/slices/postSlice";
 import cartReducer from "../features/cart/slices/cartSlice";
 import checkoutReducer from "../features/checkout/slices/checkoutSlice";
-import orderReducer from '../features/order/slices/orderSlice'
+import orderReducer from '../features/order/slices/orderSlice';
+import reviewReducer from '../features/review/slices/reviewSlice';
 
 const store = configureStore({
   reducer: {
@@ -20,6 +21,7 @@ const store = configureStore({
     order: orderReducer,
     extraProduct: extraProductReducer,
     favorite: favoriteReducer,
+    review: reviewReducer
   },
 });
 

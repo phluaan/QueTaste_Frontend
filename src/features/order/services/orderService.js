@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_BASE_URL } from "../../../config";
 
 export const getMyOrdersApi = async (token, params) => {
-  console.log(params);
+  //console.log(params);
     const response = await axios.get(`${API_BASE_URL}/order/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -35,5 +35,16 @@ export const requestCancelOrderApi = async (token, orderId, reason) => {
       },
     }
   );
+  return response.data;
+};
+
+export const getAllOrdersApi = async (token, params) => {
+  //console.log(params);
+    const response = await axios.get(`${API_BASE_URL}/order/get-all`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params,
+    });
   return response.data;
 };
