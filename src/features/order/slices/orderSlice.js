@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { cancelOrderApi, getMyOrdersApi, requestCancelOrderApi } from "../services/orderService";
+import { cancelOrderApi, getAllOrdersApi, getMyOrdersApi, requestCancelOrderApi } from "../services/orderService";
 import { showError, showSuccess } from "../../../utils/toastUtils";
 
 export const getMyOrders = createAsyncThunk("order/myOrders",
@@ -69,39 +69,97 @@ export const requestCancelOrder = createAsyncThunk("order/requestCancelOrder",
   }
 );
 
+export const getAllOrders = createAsyncThunk("order/allOrders",
+  async ({ status, search, page, limit }, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState();
+      const token = state.auth.accessToken;
+
+      const params = {};
+      if (status && status !== "all") params.status = status;
+      if (search) params.search = search;
+      if (page) params.page = page;
+      if (limit) params.limit = limit;
+
+      const res = await getAllOrdersApi(token, params);
+    
+      console.log(res.data);
+
+      if (res.success) return res.data;
+      return thunkAPI.rejectWithValue(res.message);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Server error"
+      );
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: "order",
   initialState: {
-    loading: false,      // cho getMyOrders
-    error: null,         // cho getMyOrders
-    canceling: false,    // cho cancelOrder
-    cancelError: null,   // cho cancelOrder
-    orders: [],
+    // User
+    myOrders: [],
+    myPagination: null,
+    loadingMyOrders: false,
+    errorMyOrders: null,
+
+    // Admin
+    allOrders: [],
+    allPagination: null,
+    loadingAllOrders: false,
+    errorAllOrders: null,
+
+    // Cancel
+    canceling: false,
+    cancelError: null,
   },
   extraReducers: (builder) => {
     builder
-    // getMyOrders
+    // 🔹 getMyOrders
     .addCase(getMyOrders.pending, (state) => {
-      state.loading = true;
-      state.error = null;
+      state.loadingMyOrders = true;
+      state.errorMyOrders = null;
     })
     .addCase(getMyOrders.fulfilled, (state, action) => {
-      state.loading = false;
-      state.orders = action.payload;
-      state.pagination = action.payload.pagination;
+      state.loadingMyOrders = false;
+      state.myOrders = action.payload || [];
+      state.myPagination = action.payload.pagination;
     })
     .addCase(getMyOrders.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
+      state.loadingMyOrders = false;
+      state.errorMyOrders = action.payload;
     })
-    // cancelOrder
+
+    // 🔹 getAllOrders
+    .addCase(getAllOrders.pending, (state) => {
+      state.loadingAllOrders = true;
+      state.errorAllOrders = null;
+    })
+    .addCase(getAllOrders.fulfilled, (state, action) => {
+      state.loadingAllOrders = false;
+      state.allOrders = action.payload.data || [];
+      state.allPagination = action.payload.pagination;
+    })
+    .addCase(getAllOrders.rejected, (state, action) => {
+      state.loadingAllOrders = false;
+      state.errorAllOrders = action.payload;
+    })
+
+    // 🔹 cancelOrder
     .addCase(cancelOrder.pending, (state) => {
       state.canceling = true;
       state.cancelError = null;
     })
     .addCase(cancelOrder.fulfilled, (state, action) => {
       state.canceling = false;
-      state.orders = state.orders.map((order) =>
+      // Update trong cả myOrders và allOrders nếu có
+      state.myOrders = state.myOrders.map((order) =>
+        order._id === action.payload._id
+          ? { ...order, status: "cancelled" }
+          : order
+      );
+      state.allOrders = state.allOrders.map((order) =>
         order._id === action.payload._id
           ? { ...order, status: "cancelled" }
           : order
@@ -111,14 +169,15 @@ const orderSlice = createSlice({
       state.canceling = false;
       state.cancelError = action.payload;
     })
-    // requestCancelOrder
+
+    // 🔹 requestCancelOrder
     .addCase(requestCancelOrder.pending, (state) => {
       state.canceling = true;
       state.cancelError = null;
     })
     .addCase(requestCancelOrder.fulfilled, (state, action) => {
       state.canceling = false;
-      state.orders = state.orders.map((order) =>
+      state.myOrders = state.myOrders.map((order) =>
         order._id === action.payload._id
           ? { ...order, status: "cancel_requested" }
           : order

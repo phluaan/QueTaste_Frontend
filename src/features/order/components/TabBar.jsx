@@ -22,7 +22,7 @@ const TabBar = ({ activeTab, onTabChange }) => {
                 : "border-transparent text-gray-600 hover:text-blue-500"
             }`}
         >
-          {tab.label}
+          {tab.label} 
         </button>
       ))}
     </div>

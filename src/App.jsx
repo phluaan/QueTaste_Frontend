@@ -3,7 +3,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import AdminDashboard from "./features/admin/pages/AdminDashboard";
-import AdminOrdersPage from "./features/admin/pages/AdminOrdersPage";
+import AdminOrdersPage from "./features/admin/order/pages/AdminOrdersPage";
 import AdminCouponDetailPage from "./features/admin/pages/coupon/AdminCouponDetailPage";
 import AdminCouponsPage from "./features/admin/pages/coupon/AdminCouponListPage";
 import AdminCouponCreatePage from "./features/admin/pages/coupon/AdminCouponCreatePage";

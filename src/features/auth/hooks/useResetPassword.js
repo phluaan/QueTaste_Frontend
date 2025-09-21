@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { forgotPassword, resetPassword } from "../slices/authSlice";
-import { validateEmail, validateResetPassword } from "../../../utils/validation";
+import { validateEmail, validateOTP, validateResetPassword } from "../../../utils/validation";
+import { showError, showSuccess } from "../../../utils/toastUtils";
 
 const useResetPassword = () => {
   const [formData, setFormData] = useState({
@@ -39,8 +40,9 @@ const useResetPassword = () => {
   const handleResendOtp = async () => {
     setResendLoading(true);
     try {
-      await dispatch(forgotPassword({ email: formData.email })).unwrap();
-      console.log("Resend OTP to:", formData.email);
+      await dispatch(forgotPassword( formData.email )).unwrap();
+      console.log("✅ Resend OTP to:", formData.email);
+      showSuccess("✅ Resend OTP to: " + formData.email)
       setCountdown(60); // reset countdown
     } catch (err) {
       console.error(err);
@@ -79,10 +81,11 @@ const useResetPassword = () => {
     setLoading(true);
     try {
       await dispatch(resetPassword(formData)).unwrap();
-      alert("Mật khẩu đã được đặt lại thành công!");
+      showSuccess("✅ Mật khẩu đã được đặt lại thành công!");
       navigate("/login");
     } catch (err) {
       console.error("❌ Reset Password failed:", err);
+      showError("❌ Reset Password failed:" + err);
       setErrors({ general: err.message || "Đặt lại mật khẩu thất bại" });
     } finally {
       setLoading(false);

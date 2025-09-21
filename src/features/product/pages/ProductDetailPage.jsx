@@ -12,6 +12,8 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Footer from "../../../components/Footer";
+import ProductCard from "../components/ProductCard"
+import ProductDetailTabs from "../components/ProductDetailTab";
 const ProductDetailPage = () => {
   const {
     productDetail,
@@ -25,6 +27,11 @@ const ProductDetailPage = () => {
     setCurrentImageIndex,
     activeTab,
     setActiveTab,
+    related,
+    viewed,
+    stats,
+    isFavorite,
+    toggleFavorite,
   } = useProductDetail();
 
   if (loading.detail)
@@ -57,29 +64,31 @@ const ProductDetailPage = () => {
                 {/* Main Image Swiper */}
                 <div className="relative w-full h-[450px] bg-white rounded-lg overflow-hidden flex items-center justify-center">
                     <Swiper
-                    modules={[Navigation]}
-                    navigation={{
-                        nextEl: ".swiper-button-next-custom",
-                        prevEl: ".swiper-button-prev-custom",
-                    }}
-                    onSwiper={(swiper) => {
-                        setTimeout(() => {
-                        swiper.navigation.init();
-                        swiper.navigation.update();
-                        });
-                    }}
-                    onSlideChange={(swiper) => setCurrentImageIndex(swiper.activeIndex)}
-                    className="w-full h-full"
-                    >
-                    {productDetail.images.map((img, idx) => (
-                        <SwiperSlide key={idx}>
-                        <img
-                            src={img}
-                            alt={`${productDetail.name}-${idx}`}
-                            className="w-full h-full object-contain"
-                        />
-                        </SwiperSlide>
-                    ))}
+                      modules={[Navigation]}
+                      navigation={{
+                          nextEl: ".swiper-button-next-custom",
+                          prevEl: ".swiper-button-prev-custom",
+                      }}
+                      onSwiper={(swiper) => {
+                          setTimeout(() => {
+                           if (swiper?.navigation) {
+                              swiper.navigation.init();
+                              swiper.navigation.update();
+                            }
+                          });
+                      }}
+                      onSlideChange={(swiper) => setCurrentImageIndex(swiper.activeIndex)}
+                      className="w-full h-full"
+                      >
+                      {productDetail.images.map((img, idx) => (
+                          <SwiperSlide key={idx}>
+                          <img
+                              src={img}
+                              alt={`${productDetail.name}-${idx}`}
+                              className="w-full h-full object-contain"
+                          />
+                          </SwiperSlide>
+                      ))}
                     </Swiper>
 
                     {/* Custom Arrows */}
@@ -145,7 +154,11 @@ const ProductDetailPage = () => {
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">{productDetail.name}</h1>
                 <p className="text-gray-500">{productDetail.category}</p>
+                
                 <div className="flex items-center mt-2">
+                  <span className="ml-2 text-gray-600 mr-1">
+                    {productDetail.averageRating}  
+                  </span>
                   {[...Array(5)].map((_, idx) => (
                     <FaStar
                       key={idx}
@@ -156,9 +169,11 @@ const ProductDetailPage = () => {
                       }
                     />
                   ))}
-                  <span className="ml-2 text-gray-600">
-                    ({productDetail.reviews} reviews)
-                  </span>
+                  {stats && (
+                    <span className="ml-1 text-gray-600">
+                      | {stats.totalComments} Đánh giá
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -170,14 +185,17 @@ const ProductDetailPage = () => {
                   ${productDetail.salePrice}
                 </span>
               </div>
-
               <div className="flex items-center space-x-2">
                 <BsCheckCircleFill className="text-green-500" />
                 <span className="text-green-500">
                   In Stock ({productDetail.stock} available)
                 </span>
+                {stats && (
+                  <span className="text-gray-500">
+                    | Đã bán {stats.totalBuyers} 
+                  </span>
+                )}
               </div>
-
               <p className="text-gray-600">{productDetail.description}</p>
 
               <div className="flex items-center space-x-4">
@@ -200,14 +218,15 @@ const ProductDetailPage = () => {
                   className="px-8 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90"
                   onClick={handleAddToCart}
                 >
-                  Add to Cart
+                  Thêm vào giỏ hàng
                 </button>
               </div>
 
               <div className="flex space-x-4">
-                <button className="flex items-center space-x-2 text-gray-600 hover:text-primary">
-                  <FiHeart />
-                  <span>Add to Wishlist</span>
+                <button className="flex items-center space-x-2 text-gray-600 hover:text-primary" 
+                  onClick={toggleFavorite}>
+                  <FiHeart className={isFavorite ? "text-red-500" : ""} />
+                  <span>{isFavorite ? "Remove from Wishlist" : "Add to Wishlist"}</span>
                 </button>
                 <button className="flex items-center space-x-2 text-gray-600 hover:text-primary">
                   <FiRefreshCw />
@@ -235,41 +254,31 @@ const ProductDetailPage = () => {
           </div>
 
           {/* Product Details Tabs */}
-          <div className="mt-16">
-            <div className="flex space-x-8 border-b">
-              {["description", "reviews", "shipping"].map((tab) => (
-                <button
-                  key={tab}
-                  className={`pb-4 ${
-                    activeTab === tab
-                      ? "border-b-2 border-primary text-primary"
-                      : "text-gray-500"
-                  }`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
+          <ProductDetailTabs
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            productDetail={productDetail}
+          />
+        </div>
+        {/* Sản phẩm tương tự */}
+        <div className="mt-10">
+          <h2 className="text-xl font-bold mb-4">Sản phẩm tương tự</h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {related.map((p) => (
+              <ProductCard key={p._id} p={p} />
+            ))}
+          </div>
+        </div>
+
+        {/* Sản phẩm đã xem */}
+        <div className="mt-10">
+          <h2 className="text-xl font-bold mb-5">Bạn đã xem gần đây</h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {viewed
+              .filter((v) => v._id !== productDetail._id)
+              .map((p) => (
+                <ProductCard key={p._id} p={p} />
               ))}
-            </div>
-            <div className="py-8">
-              {activeTab === "description" && (
-                <p className="text-gray-600">{productDetail.description}</p>
-              )}
-              {activeTab === "reviews" && (
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold">Customer Reviews</h3>
-                  <p className="text-gray-600">No reviews yet</p>
-                </div>
-              )}
-              {activeTab === "shipping" && (
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold">Shipping & Returns</h3>
-                  <p className="text-gray-600">
-                    Free shipping on orders over $100
-                  </p>
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </main>
