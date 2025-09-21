@@ -1,9 +1,21 @@
 import axios from "axios";
 import { API_BASE_URL } from "../../../config";
 
-// Lấy danh sách coupon
-export const getAllCouponsApi = async (params = {}) => {
-    const res = await axios.get(`${API_BASE_URL}/coupon`, { params });
+// --- Admin ---
+export const getAdminCouponsApi = async (params = {}, token) => {
+    const res = await axios.get(`${API_BASE_URL}/coupon/admin`, {
+        params,
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.data;
+};
+
+// --- User ---
+export const getUserCouponsApi = async (params = {}, token) => {
+    const res = await axios.get(`${API_BASE_URL}/coupon/user`, {
+        params,
+        headers: { Authorization: `Bearer ${token}` },
+    });
     return res.data;
 };
 
@@ -28,5 +40,23 @@ export const updateCouponApi = async (id, data) => {
 // Đổi trạng thái (pause/archive/activate)
 export const changeCouponStatusApi = async (id, action) => {
     const res = await axios.patch(`${API_BASE_URL}/coupon/${id}/${action}`);
+    return res.data;
+};
+
+// Lấy coupon đã đổi
+export const getMyCouponsApi = async (token) => {
+    const res = await axios.get(`${API_BASE_URL}/coupon/my`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.data;
+};
+
+// Đổi coupon
+export const redeemCouponApi = async (id, token) => {
+    const res = await axios.post(
+        `${API_BASE_URL}/coupon/${id}/redeem`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+    );
     return res.data;
 };

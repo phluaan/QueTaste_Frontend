@@ -180,6 +180,56 @@ const AdminCouponDetailPage = () => {
                 </select>
                 </div>
 
+                {/* Redeem settings (chỉ áp dụng cho Private) */}
+                {form.visibility === "private" && (
+                <div className="space-y-4 border-t pt-4 mt-4">
+                    <h3 className="text-md font-semibold text-gray-800">🎁 Cấu hình đổi điểm</h3>
+
+                    <div>
+                    <label className="block text-sm font-medium mb-1">Điểm cần để đổi</label>
+                    <input
+                        type="number"
+                        name="redeemCost"
+                        value={form.redeemCost}
+                        onChange={handleChange}
+                        className="w-full border rounded-lg px-3 py-2"
+                        placeholder="Ví dụ: 100"
+                    />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Số lượng có thể đổi</label>
+                        <input
+                        type="number"
+                        name="redeemStock"
+                        value={form.redeemStock}
+                        onChange={handleChange}
+                        className="w-full border rounded-lg px-3 py-2"
+                        placeholder="Ví dụ: 500"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium mb-1">Thời gian hiệu lực (ngày)</label>
+                        <input
+                        type="number"
+                        name="redeemTtlDays"
+                        value={form.redeemTtlDays}
+                        onChange={handleChange}
+                        className="w-full border rounded-lg px-3 py-2"
+                        placeholder="Ví dụ: 14"
+                        />
+                    </div>
+                    </div>
+
+                    {/* Thông tin chỉ đọc */}
+                    <p className="text-sm text-gray-600">
+                    Đã đổi: {couponDetail.redeemedCount ?? 0} /{" "}
+                    {form.redeemStock || "Không giới hạn"}
+                    </p>
+                </div>
+                )}
+
                 {/* Save */}
                 <button
                 onClick={handleSave}

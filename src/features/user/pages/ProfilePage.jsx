@@ -4,6 +4,7 @@ import ProfileForm from "../components/ProfileForm";
 import ChangePasswordForm from "../components/ChangePasswordForm";
 import SidebarButton from "../components/SideBarButton";
 import OrderForm from "../../order/components/OrderForm"
+import UserCouponForm from "../components/UserCouponForm";
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("profile");
@@ -28,6 +29,11 @@ const ProfilePage = () => {
           isActive={activeTab === "orders"}
           onClick={() => setActiveTab("orders")}
         />
+        <SidebarButton
+          label="Coupon của tôi"
+          isActive={activeTab === "coupons"}
+          onClick={() => setActiveTab("coupons")}
+        />
       </div>
 
       {/* Nội dung chính */}
@@ -35,6 +41,7 @@ const ProfilePage = () => {
         {activeTab === "profile" && <ProfileForm />}
         {activeTab === "password" && <ChangePasswordForm />}
         {activeTab === "orders" && <div><OrderForm /></div>}
+        {activeTab === "coupons" && <UserCouponForm />}
       </div>
     </ProfileLayout>
   );
