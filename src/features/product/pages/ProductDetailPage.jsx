@@ -13,6 +13,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Footer from "../../../components/Footer";
 import ProductCard from "../components/ProductCard"
+import ProductDetailTabs from "../components/ProductDetailTab";
 const ProductDetailPage = () => {
   const {
     productDetail,
@@ -253,42 +254,11 @@ const ProductDetailPage = () => {
           </div>
 
           {/* Product Details Tabs */}
-          <div className="mt-16">
-            <div className="flex space-x-8 border-b">
-              {["description", "reviews", "shipping"].map((tab) => (
-                <button
-                  key={tab}
-                  className={`pb-4 ${
-                    activeTab === tab
-                      ? "border-b-2 border-primary text-primary"
-                      : "text-gray-500"
-                  }`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
-              ))}
-            </div>
-            <div className="py-8">
-              {activeTab === "description" && (
-                <p className="text-gray-600">{productDetail.description}</p>
-              )}
-              {activeTab === "reviews" && (
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold">Customer Reviews</h3>
-                  <p className="text-gray-600">No reviews yet</p>
-                </div>
-              )}
-              {activeTab === "shipping" && (
-                <div className="space-y-4">
-                  <h3 className="text-xl font-semibold">Shipping & Returns</h3>
-                  <p className="text-gray-600">
-                    Free shipping on orders over $100
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
+          <ProductDetailTabs
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            productDetail={productDetail}
+          />
         </div>
         {/* Sản phẩm tương tự */}
         <div className="mt-10">

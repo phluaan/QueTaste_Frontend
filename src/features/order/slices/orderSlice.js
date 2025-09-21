@@ -123,7 +123,7 @@ const orderSlice = createSlice({
     })
     .addCase(getMyOrders.fulfilled, (state, action) => {
       state.loadingMyOrders = false;
-      state.myOrders = action.payload.data || [];
+      state.myOrders = action.payload || [];
       state.myPagination = action.payload.pagination;
     })
     .addCase(getMyOrders.rejected, (state, action) => {
