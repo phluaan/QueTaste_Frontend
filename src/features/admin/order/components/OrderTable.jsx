@@ -23,6 +23,7 @@ export default function OrderTable({
             <th className="border px-2 py-2">Mã đơn</th>
             <th className="border px-2 py-2">Khách hàng</th>
             <th className="border px-2 py-2">Ngày đặt</th>
+            <th className="border px-2 py-2">Nơi nhận</th>
             <th className="border px-2 py-2">Trạng thái</th>
             <th className="border px-2 py-2">Thanh toán</th>
             <th className="border px-2 py-2">Khách trả</th>
@@ -39,9 +40,10 @@ export default function OrderTable({
                   onChange={() => onToggleSelect(order.id)}
                 />
               </td>
-              <td className="border px-2 py-2">{order.id}</td>
-              <td className="border px-2 py-2">{order.user}</td>
+              <td className="border px-2 py-2">{order.code}</td>
+              <td className="border px-2 py-2">{order.user.personalInfo.fullName}</td>
               <td className="border px-2 py-2">{order.createdAt}</td>
+              <td className="border px-2 py-2">{order.shippingAddress.address} {order.shippingAddress.city}</td>
               <td className="border px-2 py-2">
                 <span
                   className={`px-2 py-1 rounded text-xs font-medium ${

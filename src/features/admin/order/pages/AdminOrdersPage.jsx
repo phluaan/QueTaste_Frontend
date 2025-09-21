@@ -1,62 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import OrderStats from "../components/OrderStats";
 import OrderToolbar from "../components/OrderToolbar";
 import OrderTable from "../components/OrderTable";
 import OrderDetailModal from "../components/OrderDetailModal";
-import AdminLayout from "../../layouts/AdminLayout"
+import AdminLayout from "../../layouts/AdminLayout";
+import useAdminOrders from "../hooks/useAdminOrder";
+import TabBar from "../../../order/components/TabBar";
 
 export default function AdminOrdersPage() {
-  const [orders] = useState([
-    {
-      id: "DH001",
-      user: "Nguyễn Văn A",
-      createdAt: "2025-09-13",
-      status: "new",
-      paymentMethod: "cash",
-      paymentStatus: "pending",
-      shippingAddress: {
-        fullName: "Nguyễn Văn A",
-        phone: "0901234567",
-        address: "123 Đường A",
-        city: "Hà Nội",
-        postalCode: "100000",
-      },
-      shippingFee: 20000,
-      totalAmount: 1100000,
-      discount: 40000,
-      finalAmount: 1080000,
-      notes: "Giao trong giờ hành chính",
-    },
-    {
-      id: "DH002",
-      user: "Trần Thị B",
-      createdAt: "2025-09-12",
-      status: "completed",
-      paymentMethod: "momo",
-      paymentStatus: "paid",
-      shippingAddress: {
-        fullName: "Trần Thị B",
-        phone: "0907654321",
-        address: "456 Đường B",
-        city: "HCM",
-        postalCode: "700000",
-      },
-      shippingFee: 30000,
-      totalAmount: 1500000,
-      discount: 0,
-      finalAmount: 1530000,
-      notes: "",
-    },
-  ]);
-
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedOrders, setSelectedOrders] = useState([]);
+  const [filters, setFilters] = useState({ status: "all", search: "", page: 1, limit: 10 });
+
+  // 👇 gọi API thông qua hook
+  const { orders, pagination, loading, error } = useAdminOrders(filters);
 
   const toggleSelectOrder = (id) => {
     setSelectedOrders((prev) =>
       prev.includes(id) ? prev.filter((o) => o !== id) : [...prev, id]
     );
   };
+
+  useEffect(() => {
+    console.log("Orders in component:", orders);
+    console.log("Pagination:", pagination);
+  }, [orders, pagination]);
 
   const toggleSelectAll = () => {
     if (selectedOrders.length === orders.length) {
@@ -89,28 +57,40 @@ export default function AdminOrdersPage() {
     <AdminLayout>
       <h1 className="text-2xl font-semibold mb-4">Quản lý đơn hàng</h1>
 
-      <OrderStats stats={stats} />
+      {/* Loading / Error state */}
+      {loading && <p>Đang tải đơn hàng...</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
-      <OrderToolbar
-        selectedOrders={selectedOrders}
-        onSearch={(q) => console.log("search:", q)}
-        onFilterChange={(s) => console.log("filter:", s)}
-      />
+      {!loading && !error && (
+        <>
+          <OrderStats stats={stats} />
 
-      <OrderTable
-        orders={orders}
-        selectedOrders={selectedOrders}
-        onToggleSelect={toggleSelectOrder}
-        onToggleSelectAll={toggleSelectAll}
-        onViewDetail={setSelectedOrder}
-        statusColors={statusColors}
-      />
+          <TabBar
+            activeTab={filters.status}
+            onTabChange={(status) => setFilters((f) => ({ ...f, status, page: 1 }))}
+          />
 
-      <OrderDetailModal
-        order={selectedOrder}
-        onClose={() => setSelectedOrder(null)}
-        statusColors={statusColors}
-      />
+          <OrderToolbar
+            selectedOrders={selectedOrders}
+            onSearch={(q) => setFilters((f) => ({ ...f, search: q, page: 1 }))}
+          />
+
+          <OrderTable
+            orders={orders}
+            selectedOrders={selectedOrders}
+            onToggleSelect={toggleSelectOrder}
+            onToggleSelectAll={toggleSelectAll}
+            onViewDetail={setSelectedOrder}
+            statusColors={statusColors}
+          />
+
+          <OrderDetailModal
+            order={selectedOrder}
+            onClose={() => setSelectedOrder(null)}
+            statusColors={statusColors}
+          />
+        </>
+      )}
     </AdminLayout>
   );
 }

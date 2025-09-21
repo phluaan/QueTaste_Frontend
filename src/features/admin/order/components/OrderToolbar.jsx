@@ -13,16 +13,6 @@ export default function OrderToolbar({
           className="border px-3 py-2 rounded-lg w-1/3"
           onChange={(e) => onSearch?.(e.target.value)}
         />
-        <select
-          className="border px-3 py-2 rounded-lg"
-          onChange={(e) => onFilterChange?.(e.target.value)}
-        >
-          <option value="">Tất cả trạng thái</option>
-          <option value="new">Mới</option>
-          <option value="shipping">Đang giao</option>
-          <option value="completed">Hoàn thành</option>
-          <option value="cancelled">Đã hủy</option>
-        </select>
       </div>
 
       {/* Bulk Actions */}
