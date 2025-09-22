@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosClient from "../../../utils/axiosClient";
 import { showSuccess, showError } from "../../../utils/toastUtils";
@@ -9,38 +10,53 @@ import { clearCart } from "../../cart/slices/cartSlice";
 const PaymentResultPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const queryParams = new URLSearchParams(location.search);
     const resultCode = queryParams.get("resultCode");
     const orderId = queryParams.get("orderId");
 
+    // 🟢 flag để đảm bảo chỉ gọi 1 lần
+    const hasUpdated = useRef(false);
+
     useEffect(() => {
         const updateStatus = async () => {
+        if (hasUpdated.current) return; // nếu đã gọi rồi thì thoát
+        hasUpdated.current = true;
+
         if (orderId && resultCode !== null) {
             try {
-                const orderId = queryParams.get("orderId");
-                await axiosClient.post("/order/update-status", { orderId, resultCode });
-                if (resultCode === "0") {
-                    showSuccess("Thanh toán MoMo thành công 🎉");
-                    dispatch(clearCart());
-                } else {
-                    showError("Thanh toán thất bại hoặc bị hủy ❌");
-                }
+            console.log("🚀 update-status request:", { orderId, resultCode });
+
+            const res = await axiosClient.post("/order/update-status", {
+                orderId,
+                resultCode: Number(resultCode),
+            });
+
+            console.log("✅ update-status response:", res);
+
+            if (resultCode === "0") {
+                showSuccess("Thanh toán MoMo thành công 🎉");
+                dispatch(clearCart());
+            } else {
+                showError("Thanh toán thất bại hoặc bị hủy ❌");
+            }
             } catch (err) {
-                showError("Không cập nhật được trạng thái đơn hàng ❌");
+            console.error("❌ update-status error:", err);
+            showError("Không cập nhật được trạng thái đơn hàng ❌");
             }
         }
         };
 
         updateStatus();
 
-        // sau vài giây tự quay về products
+        // tự quay về products sau 3s
         const timer = setTimeout(() => {
         navigate("/products");
         }, 3000);
 
         return () => clearTimeout(timer);
-    }, [orderId, resultCode, navigate]);
+    }, [orderId, resultCode, navigate, dispatch]);
 
     return (
         <main className="min-h-screen bg-[#FAFAFA] flex flex-col">

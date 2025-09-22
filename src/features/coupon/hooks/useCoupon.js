@@ -82,11 +82,13 @@ const useCoupon = ({ role = "user", token, limit = 12, filterStatus } = {}) => {
     return {
         loading,
         // public
+        publicCoupons,
         publicCouponsPage,
         publicTotalPage,
         publicPage,
         setPublicPage,
         // private
+        privateCoupons,
         privateCouponsPage,
         privateTotalPage,
         privatePage,
