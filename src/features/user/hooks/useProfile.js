@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfile, updateProfile } from "../slices/userSlice";
+import defaultAvatar from "../../../assets/defaultAvatar.jpg"
 
 const useProfile = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { accessToken } = useSelector((state) => state.auth);
 
-  const [previewAvatar, setPreviewAvatar] = useState(user?.avatar || "/default-avatar.png");
+  const [previewAvatar, setPreviewAvatar] = useState(user?.avatar || defaultAvatar);
 
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -38,7 +39,7 @@ useEffect(() => {
       gender: user.personalInfo.gender || "",
       avatarFile: user.avatar || null,
     }));
-    setPreviewAvatar(user.avatar || "/default-avatar.png");
+    setPreviewAvatar(user.avatar || defaultAvatar);
   }
 }, [user]);
 

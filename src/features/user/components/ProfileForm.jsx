@@ -2,6 +2,7 @@ import { useState } from "react";
 import useProfile from "../hooks/useProfile";
 import { FiCamera } from "react-icons/fi";
 
+
 const ProfileForm = () => {
   const { user, handleChange, handleSubmit, handleCancel, handleSubmitWithValidation, validateForm, formData, setFormData, previewAvatar, setPreviewAvatar, errors, setErrors } = useProfile();
   
