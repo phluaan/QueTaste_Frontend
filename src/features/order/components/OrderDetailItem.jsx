@@ -115,7 +115,7 @@ export default function OrderDetailModal({ open, onClose, order, statusColors = 
                         <span className="font-semibold">
                           {(item.quantity * item.price).toLocaleString()}₫
                         </span>
-                        { order.status === "completed" ?
+                        { (order.status === "completed" && item.isReviewed == false) ?
                                                 <button
                           onClick={() => handleOpenReview(item.product)}
                           className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
