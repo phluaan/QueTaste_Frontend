@@ -21,7 +21,6 @@ import ProductPage from "./features/product/pages/ProductPage";
 import ProfilePage from "./features/user/pages/ProfilePage";
 import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/HomePage";
-
 function App() {
   return (
     <>
@@ -35,6 +34,7 @@ function App() {
             </MainLayout>
           }
         />
+
         <Route path="/products" element={<ProductPage />} />
         <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/post/:slug" element={<PostDetailPage />} />

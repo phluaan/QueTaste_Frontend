@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getProfileApi, updateProfileApi } from "../services/userService";
+import { getProfileApi, updateProfileApi, searchUsersApi } from "../services/userService";
 import { setUser } from "../../../utils/storage";
 
 export const getProfile = createAsyncThunk("user/getProfile",
@@ -34,9 +34,21 @@ export const updateProfile = createAsyncThunk("user/updateProfile",
   }
 );
 
+export const searchUsers = createAsyncThunk(
+  "user/searchUsers",
+  async ({ keyword, role }, { rejectWithValue }) => {
+    try {
+      return await searchUsersApi(keyword, role);
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
+    searchResults: [],
     user: null,
     loading: false,
     error: null,
@@ -68,6 +80,18 @@ extraReducers: (builder) => {
       state.user = action.payload;
     })
     .addCase(updateProfile.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
+    // searchUsers
+    .addCase(searchUsers.pending, (state) => {
+      state.loading = true;
+    })
+    .addCase(searchUsers.fulfilled, (state, action) => {
+      state.loading = false;
+      state.searchResults = action.payload.data;
+    })
+    .addCase(searchUsers.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     });
