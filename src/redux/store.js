@@ -10,6 +10,7 @@ import checkoutReducer from "../features/checkout/slices/checkoutSlice";
 import orderReducer from '../features/order/slices/orderSlice';
 import reviewReducer from '../features/review/slices/reviewSlice';
 import couponReducer from "../features/coupon/slices/couponSlice";
+import notificationReducer from "../features/notification/slices/notificationSlice";
 
 const store = configureStore({
   reducer: {
@@ -24,6 +25,7 @@ const store = configureStore({
     favorite: favoriteReducer,
     review: reviewReducer,
 	  coupon: couponReducer,
+    notification: notificationReducer,
   },
 });
 
