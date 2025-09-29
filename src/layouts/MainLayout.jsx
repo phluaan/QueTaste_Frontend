@@ -1,5 +1,5 @@
 import Header from "../components/Header/Header";
-
+import ChatWidget from "../features/chat/components/ChatWidget";
 const MainLayout = ({ children }) => {
     return (
         <div className="flex flex-col min-h-screen">
@@ -10,6 +10,7 @@ const MainLayout = ({ children }) => {
 
             {/* Nội dung chính */}
             <main className="flex-1 bg-gray-50">{children}</main>
+            <ChatWidget />
         </div>
         </div>
     );

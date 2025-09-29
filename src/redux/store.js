@@ -11,7 +11,7 @@ import orderReducer from '../features/order/slices/orderSlice';
 import reviewReducer from '../features/review/slices/reviewSlice';
 import couponReducer from "../features/coupon/slices/couponSlice";
 import notificationReducer from "../features/notification/slices/notificationSlice";
-
+import chatReducer from "../features/chat/slices/chatSlice";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -26,6 +26,7 @@ const store = configureStore({
     review: reviewReducer,
 	  coupon: couponReducer,
     notification: notificationReducer,
+    chat: chatReducer,
   },
 });
 
