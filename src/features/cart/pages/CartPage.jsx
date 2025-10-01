@@ -10,14 +10,15 @@ const CartPage = () => {
   const navigate = useNavigate();
 
   const subtotal = items.reduce(
-    (total, item) => total + (item.product.salePrice || item.product.price) * item.quantity,
+    (total, item) =>
+      total + (item.product.salePrice || item.product.price) * item.quantity,
     0
   );
   const delivery = 36000;
   const total = subtotal + delivery;
 
   return (
-    <main className="min-h-screen bg-[#FAFAFA]">
+    <main className="min-h-screen bg-que-background">
       <Header />
 
       <div className="container mx-auto px-16 py-12 mt-20">
@@ -26,11 +27,15 @@ const CartPage = () => {
         ) : items.length === 0 ? (
           <div className="flex flex-col items-center justify-center mt-20">
             <FaShoppingCart className="text-gray-300 text-8xl mb-6" />
-            <h2 className="text-2xl font-bold mb-2">Giỏ hàng trống</h2>
-            <p className="text-gray-500 mb-6">Bạn chưa có sản phẩm nào trong giỏ.</p>
+            <h2 className="text-2xl font-bold mb-2 text-que-text-main">
+              Giỏ hàng trống
+            </h2>
+            <p className="text-que-text-muted mb-6">
+              Bạn chưa có sản phẩm nào trong giỏ.
+            </p>
             <Link
               to="/products"
-              className="bg-[#07689F] hover:bg-[#FF7E67] hover:text-white text-white py-3 px-6 rounded-lg font-medium transition-colors"
+              className="bg-que-primary hover:bg-que-secondary text-white py-3 px-6 rounded-lg font-medium transition-colors"
             >
               Tiếp tục mua sắm
             </Link>
@@ -54,8 +59,10 @@ const CartPage = () => {
             {/* Order Summary */}
             <div className="lg:w-1/3">
               <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
-                <div className="space-y-4">
+                <h2 className="text-2xl font-bold mb-6 text-que-text-main">
+                  Order Summary
+                </h2>
+                <div className="space-y-4 text-que-text-main">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
                     <span>{subtotal.toLocaleString()}₫</span>
@@ -67,13 +74,16 @@ const CartPage = () => {
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center">
                       <span className="font-bold text-xl">Total</span>
-                      <span className="font-bold text-xl">{total.toLocaleString()}₫</span>
+                      <span className="font-bold text-xl text-que-accent">
+                        {total.toLocaleString()}₫
+                      </span>
                     </div>
                   </div>
                 </div>
                 <button
                   onClick={() => navigate("/checkout")}
-                  className="mt-6 w-full bg-[#07689F] hover:bg-[#FF7E67] text-white py-4 rounded-lg font-bold text-lg transition-colors">
+                  className="mt-6 w-full bg-que-primary hover:bg-que-secondary text-white py-4 rounded-lg font-bold text-lg transition-colors"
+                >
                   Proceed to Checkout
                 </button>
               </div>

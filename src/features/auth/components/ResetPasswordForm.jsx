@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FaEnvelope, FaKey, FaLock } from "react-icons/fa";
 import useResetPassword from "../hooks/useResetPassword";
 import ButtonCustom from "../../../components/ButtonCustom";
@@ -18,7 +18,7 @@ const ResetPasswordForm = () => {
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-2xl">
-      <h2 className="text-xl font-semibold mb-4 text-center">
+      <h2 className="text-xl font-semibold mb-4 text-center text-que-primary">
         Reset Password
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -60,20 +60,28 @@ const ResetPasswordForm = () => {
           error={errors.newPassword}
         />
 
-        {/* Submit */}
-        <ButtonCustom type="submit" loading={loading}>
-          Xác nhận
-        </ButtonCustom>
+        {/* Buttons */}
+        <div className="space-y-3">
+          {/* Confirm */}
+          <ButtonCustom type="submit" loading={loading}>
+            Xác nhận
+          </ButtonCustom>
 
-        {/* Resend OTP */}
-        <ButtonCustom
-          type="button"
-          onClick={handleResendOtp}
-          loading={resendLoading}
-          disabled={resendLoading || countdown > 0}
-        >
-          {countdown > 0 ? `Gửi lại OTP sau ${countdown}s` : "Gửi lại OTP"}
-        </ButtonCustom>
+          {/* Resend OTP */}
+          <button
+            type="button"
+            onClick={handleResendOtp}
+            disabled={resendLoading || countdown > 0}
+            className={`w-full py-3 px-4 rounded-xl font-semibold border 
+              ${
+                resendLoading || countdown > 0
+                  ? "border-gray-300 text-gray-400 bg-gray-100 cursor-not-allowed"
+                  : "border-que-secondary text-que-secondary hover:bg-que-secondary hover:text-white transition"
+              }`}
+          >
+            {countdown > 0 ? `Gửi lại OTP sau ${countdown}s` : "Gửi lại OTP"}
+          </button>
+        </div>
       </form>
     </div>
   );

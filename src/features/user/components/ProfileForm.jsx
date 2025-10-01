@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useProfile from "../hooks/useProfile";
 import { FiCamera } from "react-icons/fi";
 import useVietnamProvinces from "../../checkout/hooks/useVietnamProvinces";
@@ -7,16 +7,12 @@ const ProfileForm = () => {
   const {
     user,
     handleChange,
-    handleSubmit,
     handleCancel,
     handleSubmitWithValidation,
-    validateForm,
     formData,
     setFormData,
     previewAvatar,
-    setPreviewAvatar,
     errors,
-    setErrors,
   } = useProfile();
 
   const { provinces, districts, wards, fetchDistricts, fetchWards } =
@@ -43,7 +39,7 @@ const ProfileForm = () => {
   return (
     <form
       onSubmit={handleSubmitWithValidation}
-      className="bg-white p-6 rounded-2xl max-w-3xl mx-auto"
+      className="bg-white p-6 rounded-2xl max-w-3xl mx-auto shadow"
     >
       {/* Header */}
       <div className="flex items-center space-x-6 mb-6">
@@ -53,7 +49,7 @@ const ProfileForm = () => {
             alt="Avatar"
             className="w-24 h-24 rounded-full border object-cover"
           />
-          <label className="absolute bottom-0 right-0 bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-600">
+          <label className="absolute bottom-0 right-0 bg-que-primary text-white w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-que-primary/90">
             <FiCamera className="w-4 h-4" />
             <input
               type="file"
@@ -74,7 +70,7 @@ const ProfileForm = () => {
               name="fullName"
               value={formData.fullName || ""}
               onChange={handleChange}
-              className="border-b border-gray-300 focus:outline-none"
+              className="border-b border-que-border focus:outline-none focus:border-que-primary"
             />
           </h2>
           {errors.fullName && (
@@ -87,13 +83,15 @@ const ProfileForm = () => {
       {/* Body */}
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium">Số điện thoại</label>
+          <label className="block text-sm font-medium text-que-text-sub">
+            Số điện thoại
+          </label>
           <input
             type="text"
             name="phone"
             value={formData.phone || ""}
             onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2 mt-1"
+            className="w-full border border-que-border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-que-primary/30 focus:border-que-primary"
           />
           {errors.phone && (
             <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
@@ -120,12 +118,12 @@ const ProfileForm = () => {
                   },
                 },
               }));
-              fetchDistricts(code); // load districts
+              fetchDistricts(code);
             }}
-            className="w-full border p-3 rounded-lg"
+            className="w-full border border-que-border p-3 rounded-lg focus:ring focus:ring-que-primary/30 focus:border-que-primary"
             required
           >
-            <option value="">Select Province/City</option>
+            <option value="">Chọn Tỉnh/Thành phố</option>
             {provinces.map((p) => (
               <option key={p.code} value={p.code}>
                 {p.name}
@@ -149,13 +147,13 @@ const ProfileForm = () => {
                   },
                 },
               }));
-              fetchWards(code); // load wards
+              fetchWards(code);
             }}
             disabled={!formData.personalInfo.shippingAddress?.province}
-            className="w-full border p-3 rounded-lg"
+            className="w-full border border-que-border p-3 rounded-lg focus:ring focus:ring-que-primary/30 focus:border-que-primary"
             required
           >
-            <option value="">Select District</option>
+            <option value="">Chọn Quận/Huyện</option>
             {districts.map((d) => (
               <option key={d.code} value={d.code}>
                 {d.name}
@@ -179,10 +177,10 @@ const ProfileForm = () => {
               }))
             }
             disabled={!formData.personalInfo.shippingAddress?.district}
-            className="w-full border p-3 rounded-lg"
+            className="w-full border border-que-border p-3 rounded-lg focus:ring focus:ring-que-primary/30 focus:border-que-primary"
             required
           >
-            <option value="">Select Ward</option>
+            <option value="">Chọn Xã/Phường</option>
             {wards.map((w) => (
               <option key={w.code} value={w.code}>
                 {w.name}
@@ -195,7 +193,7 @@ const ProfileForm = () => {
         <input
           type="text"
           name="street"
-          placeholder="Street / House No."
+          placeholder="Địa chỉ (Số nhà, tên đường...)"
           value={formData.personalInfo.shippingAddress?.street || ""}
           onChange={(e) =>
             setFormData((prev) => ({
@@ -209,30 +207,34 @@ const ProfileForm = () => {
               },
             }))
           }
-          className="w-full border p-3 rounded-lg mt-4"
+          className="w-full border border-que-border p-3 rounded-lg mt-4 focus:ring focus:ring-que-primary/30 focus:border-que-primary"
         />
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium">Ngày sinh</label>
+            <label className="block text-sm font-medium text-que-text-sub">
+              Ngày sinh
+            </label>
             <input
               type="date"
               name="dateOfBirth"
-              value={formData.personalInfo?.dateOfBirth.substring(0, 10) || ""}
+              value={formData.personalInfo?.dateOfBirth?.substring(0, 10) || ""}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2 mt-1"
+              className="w-full border border-que-border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-que-primary/30 focus:border-que-primary"
             />
             {errors.dateOfBirth && (
               <p className="text-red-500 text-sm mt-1">{errors.dateOfBirth}</p>
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium">Giới tính</label>
+            <label className="block text-sm font-medium text-que-text-sub">
+              Giới tính
+            </label>
             <select
               name="gender"
               value={formData.personalInfo?.gender || ""}
               onChange={handleChange}
-              className="w-full border rounded-lg px-3 py-2 mt-1"
+              className="w-full border border-que-border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-que-primary/30 focus:border-que-primary"
             >
               <option value="">-- Chọn giới tính --</option>
               <option value="male">Nam</option>
@@ -250,13 +252,13 @@ const ProfileForm = () => {
         <button
           type="button"
           onClick={handleCancel}
-          className="px-4 py-2 rounded-lg bg-gray-300 text-black hover:bg-gray-400"
+          className="px-4 py-2 rounded-lg bg-que-secondary text-que-text-main hover:bg-que-border transition"
         >
           Hủy bỏ
         </button>
         <button
           type="submit"
-          className="px-6 py-2 rounded-lg bg-red-400 text-white font-semibold hover:bg-red-500"
+          className="px-6 py-2 rounded-lg bg-que-primary text-white font-semibold hover:bg-que-primary/90 transition"
         >
           Lưu
         </button>

@@ -7,7 +7,9 @@ const SearchBar = ({ searchTerm, setSearchTerm }) => {
         placeholder="Tìm kiếm đơn hàng..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="w-full border border-que-border rounded-lg px-4 py-2 
+                   focus:outline-none focus:ring-2 focus:ring-que-primary
+                   bg-white text-gray-700 placeholder-gray-400"
       />
     </div>
   );
