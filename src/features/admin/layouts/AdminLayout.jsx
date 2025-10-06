@@ -13,7 +13,7 @@ export default function AdminLayout({ children }) {
         <AdminSidebar />
 
         {/* Chừa khoảng trống cho header */}
-        <main className="p-6 flex-1 overflow-auto pt-20 bg-que-surface text-que-text-main">
+        <main className="p-6 flex-1 overflow-auto bg-que-surface text-que-text-main">
           {children}
         </main>
       </div>

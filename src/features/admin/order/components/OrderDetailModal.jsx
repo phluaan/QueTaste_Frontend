@@ -1,4 +1,9 @@
-export default function OrderDetailModal({ order, onClose, statusColors }) {
+export default function OrderDetailModal({
+  order,
+  onClose,
+  statusColors,
+  onConfirm,
+}) {
   if (!order) return null;
 
   return (
@@ -90,7 +95,10 @@ export default function OrderDetailModal({ order, onClose, statusColors }) {
 
         {/* Buttons */}
         <div className="flex justify-end gap-3 mt-6">
-          <button className="px-4 py-2 bg-que-secondary hover:bg-que-primary text-white rounded-lg shadow">
+          <button
+            onClick={() => onConfirm(order._id || order.id)}
+            className="px-4 py-2 bg-que-secondary hover:bg-que-primary text-white rounded-lg shadow"
+          >
             Cập nhật
           </button>
           <button className="px-4 py-2 bg-que-danger hover:bg-red-700 text-white rounded-lg shadow">

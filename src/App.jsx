@@ -24,6 +24,8 @@ import Home from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import ServicePage from "./pages/ServicePage";
 import ContactPage from "./pages/ContactPage";
+import AdminReviewsPage from "./features/admin/review/pages/AdminReviewsPage";
+import AdminLayout from "./features/admin/layouts/AdminLayout";
 function App() {
   return (
     <>
@@ -108,6 +110,14 @@ function App() {
         <Route
           path="/admin/coupon/create"
           element={<AdminCouponCreatePage />}
+        />
+        <Route
+          path="/admin/reviews"
+          element={
+            <AdminLayout>
+              <AdminReviewsPage />
+            </AdminLayout>
+          }
         />
 
         <Route path="/checkout/result" element={<PaymentResultPage />} />

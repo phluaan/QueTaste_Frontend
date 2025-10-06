@@ -3,13 +3,13 @@ import OrderItem from "./OrderItem";
 import useOrder from "../hooks/useOrder";
 import { useState } from "react";
 import SearchBar from "./SearchBar";
-import Pagination from "./Pagination";
+import Pagination from "../../../components/Pagination";
 
 const OrderForm = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
-  const limit = 10; // số đơn hàng mỗi trang
+  const [limit, setLimit] = useState(10);
 
   const {
     orders = [],
@@ -43,12 +43,12 @@ const OrderForm = () => {
             {orders.map((order) => (
               <OrderItem key={order._id} order={order} />
             ))}
-
             <Pagination
               page={pagination?.page || page}
               limit={pagination?.limit || limit}
               total={pagination?.total || 0}
-              onPageChange={setPage}
+              onPageChange={(p) => setPage(p)}
+              onLimitChange={(l) => setLimit(l)}
             />
           </>
         ) : (

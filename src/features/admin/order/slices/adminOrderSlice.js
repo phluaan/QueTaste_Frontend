@@ -1,13 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  getMyOrdersApi,
-  cancelOrderApi,
-  requestCancelOrderApi,
-} from "../services/orderService";
-import { showError, showSuccess } from "../../../utils/toastUtils";
 
-export const getMyOrders = createAsyncThunk(
-  "userOrders/getMyOrders",
+import { cancelOrderApi } from "../../../order/services/orderService";
+import { showError, showSuccess } from "../../../../utils/toastUtils";
+import {
+  confirmOrderApi,
+  getAllOrdersApi,
+} from "../services/adminOrderService";
+
+export const getAllOrders = createAsyncThunk(
+  "adminOrders/getAllOrders",
   async ({ status, search, page, limit }, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.accessToken;
@@ -17,7 +18,7 @@ export const getMyOrders = createAsyncThunk(
       if (page) params.page = page;
       if (limit) params.limit = limit;
 
-      const res = await getMyOrdersApi(token, params);
+      const res = await getAllOrdersApi(token, params);
       if (res.success) return res.data;
       return thunkAPI.rejectWithValue(res.message);
     } catch (err) {
@@ -29,7 +30,7 @@ export const getMyOrders = createAsyncThunk(
 );
 
 export const cancelOrder = createAsyncThunk(
-  "userOrders/cancelOrder",
+  "adminOrders/cancelOrder",
   async (orderId, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.accessToken;
@@ -48,14 +49,14 @@ export const cancelOrder = createAsyncThunk(
   }
 );
 
-export const requestCancelOrder = createAsyncThunk(
-  "userOrders/requestCancelOrder",
-  async ({ orderId, reason }, thunkAPI) => {
+export const confirmOrderSlice = createAsyncThunk(
+  "adminOrders/confirmOrder",
+  async (orderId, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.accessToken;
-      const res = await requestCancelOrderApi(token, orderId, reason);
+      const res = await confirmOrderApi(token, orderId);
       if (res.success) {
-        showSuccess("Request for order cancellation submitted successfully");
+        showSuccess("Order confirmed successfully");
         return res.data;
       }
       return thunkAPI.rejectWithValue(res.message);
@@ -68,29 +69,29 @@ export const requestCancelOrder = createAsyncThunk(
   }
 );
 
-const userOrderSlice = createSlice({
-  name: "userOrders",
+const adminOrderSlice = createSlice({
+  name: "adminOrders",
   initialState: {
-    myOrders: [],
+    allOrders: [],
     pagination: null,
     loading: false,
     error: null,
     canceling: false,
-    cancelError: null,
+    confirming: false,
   },
   extraReducers: (builder) => {
     builder
-      // getMyOrders
-      .addCase(getMyOrders.pending, (state) => {
+      // getAllOrders
+      .addCase(getAllOrders.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getMyOrders.fulfilled, (state, action) => {
+      .addCase(getAllOrders.fulfilled, (state, action) => {
         state.loading = false;
-        state.myOrders = action.payload.data || [];
+        state.allOrders = action.payload.data || [];
         state.pagination = action.payload.pagination;
       })
-      .addCase(getMyOrders.rejected, (state, action) => {
+      .addCase(getAllOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -98,11 +99,10 @@ const userOrderSlice = createSlice({
       // cancelOrder
       .addCase(cancelOrder.pending, (state) => {
         state.canceling = true;
-        state.cancelError = null;
       })
       .addCase(cancelOrder.fulfilled, (state, action) => {
         state.canceling = false;
-        state.myOrders = state.myOrders.map((order) =>
+        state.allOrders = state.allOrders.map((order) =>
           order._id === action.payload._id
             ? { ...order, status: "cancelled" }
             : order
@@ -110,26 +110,26 @@ const userOrderSlice = createSlice({
       })
       .addCase(cancelOrder.rejected, (state, action) => {
         state.canceling = false;
-        state.cancelError = action.payload;
+        state.error = action.payload;
       })
 
-      // requestCancelOrder
-      .addCase(requestCancelOrder.pending, (state) => {
-        state.canceling = true;
+      // confirmOrder
+      .addCase(confirmOrderSlice.pending, (state) => {
+        state.confirming = true;
       })
-      .addCase(requestCancelOrder.fulfilled, (state, action) => {
-        state.canceling = false;
-        state.myOrders = state.myOrders.map((order) =>
+      .addCase(confirmOrderSlice.fulfilled, (state, action) => {
+        state.confirming = false;
+        state.allOrders = state.allOrders.map((order) =>
           order._id === action.payload._id
-            ? { ...order, status: "cancel_requested" }
+            ? { ...order, status: "confirmed" }
             : order
         );
       })
-      .addCase(requestCancelOrder.rejected, (state, action) => {
-        state.canceling = false;
-        state.cancelError = action.payload;
+      .addCase(confirmOrderSlice.rejected, (state, action) => {
+        state.confirming = false;
+        state.error = action.payload;
       });
   },
 });
 
-export default userOrderSlice.reducer;
+export default adminOrderSlice.reducer;
