@@ -21,6 +21,11 @@ import ProductPage from "./features/product/pages/ProductPage";
 import ProfilePage from "./features/user/pages/ProfilePage";
 import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
+import ServicePage from "./pages/ServicePage";
+import ContactPage from "./pages/ContactPage";
+import AdminReviewsPage from "./features/admin/review/pages/AdminReviewsPage";
+import AdminLayout from "./features/admin/layouts/AdminLayout";
 function App() {
   return (
     <>
@@ -35,9 +40,48 @@ function App() {
           }
         />
 
+        <Route
+          path="/contact"
+          element={
+            <MainLayout>
+              <ContactPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/services"
+          element={
+            <MainLayout>
+              <ServicePage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <MainLayout>
+              <AboutPage />
+            </MainLayout>
+          }
+        />
+
         <Route path="/products" element={<ProductPage />} />
-        <Route path="/product/:id" element={<ProductDetailPage />} />
-        <Route path="/post/:slug" element={<PostDetailPage />} />
+        <Route
+          path="/product/:id"
+          element={
+            <MainLayout>
+              <ProductDetailPage />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/post/:slug"
+          element={
+            <MainLayout>
+              <PostDetailPage />
+            </MainLayout>
+          }
+        />
 
         {/* Auth pages */}
         <Route path="/login" element={<LoginPage />} />
@@ -45,7 +89,14 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/verify-otp" element={<VerifyOtpPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route
+          path="/profile"
+          element={
+            <MainLayout>
+              <ProfilePage />
+            </MainLayout>
+          }
+        />
 
         {/* Cart + Checkout */}
         <Route path="/cart" element={<CartPage />} />
@@ -56,7 +107,18 @@ function App() {
         <Route path="/admin/orders" element={<AdminOrdersPage />} />
         <Route path="/admin/coupons" element={<AdminCouponsPage />} />
         <Route path="/admin/coupons/:id" element={<AdminCouponDetailPage />} />
-        <Route path="/admin/coupon/create" element={<AdminCouponCreatePage />} />
+        <Route
+          path="/admin/coupon/create"
+          element={<AdminCouponCreatePage />}
+        />
+        <Route
+          path="/admin/reviews"
+          element={
+            <AdminLayout>
+              <AdminReviewsPage />
+            </AdminLayout>
+          }
+        />
 
         <Route path="/checkout/result" element={<PaymentResultPage />} />
       </Routes>

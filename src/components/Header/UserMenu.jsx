@@ -2,15 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, User, LogOut } from "lucide-react";
 import { getUser } from "../../utils/storage";
-import { useDispatch, useSelector } from "react-redux";
-import {getProfile} from "../../features/user/slices/userSlice";
 
 const UserMenu = ({ handleLogout, defaultAvatar }) => {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.accessToken);
 
   // Đóng menu khi click ra ngoài
   useEffect(() => {
@@ -30,10 +26,9 @@ const UserMenu = ({ handleLogout, defaultAvatar }) => {
       {/* Avatar + Họ tên user */}
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-2 font-medium text-gray-800 hover:text-black focus:outline-none"
+        className="flex items-center gap-2 font-medium text-que-text-main hover:text-que-primary focus:outline-none"
       >
         <span>{user?.personalInfo?.fullName || "Người dùng"}</span>
-        
         <img
           src={user?.avatar || defaultAvatar}
           alt="avatar"
@@ -43,20 +38,20 @@ const UserMenu = ({ handleLogout, defaultAvatar }) => {
 
       {/* Dropdown menu */}
       {open && (
-        <div className="absolute right-0 mt-2 w-56 bg-white border rounded-xl shadow-lg py-2 z-50">
+        <div className="absolute right-0 mt-2 w-56 bg-que-surface border border-que-secondary/20 rounded-xl shadow-lg py-2 z-50">
           <Link
             to="/profile"
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-primary"
+            className="flex items-center gap-2 px-4 py-2 text-que-text-main hover:bg-que-background hover:text-que-primary transition-colors"
           >
-            <User size={18} className="text-gray-600" />
+            <User size={18} className="text-que-text-muted" />
             <span>Trang cá nhân</span>
           </Link>
 
           <Link
             to="/profile?tab=orders"
-            className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-primary"
+            className="flex items-center gap-2 px-4 py-2 text-que-text-main hover:bg-que-background hover:text-que-primary transition-colors"
           >
-            <ShoppingCart size={18} className="text-gray-600" />
+            <ShoppingCart size={18} className="text-que-text-muted" />
             <span>Đơn hàng của tôi</span>
           </Link>
 
@@ -65,14 +60,13 @@ const UserMenu = ({ handleLogout, defaultAvatar }) => {
               handleLogout();
               navigate("/");
             }}
-            className="flex items-center gap-2 w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-primary"
+            className="flex items-center gap-2 w-full text-left px-4 py-2 text-que-text-main hover:bg-que-background hover:text-que-danger transition-colors"
           >
-            <LogOut size={18} className="text-gray-600" />
+            <LogOut size={18} className="text-que-text-muted" />
             <span>Đăng xuất</span>
           </button>
         </div>
       )}
-
     </div>
   );
 };

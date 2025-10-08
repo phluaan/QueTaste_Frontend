@@ -6,6 +6,7 @@ import ButtonCustom from "../../../components/ButtonCustom";
 import InputField from "../../../components/InputField";
 import useRegister from "../hooks/useRegister";
 import LinkCustom from "../../../components/LinkCustom";
+
 const RegisterForm = () => {
   const {
     formData,
@@ -35,6 +36,7 @@ const RegisterForm = () => {
           required
           error={errors.name}
         />
+
         {/* Email */}
         <InputField
           id="email"
@@ -47,6 +49,7 @@ const RegisterForm = () => {
           required
           error={errors.email}
         />
+
         {/* Password */}
         <InputField
           id="password"
@@ -61,6 +64,7 @@ const RegisterForm = () => {
           onRightIconClick={() => setShowPassword(!showPassword)}
           error={errors.password}
         />
+
         {/* Confirm Password */}
         <InputField
           id="confirmPassword"
@@ -77,19 +81,14 @@ const RegisterForm = () => {
         />
       </div>
 
-      {error && <p className="text-sm text-red-500 text-center">{error}</p>}
-
+      {error && <p className="text-sm text-que-danger text-center">{error}</p>}
 
       <ButtonCustom type="submit" loading={loading}>
         Register
       </ButtonCustom>
 
-      <div className="mt-4 text-sm text-center text-gray-600">
-        Already have an account?{" "}
-        
-        <LinkCustom to="/login">
-          Login
-        </LinkCustom>
+      <div className="mt-4 text-sm text-center text-que-text-muted">
+        Already have an account? <LinkCustom to="/login">Login</LinkCustom>
       </div>
     </form>
   );

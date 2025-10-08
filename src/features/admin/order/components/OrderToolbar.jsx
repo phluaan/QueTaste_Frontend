@@ -10,7 +10,7 @@ export default function OrderToolbar({
         <input
           type="text"
           placeholder="Tìm kiếm đơn hàng..."
-          className="border px-3 py-2 rounded-lg w-1/3"
+          className="border border-que-primary px-3 py-2 rounded-lg w-1/3 focus:outline-none focus:ring-2 focus:ring-que-primary"
           onChange={(e) => onSearch?.(e.target.value)}
         />
       </div>
@@ -19,20 +19,20 @@ export default function OrderToolbar({
       <div className="flex gap-2">
         <button
           disabled={selectedOrders.length === 0}
-          className={`px-3 py-2 rounded ${
+          className={`px-3 py-2 rounded transition-colors ${
             selectedOrders.length === 0
               ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-green-500 text-white"
+              : "bg-que-secondary text-white hover:bg-que-primary"
           }`}
         >
           Cập nhật trạng thái
         </button>
         <button
           disabled={selectedOrders.length === 0}
-          className={`px-3 py-2 rounded ${
+          className={`px-3 py-2 rounded transition-colors ${
             selectedOrders.length === 0
               ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-red-500 text-white"
+              : "bg-que-accent text-white hover:bg-que-danger"
           }`}
         >
           Hủy đơn

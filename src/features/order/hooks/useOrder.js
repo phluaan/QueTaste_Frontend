@@ -7,10 +7,10 @@ const useOrder = (status = "all", search = "", page = 1, limit = 10) => {
   const dispatch = useDispatch();
   const {
     myOrders: orders,
-    myPagination: pagination,
-    loadingMyOrders: loading,
-    errorMyOrders: error,
-  } = useSelector((state) => state.order);
+    pagination: pagination,
+    loading: loading,
+    error: error,
+  } = useSelector((state) => state.userOrders);
 
   useEffect(() => {
     dispatch(getMyOrders({ status, search, page, limit }));
@@ -18,6 +18,5 @@ const useOrder = (status = "all", search = "", page = 1, limit = 10) => {
 
   return { orders, loading, error, pagination };
 };
-
 
 export default useOrder;

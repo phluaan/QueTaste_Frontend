@@ -21,6 +21,7 @@ export default function ReviewModal({ open, onClose, product, orderId }) {
       })
       .catch((err) => console.error("Lỗi khi gửi review:", err));
   };
+
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
@@ -39,7 +40,7 @@ export default function ReviewModal({ open, onClose, product, orderId }) {
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-            <Dialog.Title className="text-lg font-semibold mb-4">
+            <Dialog.Title className="text-lg font-semibold mb-4 text-que-text-main">
               Đánh giá sản phẩm
             </Dialog.Title>
 
@@ -48,9 +49,9 @@ export default function ReviewModal({ open, onClose, product, orderId }) {
               <img
                 src={product.images?.[0] || "/no-image.png"}
                 alt={product.name}
-                className="w-16 h-16 object-cover rounded border"
+                className="w-16 h-16 object-cover rounded border border-que-border"
               />
-              <p className="font-medium">{product.name}</p>
+              <p className="font-medium text-que-text-main">{product.name}</p>
             </div>
 
             {/* Rating */}
@@ -62,7 +63,7 @@ export default function ReviewModal({ open, onClose, product, orderId }) {
                   className={`cursor-pointer ${
                     (hover || rating) >= star
                       ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-300"
+                      : "text-que-border"
                   }`}
                   onMouseEnter={() => setHover(star)}
                   onMouseLeave={() => setHover(0)}
@@ -75,7 +76,7 @@ export default function ReviewModal({ open, onClose, product, orderId }) {
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 mb-4 focus:ring focus:ring-blue-200"
+              className="w-full border border-que-border rounded-md px-3 py-2 mb-4 focus:ring focus:ring-que-primary/30 focus:border-que-primary text-que-text-main"
               rows={3}
               placeholder="Nhập nhận xét của bạn..."
             />
@@ -84,16 +85,16 @@ export default function ReviewModal({ open, onClose, product, orderId }) {
             <div className="flex justify-end gap-2">
               <button
                 onClick={onClose}
-                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                className="px-4 py-2 bg-que-secondary text-que-text-main rounded hover:bg-que-border transition"
               >
                 Hủy
               </button>
               <button
                 onClick={handleSubmit}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                disabled={rating === 0}
+                className="px-4 py-2 bg-que-primary text-white rounded hover:bg-que-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={rating === 0 || loading}
               >
-                Gửi
+                {loading ? "Đang gửi..." : "Gửi"}
               </button>
             </div>
           </Dialog.Panel>

@@ -7,31 +7,49 @@ import haccp from "../assets/haccp.png";
 
 const Footer = () => {
   return (
-    <footer className="bg-white pt-4 pb-2">
+    <footer className="bg-que-surface pt-4 pb-2 border-t border-que-secondary/20">
       <div className="w-full px-6 mt-5">
         <div className="grid md:grid-cols-4 gap-6 mb-6">
           <div>
-            <h4 className="font-semibold mb-3">Quick Links</h4>
+            <h4 className="font-semibold mb-3 text-que-text-main">
+              Quick Links
+            </h4>
             <div className="space-y-1">
-              <a className="block text-gray-600 hover:text-primary">Shop</a>
-              <a className="block text-gray-600 hover:text-primary">Categories</a>
-              <a className="block text-gray-600 hover:text-primary">Contact</a>
-              <a className="block text-gray-600 hover:text-primary">Blog</a>
+              <a className="block text-que-text-muted hover:text-que-primary">
+                Shop
+              </a>
+              <a className="block text-que-text-muted hover:text-que-primary">
+                Categories
+              </a>
+              <a className="block text-que-text-muted hover:text-que-primary">
+                Contact
+              </a>
+              <a className="block text-que-text-muted hover:text-que-primary">
+                Blog
+              </a>
             </div>
           </div>
 
           <div>
-            <h4 className="font-semibold mb-3">Policies</h4>
+            <h4 className="font-semibold mb-3 text-que-text-main">Policies</h4>
             <div className="space-y-1">
-              <a className="block text-gray-600 hover:text-primary">Privacy Policy</a>
-              <a className="block text-gray-600 hover:text-primary">Terms & Conditions</a>
-              <a className="block text-gray-600 hover:text-primary">Returns</a>
+              <a className="block text-que-text-muted hover:text-que-primary">
+                Privacy Policy
+              </a>
+              <a className="block text-que-text-muted hover:text-que-primary">
+                Terms & Conditions
+              </a>
+              <a className="block text-que-text-muted hover:text-que-primary">
+                Returns
+              </a>
             </div>
           </div>
 
           <div>
-            <h4 className="font-semibold mb-3">Contact Us</h4>
-            <div className="space-y-1 text-gray-600 text-sm">
+            <h4 className="font-semibold mb-3 text-que-text-main">
+              Contact Us
+            </h4>
+            <div className="space-y-1 text-que-text-muted text-sm">
               <p>1 Vo Van Ngan Street, Ho Chi Minh City</p>
               <p>Email: quetaste@gmail.com</p>
               <p>Phone: (+84) 0862267674</p>
@@ -39,21 +57,23 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-3">Newsletter</h4>
+            <h4 className="font-semibold mb-3 text-que-text-main">
+              Newsletter
+            </h4>
             <div className="space-y-3">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-que-primary"
               />
-              <button className="w-full px-3 py-2 bg-primary text-white rounded-lg text-sm hover:bg-opacity-90">
+              <button className="w-full px-3 py-2 bg-que-primary text-white rounded-lg text-sm hover:bg-que-accent transition-colors">
                 Subscribe
               </button>
               <div className="flex space-x-3">
-                <FaFacebookF className="text-gray-600 hover:text-primary cursor-pointer" />
-                <FaTwitter className="text-gray-600 hover:text-primary cursor-pointer" />
-                <FaInstagram className="text-gray-600 hover:text-primary cursor-pointer" />
-                <FaYoutube className="text-gray-600 hover:text-primary cursor-pointer" />
+                <FaFacebookF className="text-que-text-muted hover:text-que-primary cursor-pointer" />
+                <FaTwitter className="text-que-text-muted hover:text-que-primary cursor-pointer" />
+                <FaInstagram className="text-que-text-muted hover:text-que-primary cursor-pointer" />
+                <FaYoutube className="text-que-text-muted hover:text-que-primary cursor-pointer" />
               </div>
             </div>
           </div>
@@ -67,8 +87,10 @@ const Footer = () => {
           <img src={haccp} alt="HACCP" className="h-16" />
         </div>
 
-        <div className="text-center text-gray-500 pt-4 border-t text-sm">
-          <p>&copy; 2025 QueTaste. Gìn giữ hương vị quê hương, kết nối mọi miền.</p>
+        <div className="text-center text-que-text-muted pt-4 border-t border-que-secondary/20 text-sm">
+          <p>
+            &copy; 2025 QueTaste. Gìn giữ hương vị quê hương, kết nối mọi miền.
+          </p>
         </div>
       </div>
     </footer>

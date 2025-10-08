@@ -9,7 +9,7 @@ export default function OrderTable({
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse rounded-lg shadow text-sm">
-        <thead className="bg-gray-100">
+        <thead className="bg-que-background">
           <tr>
             <th className="border px-2 py-2 w-10">
               <input
@@ -32,7 +32,10 @@ export default function OrderTable({
         </thead>
         <tbody>
           {orders.map((order) => (
-            <tr key={order.id} className="hover:bg-gray-50">
+            <tr
+              key={order.id}
+              className="hover:bg-que-surface transition-colors"
+            >
               <td className="border px-2 py-2 text-center">
                 <input
                   type="checkbox"
@@ -41,13 +44,18 @@ export default function OrderTable({
                 />
               </td>
               <td className="border px-2 py-2">{order.code}</td>
-              <td className="border px-2 py-2">{order.user.personalInfo.fullName}</td>
+              <td className="border px-2 py-2">
+                {order.user.personalInfo.fullName}
+              </td>
               <td className="border px-2 py-2">{order.createdAt}</td>
-              <td className="border px-2 py-2">{order.shippingAddress.address} {order.shippingAddress.city}</td>
+              <td className="border px-2 py-2">
+                {order.shippingAddress.address} {order.shippingAddress.city}
+              </td>
               <td className="border px-2 py-2">
                 <span
                   className={`px-2 py-1 rounded text-xs font-medium ${
-                    statusColors[order.status] || "bg-gray-100 text-gray-600"
+                    statusColors[order.status] ||
+                    "bg-que-background text-que-text-muted"
                   }`}
                 >
                   {order.status}
@@ -56,12 +64,12 @@ export default function OrderTable({
               <td className="border px-2 py-2">
                 {order.paymentMethod} / {order.paymentStatus}
               </td>
-              <td className="border px-2 py-2 font-bold text-green-600">
+              <td className="border px-2 py-2 font-bold text-que-secondary">
                 {order.finalAmount.toLocaleString()}đ
               </td>
               <td className="border px-2 py-2 text-center">
                 <button
-                  className="px-2 py-1 bg-blue-500 text-white rounded"
+                  className="px-3 py-1 bg-que-primary hover:bg-que-accent text-white rounded transition-colors"
                   onClick={() => onViewDetail(order)}
                 >
                   Xem chi tiết

@@ -9,8 +9,10 @@ const ReviewPagination = ({ pagination, page, setPage }) => {
       <button
         disabled={page === 1}
         onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-        className={`px-3 py-1 border rounded ${
-          page === 1 ? "text-gray-400 cursor-not-allowed" : "hover:bg-gray-100"
+        className={`px-3 py-1 border rounded transition-colors ${
+          page === 1
+            ? "text-gray-400 cursor-not-allowed"
+            : "hover:bg-que-secondary hover:text-white"
         }`}
       >
         Prev
@@ -21,10 +23,10 @@ const ReviewPagination = ({ pagination, page, setPage }) => {
         <button
           key={idx}
           onClick={() => setPage(idx + 1)}
-          className={`px-3 py-1 border rounded ${
+          className={`px-3 py-1 border rounded transition-colors ${
             page === idx + 1
-              ? "bg-primary text-white"
-              : "hover:bg-gray-100"
+              ? "bg-que-primary text-white"
+              : "hover:bg-que-secondary hover:text-white"
           }`}
         >
           {idx + 1}
@@ -37,10 +39,10 @@ const ReviewPagination = ({ pagination, page, setPage }) => {
         onClick={() =>
           setPage((prev) => Math.min(prev + 1, pagination.totalPages))
         }
-        className={`px-3 py-1 border rounded ${
+        className={`px-3 py-1 border rounded transition-colors ${
           page === pagination.totalPages
             ? "text-gray-400 cursor-not-allowed"
-            : "hover:bg-gray-100"
+            : "hover:bg-que-secondary hover:text-white"
         }`}
       >
         Next

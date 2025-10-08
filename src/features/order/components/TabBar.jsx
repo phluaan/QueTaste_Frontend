@@ -18,11 +18,11 @@ const TabBar = ({ activeTab, onTabChange }) => {
           className={`flex-1 text-center py-2 border-b-2 font-medium transition
             ${
               activeTab === tab.value
-                ? "border-blue-500 text-blue-500"
-                : "border-transparent text-gray-600 hover:text-blue-500"
+                ? "border-que-accent text-que-accent"
+                : "border-transparent text-que-text-muted hover:text-que-accent"
             }`}
         >
-          {tab.label} 
+          {tab.label}
         </button>
       ))}
     </div>
