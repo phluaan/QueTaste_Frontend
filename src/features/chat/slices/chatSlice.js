@@ -90,9 +90,31 @@ const chatSlice = createSlice({
         })
       .addCase(sendMessage.fulfilled, (state, action) => {
         const msg = action.payload.data;
-        if (!state.messages[msg.conversationId]) state.messages[msg.conversationId] = [];
-        state.messages[msg.conversationId].unshift(msg);
+        const convId = msg.conversationId;
+
+        if (!state.messages[convId]) state.messages[convId] = [];
+        state.messages[convId].unshift(msg);
+
+        const exists = state.conversations.find(c => c._id === convId);
+        if (!exists) {
+          state.conversations.unshift({
+            _id: convId,
+            participants: [
+              { user: typeof msg.sender === "object" ? msg.sender : { _id: msg.sender } },
+              { user: typeof msg.receiver === "object" ? msg.receiver : { _id: msg.receiver } },
+            ],
+            lastMessageAt: msg.createdAt,
+          });
+        } else {
+          exists.lastMessageAt = msg.createdAt;
+        }
+
+        // Nếu đang chat với conv tạm thì update sang thật
+        if (state.activeConversation?._id?.startsWith("new-")) {
+          state.activeConversation = state.conversations.find(c => c._id === convId) || state.activeConversation;
+        }
       });
+;
   },
 });
 

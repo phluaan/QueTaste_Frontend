@@ -74,21 +74,31 @@ const ChatSidebar = () => {
                               avatar: u.avatar,
                             },
                           },
+                          {
+                            user: { _id: userId },
+                          },
                         ],
                       })
-                    )
+                    );
                   }
-                >
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={u.avatar || "/default-avatar.png"}
-                      alt=""
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <span className="text-que-text-main font-medium">
-                      {u.personalInfo?.fullName || "Người dùng"}
+
+                  setSearch("");
+                }}
+
+
+              >
+                <div className="flex items-center gap-2">
+                  <img
+                    src={u.avatar || "/default-avatar.png"}
+                    alt=""
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <span>{u.personalInfo?.fullName || "Người dùng"}</span>
+                  {u.role === "admin" && (
+                    <span className="ml-2 px-2 py-0.5 text-xs rounded bg-red-100 text-red-600">
+                      Admin
                     </span>
-                  </div>
+                  )}
                 </div>
               ))
           )
@@ -131,6 +141,11 @@ const ChatSidebar = () => {
                     <span className="text-que-text-main font-medium">
                       {otherUser.personalInfo?.fullName || "Người dùng"}
                     </span>
+                    {otherUser.role === "admin" && (
+                      <span className="ml-2 px-2 py-0.5 text-xs rounded bg-red-100 text-red-600">
+                        Admin
+                      </span>
+                    )}
                   </div>
                   {isOnline && (
                     <span className="text-que-secondary text-xs">●</span>
