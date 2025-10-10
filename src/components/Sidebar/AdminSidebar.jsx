@@ -12,7 +12,7 @@ export default function AdminSidebar() {
                 className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
                 >
                 <Home className="w-5 h-5 mr-2" />
-                Trang chủ
+                Dashboard
                 </Link>
             </li>
             <li>
