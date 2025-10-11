@@ -38,13 +38,3 @@ export const requestCancelOrderApi = async (token, orderId, reason) => {
   return response.data;
 };
 
-export const getAllOrdersApi = async (token, params) => {
-  //console.log(params);
-    const response = await axios.get(`${API_BASE_URL}/order/get-all`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params,
-    });
-  return response.data;
-};

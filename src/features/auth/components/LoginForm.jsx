@@ -5,6 +5,7 @@ import InputField from "../../../components/InputField";
 import ButtonCustom from "../../../components/ButtonCustom";
 import useLogin from "../hooks/useLogin";
 import LinkCustom from "../../../components/LinkCustom";
+
 const LoginForm = () => {
   const {
     formData,
@@ -42,7 +43,7 @@ const LoginForm = () => {
         />
       </div>
 
-      {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+      {error && <p className="text-sm text-que-danger text-center">{error}</p>}
 
       {/* Remember me + Forgot */}
       <div className="flex items-center justify-between">
@@ -52,26 +53,25 @@ const LoginForm = () => {
             type="checkbox"
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
+            className="accent-que-primary"
           />
-          <label htmlFor="remember-me" className="ml-2 text-sm text-gray-700">
+          <label
+            htmlFor="remember-me"
+            className="ml-2 text-sm text-que-text-muted"
+          >
             Remember me
           </label>
         </div>
-        
-        <LinkCustom to="/forgot-password">
-          Forgot password?
-        </LinkCustom>
+
+        <LinkCustom to="/forgot-password">Forgot password?</LinkCustom>
       </div>
 
       <ButtonCustom type="submit" loading={loading}>
         Sign in
       </ButtonCustom>
 
-      <p className="text-center text-sm">
-        Don't have an account?{" "}
-        <LinkCustom to="/register">
-          Register
-        </LinkCustom>
+      <p className="text-center text-sm text-que-text-muted">
+        Don't have an account? <LinkCustom to="/register">Register</LinkCustom>
       </p>
     </form>
   );

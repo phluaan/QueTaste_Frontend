@@ -6,23 +6,30 @@ import Footer from "../../../components/Footer";
 
 const ProductPage = () => {
   const {
-    search, setSearch,
-    filterCriteria, setFilterCriteria,
-    priceFilter, setPriceFilter,
-    ratingFilter, setRatingFilter,
-    regionFilter, setRegionFilter,
+    search,
+    setSearch,
+    filterCriteria,
+    setFilterCriteria,
+    priceFilter,
+    setPriceFilter,
+    ratingFilter,
+    setRatingFilter,
+    regionFilter,
+    setRegionFilter,
     products,
     loading,
-    totalPage, currentPage, setPage
+    totalPage,
+    currentPage,
+    setPage,
   } = useProduct();
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-que-background">
       {/* Header */}
       <Header />
 
       <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="bg-white p-4 rounded-lg shadow mb-6 mt-20">
+        <div className="bg-que-surface p-4 rounded-lg shadow mb-6 mt-20">
           {/* Thanh tìm kiếm */}
           <div className="flex items-center gap-2 w-full max-w-md mb-4">
             <input
@@ -30,9 +37,9 @@ const ProductPage = () => {
               placeholder="Tìm sản phẩm..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 border rounded px-4 py-2"
+              className="flex-1 border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-que-accent"
             />
-            <button className="text-black">
+            <button className="text-que-text-main">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -63,11 +70,11 @@ const ProductPage = () => {
               <option value="discount">Khuyến mãi</option>
             </select>
 
-            <select 
+            <select
               value={priceFilter}
               onChange={(e) => setPriceFilter(e.target.value)}
               className="w-full border rounded px-3 py-2"
-              >
+            >
               <option value="">Giá cả</option>
               <option value="lt100">Thấp hơn 100k</option>
               <option value="100-200">Từ 100k đến 200k</option>
@@ -75,11 +82,11 @@ const ProductPage = () => {
               <option value="gt500">Lớn hơn 500k</option>
             </select>
 
-            <select 
+            <select
               value={ratingFilter}
               onChange={(e) => setRatingFilter(e.target.value)}
               className="w-full border rounded px-3 py-2"
-              >
+            >
               <option value="">Đánh giá</option>
               <option value="5">⭐ 5 sao</option>
               <option value="4">⭐ 4 sao trở lên</option>
@@ -158,7 +165,6 @@ const ProductPage = () => {
               <option value="Vĩnh Phúc">Vĩnh Phúc</option>
               <option value="Yên Bái">Yên Bái</option>
             </select>
-
           </div>
         </div>
 
@@ -169,7 +175,7 @@ const ProductPage = () => {
           ) : products.length > 0 ? (
             products.map((p) => <ProductCard key={p._id} p={p} />)
           ) : (
-            <p>Không có sản phẩm nào</p>
+            <p className="text-que-text-muted">Không có sản phẩm nào</p>
           )}
         </div>
       </div>
@@ -180,8 +186,12 @@ const ProductPage = () => {
           onClick={() => setPage(Math.max(currentPage - 1, 1))}
           disabled={currentPage === 1}
           className={`px-3 py-1 rounded border 
-            ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-[#FF7E67] hover:text-white"} 
-            border-[#A2D5F2] bg-[#FAFAFA]`}
+            ${
+              currentPage === 1
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-que-accent hover:text-white"
+            } 
+            border-que-secondary bg-que-background`}
         >
           &lt;
         </button>
@@ -190,8 +200,12 @@ const ProductPage = () => {
         <button
           onClick={() => setPage(1)}
           className={`px-3 py-1 rounded border 
-            ${currentPage === 1 ? "bg-[#07689F] text-white" : "bg-[#FAFAFA] hover:bg-[#FF7E67] hover:text-white"} 
-            border-[#A2D5F2]`}
+            ${
+              currentPage === 1
+                ? "bg-que-primary text-white"
+                : "bg-que-background hover:bg-que-accent hover:text-white"
+            } 
+            border-que-secondary`}
         >
           1
         </button>
@@ -207,19 +221,25 @@ const ProductPage = () => {
               page === currentPage - 1 ||
               page === currentPage + 1
           )
-          .map((page) => (
-            page !== 1 && page !== totalPage && (
-              <button
-                key={page}
-                onClick={() => setPage(page)}
-                className={`px-3 py-1 rounded border 
-                  ${currentPage === page ? "bg-[#07689F] text-white" : "bg-[#FAFAFA] hover:bg-[#FF7E67] hover:text-white"} 
-                  border-[#A2D5F2]`}
-              >
-                {page}
-              </button>
-            )
-          ))}
+          .map(
+            (page) =>
+              page !== 1 &&
+              page !== totalPage && (
+                <button
+                  key={page}
+                  onClick={() => setPage(page)}
+                  className={`px-3 py-1 rounded border 
+                  ${
+                    currentPage === page
+                      ? "bg-que-primary text-white"
+                      : "bg-que-background hover:bg-que-accent hover:text-white"
+                  } 
+                  border-que-secondary`}
+                >
+                  {page}
+                </button>
+              )
+          )}
 
         {/* Dấu ... nếu còn trang ẩn trước trang cuối */}
         {currentPage < totalPage - 2 && <span className="px-2">...</span>}
@@ -229,8 +249,12 @@ const ProductPage = () => {
           <button
             onClick={() => setPage(totalPage)}
             className={`px-3 py-1 rounded border 
-              ${currentPage === totalPage ? "bg-[#07689F] text-white" : "bg-[#FAFAFA] hover:bg-[#FF7E67] hover:text-white"} 
-              border-[#A2D5F2]`}
+              ${
+                currentPage === totalPage
+                  ? "bg-que-primary text-white"
+                  : "bg-que-background hover:bg-que-accent hover:text-white"
+              } 
+              border-que-secondary`}
           >
             {totalPage}
           </button>
@@ -241,13 +265,16 @@ const ProductPage = () => {
           onClick={() => setPage(Math.min(currentPage + 1, totalPage))}
           disabled={currentPage === totalPage}
           className={`px-3 py-1 rounded border 
-            ${currentPage === totalPage ? "opacity-50 cursor-not-allowed" : "hover:bg-[#FF7E67] hover:text-white"} 
-            border-[#A2D5F2] bg-[#FAFAFA]`}
+            ${
+              currentPage === totalPage
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-que-accent hover:text-white"
+            } 
+            border-que-secondary bg-que-background`}
         >
           &gt;
         </button>
       </div>
-
 
       {/* Footer */}
       <Footer />

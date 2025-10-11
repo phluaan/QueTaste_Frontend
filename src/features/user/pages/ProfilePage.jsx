@@ -1,15 +1,12 @@
-import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ProfileLayout from "../components/ProfileLayout";
 import ProfileForm from "../components/ProfileForm";
 import ChangePasswordForm from "../components/ChangePasswordForm";
 import SidebarButton from "../components/SideBarButton";
-
 import OrderForm from "../../order/components/OrderForm";
-import { useNavigate, useSearchParams } from "react-router-dom";
 import UserCouponForm from "../components/UserCouponForm";
 
 const ProfilePage = () => {
-
   const [searchParams] = useSearchParams();
   const tabFromUrl = searchParams.get("tab") || "profile";
   const navigate = useNavigate();
@@ -17,8 +14,10 @@ const ProfilePage = () => {
   return (
     <ProfileLayout>
       {/* Sidebar */}
-      <div className="w-1/5 border-r p-6 space-y-4 bg-white">
-        <h2 className="text-xl font-bold mb-4">Cài đặt tài khoản</h2>
+      <div className="w-1/5 border-r p-6 space-y-4 bg-que-background rounded-l-xl">
+        <h2 className="text-lg font-bold mb-4 text-que-text-main">
+          Cài đặt tài khoản
+        </h2>
         <SidebarButton
           label="Thông tin cá nhân"
           isActive={tabFromUrl === "profile"}
@@ -42,7 +41,7 @@ const ProfilePage = () => {
       </div>
 
       {/* Nội dung chính */}
-      <div className="w-4/5 p-6 min-h-[50vh] bg-white">
+      <div className="w-4/5 p-6 min-h-[50vh] bg-que-surface rounded-r-xl shadow-md">
         {tabFromUrl === "profile" && <ProfileForm />}
         {tabFromUrl === "password" && <ChangePasswordForm />}
         {tabFromUrl === "orders" && <OrderForm />}

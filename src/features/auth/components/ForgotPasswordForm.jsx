@@ -16,22 +16,19 @@ const ForgotPasswordForm = () => {
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="Enter your email"
+        placeholder="Nhập email của bạn"
         icon={FaEnvelope}
         required
       />
 
-      {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+      {error && <p className="text-sm text-que-danger text-center">{error}</p>}
 
       <ButtonCustom type="submit" loading={loading}>
-        Reset Password
+        Đặt lại mật khẩu
       </ButtonCustom>
 
-      <p className="text-center text-sm mt-4">
-        Back to{" "}
-        <LinkCustom to="/login">
-          Login
-        </LinkCustom>
+      <p className="text-center text-sm mt-4 text-que-text-muted">
+        Quay lại <LinkCustom to="/login">Đăng nhập</LinkCustom>
       </p>
     </form>
   );

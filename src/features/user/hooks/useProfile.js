@@ -1,26 +1,36 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProfile, updateProfile } from "../slices/userSlice";
-import defaultAvatar from "../../../assets/defaultAvatar.jpg"
+import defaultAvatar from "../../../assets/defaultAvatar.jpg";
+import useVietnamProvinces from "../../checkout/hooks/useVietnamProvinces";
 
 const useProfile = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { accessToken } = useSelector((state) => state.auth);
 
-  const [previewAvatar, setPreviewAvatar] = useState(user?.avatar || defaultAvatar);
+  const [previewAvatar, setPreviewAvatar] = useState(
+    user?.avatar || defaultAvatar
+  );
 
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
-    fullName: user?.fullName || "",
+    fullName: user?.personalInfo?.fullName || "",
     email: user?.email || "",
-    phone: user?.phone || "",
-    address: user?.address || "",
-    dateOfBirth: user?.dateOfBirth || "",
-    gender: user?.gender || "",
-    avatarFile:  user?.avatar || null,
+    phone: user?.personalInfo?.phone || "",
+    personalInfo: {
+      shippingAddress: {
+        province: user?.personalInfo?.shippingAddress?.province || "",
+        district: user?.personalInfo?.shippingAddress?.district || "",
+        ward: user?.personalInfo?.shippingAddress?.ward || "",
+        street: user?.personalInfo?.shippingAddress?.street || "",
+        postalCode: user?.personalInfo?.shippingAddress?.postalCode || "",
+      },
+      dateOfBirth: user?.personalInfo?.dateOfBirth || "",
+      gender: user?.personalInfo?.gender || "",
+    },
+    avatarFile: user?.avatar || null,
   });
-
 
   useEffect(() => {
     if (accessToken) {
@@ -28,78 +38,123 @@ const useProfile = () => {
     }
   }, [accessToken, dispatch]);
 
-useEffect(() => {
-  if (user) {
-    setFormData((prev) => ({
-      ...prev,
-      fullName: user.personalInfo.fullName || "",
-      phone: user.personalInfo.phone || "",
-      address: user.personalInfo.address || "",
-      dateOfBirth: user.personalInfo.dateOfBirth || "",
-      gender: user.personalInfo.gender || "",
-      avatarFile: user.avatar || null,
-    }));
-    setPreviewAvatar(user.avatar || defaultAvatar);
-  }
-}, [user]);
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        fullName: user.personalInfo?.fullName || "",
+        email: user.email || "",
+        phone: user.personalInfo?.phone || "",
+        personalInfo: {
+          shippingAddress: {
+            province: user.personalInfo?.shippingAddress?.province || "",
+            district: user.personalInfo?.shippingAddress?.district || "",
+            ward: user.personalInfo?.shippingAddress?.ward || "",
+            street: user.personalInfo?.shippingAddress?.street || "",
+            postalCode: user.personalInfo?.shippingAddress?.postalCode || "",
+          },
+          dateOfBirth: user.personalInfo?.dateOfBirth || "",
+          gender: user.personalInfo?.gender || "",
+        },
+        avatarFile: user.avatar || null,
+      });
+      setPreviewAvatar(user.avatar || defaultAvatar);
+    }
+  }, [user]);
 
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
 
-const handleChange = (e) => {
-  const { name, value, files } = e.target;
+    if (name === "avatar" && files?.[0]) {
+      const file = files[0];
+      setFormData((prev) => ({ ...prev, avatarFile: file }));
+      setPreviewAvatar(URL.createObjectURL(file));
+      return;
+    }
 
-  if (name === "avatar" && files?.[0]) {
-    // Khi chọn avatar
-    const file = files[0];
-    setFormData((prev) => ({ ...prev, avatarFile: file }));
-    setPreviewAvatar(URL.createObjectURL(file));
-  } else {
+    if (
+      ["province", "district", "ward", "street", "postalCode"].includes(name)
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          shippingAddress: {
+            ...prev.personalInfo.shippingAddress,
+            [name]: value,
+          },
+        },
+      }));
+      return;
+    }
+
+    if (["gender", "dateOfBirth"].includes(name)) {
+      setFormData((prev) => ({
+        ...prev,
+        personalInfo: {
+          ...prev.personalInfo,
+          [name]: value,
+        },
+      }));
+      return;
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
-  }
-};
+  };
 
-const handleCancel = (e) => {
-  e.preventDefault();
-  if (!user) return;
+  const handleCancel = (e) => {
+    e.preventDefault();
+    if (!user) return;
 
-  setFormData({
-    fullName: user.personalInfo?.fullName || "",
-    email: user.email || "",
-    phone: user.personalInfo?.phone || "",
-    address: user.personalInfo?.address || "",
-    dateOfBirth: user.personalInfo?.dateOfBirth || "",
-    gender: user.personalInfo?.gender || "",
-    avatarFile: user.avatar || null,
-  });
+    setFormData({
+      fullName: user.personalInfo?.fullName || "",
+      email: user.email || "",
+      phone: user.personalInfo?.phone || "",
+      personalInfo: {
+        shippingAddress: {
+          province: user.personalInfo?.shippingAddress?.province || "",
+          district: user.personalInfo?.shippingAddress?.district || "",
+          ward: user.personalInfo?.shippingAddress?.ward || "",
+          street: user.personalInfo?.shippingAddress?.street || "",
+          postalCode: user.personalInfo?.shippingAddress?.postalCode || "",
+        },
+        dateOfBirth: user.personalInfo?.dateOfBirth || "",
+        gender: user.personalInfo?.gender || "",
+      },
+      avatarFile: user.avatar || null,
+    });
 
-  setPreviewAvatar(user.avatar || "/default-avatar.png");
-  setErrors({});
-};
+    setPreviewAvatar(user.avatar || defaultAvatar);
+    setErrors({});
+  };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+      const formPayload = new FormData();
+      formPayload.append("fullName", formData.fullName);
+      formPayload.append("phone", formData.phone);
+      formPayload.append("gender", formData.personalInfo.gender);
+      formPayload.append("dateOfBirth", formData.personalInfo.dateOfBirth);
 
-const handleSubmit = (e) => {
-  e.preventDefault();
+      // Gửi shippingAddress object dưới dạng JSON string
+      formPayload.append(
+        "shippingAddress",
+        JSON.stringify(formData.personalInfo.shippingAddress)
+      );
 
-  try {
-    const formPayload = new FormData();
-
-    for (const key in formData) {
-      if (key !== "avatarFile" && formData[key] !== null && formData[key] !== undefined) {
-        formPayload.append(key, formData[key]);
+      if (formData.avatarFile instanceof File) {
+        formPayload.append("avatar", formData.avatarFile);
       }
-    }
 
-    if (formData.avatarFile instanceof File) {
-      formPayload.append("avatar", formData.avatarFile);
+      dispatch(updateProfile(formPayload));
+      if (accessToken) {
+        dispatch(getProfile(accessToken));
+      }
+    } catch (error) {
+      console.error("Failed to update profile:", error);
     }
-    dispatch(updateProfile(formPayload));
-    // Sau khi update xong, fetch lại profile
-    if (accessToken) {
-      dispatch(getProfile(accessToken));
-    }
-  } catch (error) {
-    console.error("Failed to update profile:", error);
-  }
-};
+  };
+
   // Hàm validate form
   const validateForm = () => {
     const newErrors = {};
@@ -152,9 +207,20 @@ const handleSubmit = (e) => {
     }
   };
 
-
-
-return { user, formData, handleChange, handleCancel, handleSubmit,validateForm, handleSubmitWithValidation, previewAvatar, errors, setErrors, setFormData, setPreviewAvatar };
+  return {
+    user,
+    formData,
+    handleChange,
+    handleCancel,
+    handleSubmit,
+    validateForm,
+    handleSubmitWithValidation,
+    previewAvatar,
+    errors,
+    setErrors,
+    setFormData,
+    setPreviewAvatar,
+  };
 };
 
 export default useProfile;

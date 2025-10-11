@@ -24,8 +24,8 @@ export const getRefreshToken = () =>
 export const setUser = (user) => {
   const fullName = user.personalInfo?.fullName || "";
   const avatar = user.avatar || "";
-
-  sessionStorage.setItem("user", JSON.stringify({ personalInfo: { fullName }, avatar }));
+  const _id = user._id || user.id;
+  sessionStorage.setItem("user", JSON.stringify({ _id, personalInfo: { fullName }, avatar }));
 };
 
 export const getUser = () => {

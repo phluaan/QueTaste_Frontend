@@ -14,56 +14,64 @@ const ChangePasswordForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submit đổi mật khẩu:", formData);
-    // Gọi API đổi mật khẩu ở đây
+    // TODO: Gọi API đổi mật khẩu ở đây
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 ">
-      <h2 className="text-xl font-bold mb-4">Đổi mật khẩu</h2>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <h2 className="text-xl font-bold mb-4 text-que-text-main">
+        Đổi mật khẩu
+      </h2>
 
       <div>
-        <label className="block text-sm font-medium">Mật khẩu cũ</label>
+        <label className="block text-sm font-medium text-que-text-sub">
+          Mật khẩu cũ
+        </label>
         <input
           type="password"
           name="oldPassword"
           value={formData.oldPassword}
           onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 mt-1"
+          className="w-full border border-que-border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-que-primary/30 focus:border-que-primary"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Mật khẩu mới</label>
+        <label className="block text-sm font-medium text-que-text-sub">
+          Mật khẩu mới
+        </label>
         <input
           type="password"
           name="newPassword"
           value={formData.newPassword}
           onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 mt-1"
+          className="w-full border border-que-border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-que-primary/30 focus:border-que-primary"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Xác nhận mật khẩu</label>
+        <label className="block text-sm font-medium text-que-text-sub">
+          Xác nhận mật khẩu
+        </label>
         <input
           type="password"
           name="confirmPassword"
           value={formData.confirmPassword}
           onChange={handleChange}
-          className="w-full border rounded-lg px-3 py-2 mt-1"
+          className="w-full border border-que-border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-que-primary/30 focus:border-que-primary"
         />
       </div>
 
-      <div className="flex justify-end gap-4">
+      <div className="flex justify-end gap-4 pt-2">
         <button
           type="reset"
-          className="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400"
+          className="px-4 py-2 rounded-lg bg-que-secondary text-que-text-main hover:bg-que-border transition"
         >
           Hủy bỏ
         </button>
         <button
           type="submit"
-          className="px-6 py-2 rounded-lg bg-red-400 text-white font-semibold hover:bg-red-500"
+          className="px-6 py-2 rounded-lg bg-que-primary text-white font-semibold hover:bg-que-primary/90 transition"
         >
           Lưu
         </button>
