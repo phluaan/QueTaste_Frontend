@@ -1,5 +1,13 @@
+// src/features/admin/components/AdminSidebar.jsx
 import { Link } from "react-router-dom";
-import { Package, Home, Ticket, MessageSquare } from "lucide-react";
+import {
+  Home,
+  Users as UsersIcon,
+  FileText,
+  Package,
+  Ticket,
+  MessageSquare,
+} from "lucide-react";
 
 export default function AdminSidebar() {
   return (
@@ -15,6 +23,27 @@ export default function AdminSidebar() {
               Trang chủ
             </Link>
           </li>
+
+          <li>
+            <Link
+              to="/admin/users"
+              className="flex items-center px-4 py-2 text-que-text-muted hover:text-que-primary hover:bg-que-background rounded-md transition-colors"
+            >
+              <UsersIcon className="w-5 h-5 mr-2 text-que-text-main" />
+              Quản lý người dùng
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              to="/admin/posts"
+              className="flex items-center px-4 py-2 text-que-text-muted hover:text-que-primary hover:bg-que-background rounded-md transition-colors"
+            >
+              <FileText className="w-5 h-5 mr-2 text-que-text-main" />
+              Quản lý bài viết
+            </Link>
+          </li>
+
           <li>
             <Link
               to="/admin/orders"
@@ -24,6 +53,7 @@ export default function AdminSidebar() {
               Quản lý đơn hàng
             </Link>
           </li>
+
           <li>
             <Link
               to="/admin/coupons"
@@ -33,6 +63,7 @@ export default function AdminSidebar() {
               Quản lý phiếu giảm giá
             </Link>
           </li>
+
           <li>
             <Link
               to="/admin/reviews"
