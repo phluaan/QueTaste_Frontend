@@ -36,10 +36,12 @@ export default function AdminOrdersPage() {
 
   // Toggle chọn tất cả
   const toggleSelectAll = () => {
+    //console.log("SelectAll: ", selectedOrders);
+    //console.log("Order when SelectAll: ", orders);
     if (selectedOrders.length === orders.length) {
       setSelectedOrders([]);
     } else {
-      setSelectedOrders(orders.map((o) => o._id));
+      setSelectedOrders(orders.map((o) => o.id));
     }
   };
 

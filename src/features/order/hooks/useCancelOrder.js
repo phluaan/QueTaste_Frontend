@@ -6,6 +6,7 @@ const useCancelOrder = () => {
   const dispatch = useDispatch();
 
   const handleCancel = (orderId) => {
+    console.log("OrderId khi hủy: ", orderId);
     if (!orderId) return;
     dispatch(cancelOrder(orderId));
   };
