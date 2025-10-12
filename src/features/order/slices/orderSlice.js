@@ -18,6 +18,7 @@ export const getMyOrders = createAsyncThunk(
       if (limit) params.limit = limit;
 
       const res = await getMyOrdersApi(token, params);
+      console.log("GetMyOrdersApi: ", res);
       if (res.success) return res.data;
       return thunkAPI.rejectWithValue(res.message);
     } catch (err) {
