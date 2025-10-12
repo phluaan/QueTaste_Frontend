@@ -68,8 +68,6 @@ export default function AdminOrdersPage() {
   };
 
   useEffect(() => {
-    console.log("Orders:", orders);
-    console.log("Pagination:", pagination);
   }, [orders, pagination]);
 
   return (

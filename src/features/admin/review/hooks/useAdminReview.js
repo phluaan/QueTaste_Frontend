@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllReviews } from "../slices/adminReviewSlice";
 
-// ✅ dùng object cho dễ đọc
 const useReview = ({
   productId = null,
   rating = null,

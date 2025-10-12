@@ -196,7 +196,7 @@ export default function OrderDetailModal({
         open={showReviewModal}
         onClose={() => setShowReviewModal(false)}
         product={selectedProduct}
-        orderId={order._id}
+        orderId={order._id || order.id}
       />
     </>
   );
