@@ -13,7 +13,6 @@ const AdminReviewsPage = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  // ✅ Lấy dữ liệu từ hook (tự động gọi API mỗi khi filter đổi)
   const { reviews, pagination, loading, error } = useAdminReview({
     productId,
     rating,
@@ -26,7 +25,6 @@ const AdminReviewsPage = () => {
   const handleView = (r) => setSelected(r);
   const handleClose = () => setSelected(null);
 
-  // ✅ Xóa review
   const handleDelete = (id) => {
     if (window.confirm("Bạn có chắc muốn xóa đánh giá này?")) {
       console.log("Xóa review:", id);
@@ -34,7 +32,6 @@ const AdminReviewsPage = () => {
     }
   };
 
-  // ✅ Lọc cục bộ thêm (nếu cần)
   const filtered = reviews || [];
 
   return (
@@ -81,7 +78,6 @@ const AdminReviewsPage = () => {
           className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full"
         >
           <option value="">Tất cả sản phẩm</option>
-          {/* TODO: populate sản phẩm thật bằng API riêng (fetch list) */}
           <option value="66efa7...">Bánh tráng me Tây Ninh</option>
           <option value="66efb8...">Nước mắm Phan Thiết</option>
         </select>

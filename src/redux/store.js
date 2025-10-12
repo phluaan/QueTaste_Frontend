@@ -14,6 +14,7 @@ import notificationReducer from "../features/notification/slices/notificationSli
 import chatReducer from "../features/chat/slices/chatSlice";
 import adminOrderReducer from "../features/admin/order/slices/adminOrderSlice";
 import adminReviewReducer from "../features/admin/review/slices/adminReviewSlice";
+import adminProductReducer from "../features/admin/products/slices/adminProductSlice";
 const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -31,6 +32,7 @@ const store = configureStore({
     chat: chatReducer,
     adminOrders: adminOrderReducer,
     adminReviews: adminReviewReducer,
+    adminProducts: adminProductReducer,
   },
 });
 

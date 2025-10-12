@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosClient from "../../../utils/axiosClient";
 
-// API calls
 export const fetchConversations = createAsyncThunk(
   "chat/fetchConversations",
   async (_, { rejectWithValue }) => {
@@ -55,6 +54,7 @@ const chatSlice = createSlice({
     messages: {},
     activeConversation: null,
     presence: {},
+    unreadCounts: {}, 
     loading: false,
     error: null,
   },
@@ -62,16 +62,53 @@ const chatSlice = createSlice({
     addMessage: (state, action) => {
       const { conversationId, message } = action.payload;
       if (!state.messages[conversationId]) state.messages[conversationId] = [];
-      state.messages[conversationId].unshift(message);
+
+      const exists = state.messages[conversationId].some(
+        (m) => m._id === message._id
+      );
+      if (!exists) {
+        state.messages[conversationId].unshift(message);
+      }
+
+      const idx = state.conversations.findIndex((c) => c._id === conversationId);
+      if (idx > -1) {
+        const conv = state.conversations[idx];
+        state.conversations.splice(idx, 1);
+        state.conversations.unshift(conv);
+      }
+
+      const isActive = state.activeConversation?._id === conversationId;
+      if (!isActive) {
+        state.unreadCounts[conversationId] =
+          (state.unreadCounts[conversationId] || 0) + 1;
+      }
     },
+
     setActiveConversation: (state, action) => {
       state.activeConversation = action.payload;
+      if (action.payload?._id) {
+        state.unreadCounts[action.payload._id] = 0;
+      }
     },
+
     updatePresence: (state, action) => {
       const { userId, status, count } = action.payload;
       state.presence[userId] = { status, count };
     },
+
+    incrementUnread: (state, action) => {
+      const id = action.payload;
+      if (!id) return;
+      state.unreadCounts[id] = (state.unreadCounts[id] || 0) + 1;
+    },
+
+    markAsRead: (state, action) => {
+      const id = action.payload;
+      if (!id) return;
+      state.unreadCounts[id] = 0;
+    },
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchConversations.fulfilled, (state, action) => {
@@ -81,27 +118,31 @@ const chatSlice = createSlice({
         const conversationId = action.meta.arg.conversationId;
         const page = action.meta.arg.page || 1;
         const newItems = action.payload?.data || [];
-
         const prev = state.messages[conversationId] || [];
-
-        state.messages[conversationId] = page === 1
-            ? newItems
-            : [...prev, ...newItems];
-        })
+        state.messages[conversationId] =
+          page === 1 ? newItems : [...prev, ...newItems];
+      })
       .addCase(sendMessage.fulfilled, (state, action) => {
         const msg = action.payload.data;
         const convId = msg.conversationId;
 
-        if (!state.messages[convId]) state.messages[convId] = [];
-        state.messages[convId].unshift(msg);
-
-        const exists = state.conversations.find(c => c._id === convId);
+        const exists = state.conversations.find((c) => c._id === convId);
         if (!exists) {
           state.conversations.unshift({
             _id: convId,
             participants: [
-              { user: typeof msg.sender === "object" ? msg.sender : { _id: msg.sender } },
-              { user: typeof msg.receiver === "object" ? msg.receiver : { _id: msg.receiver } },
+              {
+                user:
+                  typeof msg.sender === "object"
+                    ? msg.sender
+                    : { _id: msg.sender },
+              },
+              {
+                user:
+                  typeof msg.receiver === "object"
+                    ? msg.receiver
+                    : { _id: msg.receiver },
+              },
             ],
             lastMessageAt: msg.createdAt,
           });
@@ -109,14 +150,21 @@ const chatSlice = createSlice({
           exists.lastMessageAt = msg.createdAt;
         }
 
-        // Nếu đang chat với conv tạm thì update sang thật
         if (state.activeConversation?._id?.startsWith("new-")) {
-          state.activeConversation = state.conversations.find(c => c._id === convId) || state.activeConversation;
+          state.activeConversation =
+            state.conversations.find((c) => c._id === convId) ||
+            state.activeConversation;
         }
       });
-;
   },
 });
 
-export const { addMessage, setActiveConversation, updatePresence } = chatSlice.actions;
+export const {
+  addMessage,
+  setActiveConversation,
+  updatePresence,
+  incrementUnread,
+  markAsRead,
+} = chatSlice.actions;
+
 export default chatSlice.reducer;
