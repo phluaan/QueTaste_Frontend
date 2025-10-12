@@ -34,17 +34,16 @@ export const cancelOrder = createAsyncThunk(
   async (orderId, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.accessToken;
-      const res = await cancelOrderApi(token, orderId);
-      if (res.success) {
-        showSuccess("Order cancelled successfully");
-        return res.data;
-      }
-      return thunkAPI.rejectWithValue(res.message);
+      const data = await cancelOrderApi(token, orderId);
+
+      showSuccess("Order cancelled successfully");
+      return data;
     } catch (err) {
-      showError(err);
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Server error"
-      );
+      const message =
+        err?.response?.data?.message || err?.message || "Server error";
+
+      showError(message);
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
