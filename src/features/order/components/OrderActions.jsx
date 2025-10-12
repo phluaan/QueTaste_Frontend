@@ -1,12 +1,13 @@
 import { useState } from "react";
 import useCancelOrder from "../hooks/useCancelOrder";
 import CancelRequestModal from "./CancelRequestModal";
-
+import ConfirmCancelModal from "./ConfirmCancelModal";
 
 const OrderActions = ({ order }) => {
   const { _id, status } = order;
   const { handleCancel, handleRequestCancel } = useCancelOrder();
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [open, setOpen] = useState(false);
 
   switch (status) {
     case "new":
@@ -14,13 +15,25 @@ const OrderActions = ({ order }) => {
       return (
         <div className="flex gap-2">
           {/* Primary - hủy trực tiếp */}
-          <button onClick={() => handleCancel(_id)} className="px-4 py-2 rounded text-sm bg-red-500 text-white hover:bg-red-600">
+          <button
+            onClick={() => setOpen(true)}
+            className="px-4 py-2 rounded text-sm bg-red-500 text-white hover:bg-red-600"
+          >
             Hủy đơn
           </button>
           {/* Secondary */}
           <button className="px-4 py-2 rounded text-sm border border-gray-300 text-gray-600 hover:bg-gray-100">
             Liên hệ người bán
           </button>
+          <ConfirmCancelModal
+            onClose={() => setOpen(false)}
+            onConfirm={() => {
+              // xử lý khi xác nhận
+              handleCancel(_id);
+              setOpen(false);
+            }}
+            open={open}
+          />
         </div>
       );
 

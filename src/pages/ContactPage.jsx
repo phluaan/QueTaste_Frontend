@@ -30,18 +30,20 @@ const ContactPage = () => {
             Thông tin liên hệ
           </h2>
           <p className="text-que-text-main">
-            📍 Địa chỉ: Số 123, Quê Hương, Việt Nam
+            📍 Địa chỉ: Số 1, Võ Văn Ngân, Linh Trung, Thủ Đức, Thành phố Hồ Chí
+            Minh
           </p>
           <p className="text-que-text-main">📞 Hotline: 0909 123 456</p>
           <p className="text-que-text-main">📧 Email: support@quetaste.vn</p>
           <div className="mt-4">
             <iframe
-              src="https://www.google.com/maps/embed?...your-map-url..."
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7836.95893762141!2d106.77247980000001!3d10.85109000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752763f23816ab%3A0x282f711441b6916f!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBTxrAgcGjhuqFtIEvhu7kgdGh14bqtdCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmg!5e0!3m2!1svi!2s!4v1759903884814!5m2!1svi!2s"
               width="100%"
               height="250"
               style={{ border: 0 }}
-              allowFullScreen=""
+              allowfullscreen=""
               loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
             ></iframe>
           </div>
         </div>

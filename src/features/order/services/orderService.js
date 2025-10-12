@@ -3,12 +3,13 @@ import { API_BASE_URL } from "../../../config";
 
 export const getMyOrdersApi = async (token, params) => {
   //console.log(params);
-    const response = await axios.get(`${API_BASE_URL}/order/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params,
-    });
+  const response = await axios.get(`${API_BASE_URL}/order/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    params,
+  });
+  //console.log("My orders: ", response.data);
   return response.data;
 };
 
@@ -37,4 +38,3 @@ export const requestCancelOrderApi = async (token, orderId, reason) => {
   );
   return response.data;
 };
-

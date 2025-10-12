@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { fetchConversations, setActiveConversation, fetchMessages } from "../slices/chatSlice";
 import { searchUsers } from "../../user/slices/userSlice";
 import { getUser } from "../../../utils/storage"; // 
+import defaultAvatar from "../../../assets/defaultAvatar.jpg";
 
 const ChatSidebar = () => {
   const dispatch = useDispatch();
@@ -71,7 +72,7 @@ const ChatSidebar = () => {
                             user: {
                               _id: u._id,
                               personalInfo: { fullName: u.personalInfo.fullName },
-                              avatar: u.avatar,
+                              avatar: u.avatar || defaultAvatar,
                               role: u.role,
                             },
                           },
@@ -90,7 +91,7 @@ const ChatSidebar = () => {
               >
                 <div className="flex items-center gap-2">
                   <img
-                    src={u.avatar || "/default-avatar.png"}
+                    src={u.avatar || defaultAvatar}
                     alt=""
                     className="w-8 h-8 rounded-full"
                   />
@@ -126,7 +127,7 @@ const ChatSidebar = () => {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <img
-                      src={otherUser.avatar || "/default-avatar.png"}
+                      src={otherUser.avatar || defaultAvatar}
                       alt=""
                       className="w-8 h-8 rounded-full"
                     />

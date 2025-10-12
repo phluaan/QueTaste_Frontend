@@ -7,6 +7,12 @@ import AdminOrdersPage from "./features/admin/order/pages/AdminOrdersPage";
 import AdminCouponDetailPage from "./features/admin/pages/coupon/AdminCouponDetailPage";
 import AdminCouponsPage from "./features/admin/pages/coupon/AdminCouponListPage";
 import AdminCouponCreatePage from "./features/admin/pages/coupon/AdminCouponCreatePage";
+import AdminUsersPage from "./features/admin/pages/user/AdminUsersPage";
+import AdminUserListPage from "./features/admin/pages/user/AdminUsersListPage";
+import AdminUserDetailPage from "./features/admin/pages/user/AdminUserDetailPage";
+import AdminPostsPage from "./features/admin/pages/post/AdminPostsPage";
+import AdminPostDetailPage from "./features/admin/pages/post/AdminPostDetailPage";
+import AdminPostsListPage from "./features/admin/pages/post/AdminPostsListPage";
 import ForgotPasswordPage from "./features/auth/pages/ForgotPasswordPage";
 import LoginPage from "./features/auth/pages/LoginPage";
 import RegisterPage from "./features/auth/pages/RegisterPage";
@@ -127,6 +133,12 @@ function App() {
             </AdminLayout>
           }
         />
+        <Route path="/admin/users" element={<AdminUsersPage />} />
+        <Route path="/admin/users-list" element={<AdminUserListPage />} />
+        <Route path="/admin/users/:id" element={<AdminUserDetailPage />} />
+        <Route path="/admin/posts" element={<AdminPostsPage />} />
+        <Route path="/admin/posts-list" element={<AdminPostsListPage />} />
+        <Route path="/admin/posts/:slug" element={<AdminPostDetailPage />} />
 
         <Route path="/checkout/result" element={<PaymentResultPage />} />
       </Routes>

@@ -13,7 +13,7 @@ export default function AdminLayout({ children }) {
       {/* Sidebar + Main */}
       <div className="flex flex-1">
         <AdminSidebar />
-        <main className="p-6 flex-1 overflow-auto bg-que-surface text-que-text-main">
+        <main className="p-6 flex-1 overflow-auto">
           {children}
         </main>
       </div>
