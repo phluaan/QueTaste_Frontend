@@ -47,6 +47,8 @@ export const createProduct = createAsyncThunk(
       const res = await createProductApi(token, formData);
       if (res.success) {
         showSuccess("Thêm sản phẩm thành công!");
+       const last = thunkAPI.getState().adminProducts.lastFilters || {};
+       thunkAPI.dispatch(getAllProducts(last));
         return res.data;
       }
       return thunkAPI.rejectWithValue(res.message);
@@ -85,6 +87,8 @@ export const toggleActiveProduct = createAsyncThunk(
       const res = await toggleActiveProductApi(token, id);
       if (res.success) {
         showSuccess("Cập nhật trạng thái sản phẩm!");
+       const last = thunkAPI.getState().adminProducts.lastFilters || {};
+       thunkAPI.dispatch(getAllProducts(last));
         return res.data;
       }
       return thunkAPI.rejectWithValue(res.message);
@@ -104,6 +108,9 @@ export const deleteProduct = createAsyncThunk(
       const res = await deleteProductApi(token, id);
       if (res.success) {
         showSuccess("Đã xóa sản phẩm!");
+       const state = thunkAPI.getState();
+       const last = state.adminProducts.lastFilters || {};
+       thunkAPI.dispatch(getAllProducts(last));
         return id;
       }
       return thunkAPI.rejectWithValue(res.message);
@@ -137,10 +144,12 @@ const adminProductSlice = createSlice({
           page: a.payload.currentPage ?? 1,
           limit: limitFromArg,
           total: a.payload.total ?? 0,
+          stats: a.payload.stats || { total: 0, active: 0, inactive: 0, outOfStock: 0 },
         };
 
         s._rawPage = a.payload.currentPage;
         s._rawTotalPage = a.payload.totalPage;
+        s.lastFilters = a.meta?.arg || s.lastFilters || {};
       })
       .addCase(getAllProducts.rejected, (s, a) => {
         s.loading = false;
