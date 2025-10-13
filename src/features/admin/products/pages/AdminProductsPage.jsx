@@ -33,6 +33,8 @@ export default function AdminProductsPage() {
     deleteProduct,
     toggleActiveProduct,
     getProductById,
+    bulkHideProducts,
+    bulkShowProducts,
   } = useAdminProducts(filters);
 
   const {
@@ -305,6 +307,8 @@ export default function AdminProductsPage() {
               }}
               onToggleActive={toggleActiveProduct}
               onDelete={handleDeleteRequest}
+              onBulkHide={bulkHideProducts} 
+              onBulkShow={bulkShowProducts}
             />
 
             {modalMode && (

@@ -57,3 +57,13 @@ export const deleteProductApi = (token, id) =>
   axiosClient.delete(`${BASE_URL}/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+  
+export const bulkHideApi = (token, ids) =>
+  axiosClient.patch("/admin/products/bulk/hide", { ids }, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const bulkShowApi = (token, ids) =>
+  axiosClient.patch("/admin/products/bulk/show", { ids }, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
