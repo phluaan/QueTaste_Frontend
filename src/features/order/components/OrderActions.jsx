@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useCancelOrder from "../hooks/useCancelOrder";
 import CancelRequestModal from "./CancelRequestModal";
-import ConfirmCancelModal from "./ConfirmCancelModal";
+import ConfirmModal from "../../../components/ConfirmModal";
 
 const OrderActions = ({ order }) => {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const OrderActions = ({ order }) => {
             >
               Hủy đơn
             </button>
-            <ConfirmCancelModal
+            <ConfirmModal
               open={openConfirm}
               onClose={() => setOpenConfirm(false)}
               onConfirm={async () => {

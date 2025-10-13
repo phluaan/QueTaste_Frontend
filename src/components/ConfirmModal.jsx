@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function ConfirmCancelModal({
+export default function ConfirmModal({
   open,
   title = "Xác nhận",
   message = "Bạn có chắc muốn thực hiện thao tác này?",
