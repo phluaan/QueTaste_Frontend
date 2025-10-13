@@ -7,6 +7,7 @@ import OrderDetailModal from "../components/OrderDetailModal";
 import TabBar from "../../../order/components/TabBar";
 import Pagination from "../../../../components/Pagination";
 import useAdminOrders from "../hooks/useAdminOrder";
+import ConfirmModal from "../../../../components/ConfirmModal";
 
 export default function AdminOrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -25,6 +26,7 @@ export default function AdminOrdersPage() {
     loading,
     error,
     confirmOrder,
+    confirmOrders,
   } = useAdminOrders(filters);
 
   // Toggle chọn đơn
@@ -45,30 +47,32 @@ export default function AdminOrdersPage() {
     }
   };
 
-  // Tổng quan thống kê
   const stats = {
     total: orders.length,
-    pending: orders.filter((o) => o.status === "pending").length,
-    processing: orders.filter((o) => o.status === "processing").length,
+    new: orders.filter((o) => o.status === "new").length,
+    confirmed: orders.filter((o) => o.status === "confirmed").length,
     shipping: orders.filter((o) => o.status === "shipping").length,
     completed: orders.filter((o) => o.status === "completed").length,
     cancelled: orders.filter((o) => o.status === "cancelled").length,
+    cancel_requested: orders.filter((o) => o.status === "cancel_requested")
+      .length,
+    refund: orders.filter((o) => o.status === "refund").length,
   };
 
-  // Màu trạng thái
   const statusColors = {
     new: "bg-blue-100 text-blue-600",
     confirmed: "bg-teal-100 text-teal-600",
-    processing: "bg-amber-100 text-amber-600",
     shipping: "bg-sky-100 text-sky-600",
-    delivering: "bg-purple-100 text-purple-600",
     completed: "bg-green-100 text-green-600",
     cancelled: "bg-red-100 text-red-600",
+    cancel_requested: "bg-amber-100 text-amber-700",
     refund: "bg-gray-200 text-gray-700",
   };
 
   useEffect(() => {
   }, [orders, pagination]);
+
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   return (
     <AdminLayout>
@@ -90,6 +94,7 @@ export default function AdminOrdersPage() {
         <OrderToolbar
           selectedOrders={selectedOrders}
           onSearch={(q) => setFilters((f) => ({ ...f, search: q, page: 1 }))}
+          onConfirmOrders={() => setOpenConfirm(true)}
         />
 
         {/* Loading / Error */}
@@ -130,6 +135,20 @@ export default function AdminOrdersPage() {
               onLimitChange={(l) =>
                 setFilters((f) => ({ ...f, limit: l, page: 1 }))
               }
+            />
+
+            {/* Xác nhận */}
+            <ConfirmModal
+              open={openConfirm}
+              onClose={() => setOpenConfirm(false)}
+              onConfirm={async () => {
+                await confirmOrders(selectedOrders);
+                setOpenConfirm(false);
+              }}
+              title="Xác nhận các đơn đã chọn"
+              message={`Bạn có chắc muốn xác nhận ${selectedOrders.length} đơn hàng?`}
+              confirmText="Xác nhận"
+              cancelText="Đóng"
             />
           </>
         )}

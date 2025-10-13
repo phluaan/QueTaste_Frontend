@@ -19,3 +19,17 @@ export const confirmOrderApi = async (token, orderId) => {
   });
   return response.data;
 };
+
+export const confirmOrdersApi = async (token, listOrderId) => {
+  console.log(listOrderId);
+  const response = await axios.put(
+    `${API_BASE_URL}/order/confirmOrders`,
+    { listOrderId },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
