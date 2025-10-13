@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { showError, showSuccess } from "../../../utils/toastUtils";
 import { createReviewApi, getReviewApi } from "../services/reviewService";
 
-// 🔹 Lấy danh sách review
 export const getReview = createAsyncThunk(
   "review/getReview",
   async ({ productId, rating, orderBy, page, limit }, thunkAPI) => {
@@ -28,7 +27,6 @@ export const getReview = createAsyncThunk(
   }
 );
 
-// 🔹 Tạo review
 export const createReview = createAsyncThunk(
   "review/createReview",
   async ({ productId, orderId, rating, comment }, thunkAPI) => {

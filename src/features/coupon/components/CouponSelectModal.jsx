@@ -9,7 +9,7 @@ const CouponSelectModal = ({ open, onClose, onSelect }) => {
   const {
     publicCouponsPage,
     loading,
-    myCouponsPage, // 👈 từ fetchMyCoupons
+    myCouponsPage, 
     loadingMy,
   } = useCoupon({
     role: "user",

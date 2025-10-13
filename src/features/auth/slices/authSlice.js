@@ -5,6 +5,7 @@ import { setTokens, clearTokens, getAccessToken, getRefreshToken, clearUser } fr
 const initialState = {
   user: null,
   accessToken: getAccessToken(),
+  rememberMe: localStorage.getItem("accessToken") ? true : false,
   refreshToken: getRefreshToken(),
   loading: false,
   error: null,
@@ -84,6 +85,7 @@ const authSlice = createSlice({
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
         state.error = null;
+        state.rememberMe = action.meta.arg.rememberMe;
         state.message = "Login successful";
 
         setTokens(action.payload.accessToken, action.payload.refreshToken, action.meta.arg.rememberMe);

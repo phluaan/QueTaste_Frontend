@@ -32,6 +32,8 @@ import ServicePage from "./pages/ServicePage";
 import ContactPage from "./pages/ContactPage";
 import AdminReviewsPage from "./features/admin/review/pages/AdminReviewsPage";
 import AdminLayout from "./features/admin/layouts/AdminLayout";
+import AdminProductsPage from "./features/admin/products/pages/AdminProductsPage";
+
 function App() {
   return (
     <>
@@ -52,6 +54,12 @@ function App() {
             <MainLayout>
               <ContactPage />
             </MainLayout>
+          }
+        />
+        <Route
+          path="/admin/products"
+          element={
+            <AdminProductsPage />
           }
         />
         <Route

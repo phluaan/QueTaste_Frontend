@@ -70,8 +70,6 @@ export default function AdminOrdersPage() {
   };
 
   useEffect(() => {
-    console.log("Orders:", orders);
-    console.log("Pagination:", pagination);
   }, [orders, pagination]);
 
   const [openConfirm, setOpenConfirm] = useState(false);

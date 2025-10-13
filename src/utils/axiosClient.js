@@ -1,45 +1,46 @@
 import axios from "axios";
 import store from "../redux/store";
 import { logout, setAccessToken } from "../features/auth/slices/authSlice";
-import { setTokens, getRefreshToken  } from "./storage";
+import { setTokens, getRefreshToken } from "./storage";
 import { API_BASE_URL } from "../config";
 
 const axiosClient = axios.create({
-    baseURL: API_BASE_URL,
-    headers: {"Content-Type": "application/json"},
+  baseURL: API_BASE_URL,
+  headers: { "Content-Type": "application/json" },
 });
 
-// Request interceptor: gắn token
 axiosClient.interceptors.request.use((config) => {
-    const token = store.getState().auth.accessToken;
-    if (token){
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
+  const token = store.getState().auth.accessToken;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
 });
 
-// Response interceptor: refresh token khi 401
 axiosClient.interceptors.response.use(
   (res) => res.data,
   async (error) => {
     const originalRequest = error.config;
-    const state = store.getState();
+    const status = error.response?.status;
 
-    if (error.response?.status === 403 && !originalRequest._retry) {
+    if ((status === 401 || status === 403) && !originalRequest._retry) {
       originalRequest._retry = true;
-      try {
-        const res = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-          refreshToken: getRefreshToken(), // <-- lấy refreshToken từ storage
-        });
 
-        const newAccessToken = res.data.data.accessToken;
-        store.dispatch(setAccessToken(newAccessToken)); // hoặc tạo action riêng
-        setTokens(newAccessToken, state.auth.refreshToken, true);
+      try {
+        const refreshToken = getRefreshToken();
+        if (!refreshToken) throw new Error("No refresh token available");
+
+        const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, { refreshToken });
+        const newAccessToken = data?.data?.accessToken || data?.accessToken;
+
+        if (!newAccessToken) throw new Error("No new access token returned");
+
+        store.dispatch(setAccessToken(newAccessToken));
+        const rememberMe = store.getState().auth.rememberMe;
+        setTokens(newAccessToken, refreshToken, rememberMe);
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axiosClient(originalRequest);
       } catch (err) {
-        console.error(err);
+        console.error("❌ Refresh token failed:", err);
         store.dispatch(logout());
       }
     }
