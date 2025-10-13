@@ -7,6 +7,8 @@ import {
   updateProduct,
   deleteProduct,
   toggleActiveProduct,
+  bulkHideProducts as bulkHideProductsThunk,
+  bulkShowProducts as bulkShowProductsThunk,
 } from "../slices/adminProductSlice";
 
 const useAdminProducts = (filters) => {
@@ -29,6 +31,8 @@ const useAdminProducts = (filters) => {
     deleteProduct: (id) => dispatch(deleteProduct(id)),
     toggleActiveProduct: (id) => dispatch(toggleActiveProduct(id)),
     getProductById: (id) => dispatch(getProductById(id)),
+    bulkHideProducts: (ids) => dispatch(bulkHideProductsThunk(ids)),
+    bulkShowProducts: (ids) => dispatch(bulkShowProductsThunk(ids)),
   };
 };
 

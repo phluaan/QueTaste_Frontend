@@ -7,6 +7,7 @@ import Pagination from "../../../../components/Pagination";
 import useAdminProducts from "../hooks/useAdminProducts";
 import LoadingOverlay from "../../../../components/LoadingOverlay";
 import ConfirmModal from "../../../../components/ConfirmModal";
+import useAdminProductSuggestions from "../hooks/useAdminProductSuggestions";
 
 export default function AdminProductsPage() {
   const [filters, setFilters] = useState({
@@ -32,7 +33,17 @@ export default function AdminProductsPage() {
     deleteProduct,
     toggleActiveProduct,
     getProductById,
+    bulkHideProducts,
+    bulkShowProducts,
   } = useAdminProducts(filters);
+
+  const {
+    open, suggests, activeIdx,
+    boxRef, onKeyDown, onPick, setOpen,
+  } = useAdminProductSuggestions(
+    filters.search,
+    (name) => setFilters((f) => ({ ...f, search: name, page: 1 }))
+  );
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalMode, setModalMode] = useState(null);
@@ -106,18 +117,43 @@ export default function AdminProductsPage() {
         <ProductStats stats={stats} />
 
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
-          <input
-            type="text"
-            placeholder="Tìm sản phẩm..."
-            value={filters.search}
-            onChange={(e) => handleFilterChange("search", e.target.value)}
-            className="border rounded px-4 py-2 flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="relative flex-1" ref={boxRef}>
+            <input
+              type="text"
+              placeholder="Tìm sản phẩm..."
+              value={filters.search}
+              onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value, page: 1 }))}
+              onFocus={() => suggests.length > 0 && setOpen(true)}
+              onKeyDown={onKeyDown}
+              className="border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {open && suggests.length > 0 && (
+              <ul className="absolute z-20 mt-1 w-full bg-white border rounded shadow max-h-80 overflow-auto">
+                {suggests.map((s, idx) => (
+                  <li
+                    key={s._id}
+                    onMouseDown={(e) => onPick(s, e)} // dùng mousedown để không mất focus
+                    className={`flex items-center gap-3 p-2 cursor-pointer ${
+                      idx === activeIdx ? "bg-blue-50" : "hover:bg-gray-50"
+                    }`}
+                  >
+                    {s.images?.[0] ? (
+                      <img src={s.images[0]} alt={s.name} className="w-8 h-8 object-cover rounded" />
+                    ) : <div className="w-8 h-8 bg-gray-200 rounded" />}
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">{s.name}</div>
+                      <div className="text-xs text-gray-500">
+                        {(s.salePrice > 0 ? s.salePrice : s.price)?.toLocaleString()}đ
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
           <button
-            onClick={() => {
-              setSelectedProduct(null);
-              setModalMode("create");
-            }}
+            onClick={() => { setSelectedProduct(null); setModalMode("create"); }}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             + Thêm sản phẩm
@@ -271,6 +307,8 @@ export default function AdminProductsPage() {
               }}
               onToggleActive={toggleActiveProduct}
               onDelete={handleDeleteRequest}
+              onBulkHide={bulkHideProducts} 
+              onBulkShow={bulkShowProducts}
             />
 
             {modalMode && (
