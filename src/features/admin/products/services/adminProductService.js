@@ -8,7 +8,7 @@ export const getAllProductsApi = (token, params = {}) =>
     params: {
       search: params.search || "",
       page: params.page || 1,
-      limit: params.limit || 10,
+      limit: params.limit === 0 ? 0 : (params.limit || 10),
       category: params.category || "",
       region: params.region || "",
       rating: params.rating || "",
@@ -16,6 +16,7 @@ export const getAllProductsApi = (token, params = {}) =>
       maxPrice: params.maxPrice || "",
       sortBy: params.sortBy || "createdAt",
       order: params.order || "desc",
+      includeInactive: true,
     },
   });
 
@@ -42,7 +43,9 @@ export const updateProductApi = async (token, id, formData) => {
 };
 
 export const toggleActiveProductApi = (token, id) =>
-  axiosClient.patch(`${BASE_URL}/${id}/toggle`, {});
+  axiosClient.patch(`${BASE_URL}/${id}/toggle`, {}, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
 export const deleteProductApi = (token, id) =>
   axiosClient.delete(`${BASE_URL}/${id}`, {
