@@ -3,6 +3,17 @@ import ProductCard from "../components/ProductCard";
 import useProduct from "../hooks/useProduct";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer";
+import { suggestProductsApi } from "../services/productService";
+import { useEffect, useState, useRef } from "react";
+
+const useDebounce = (value, delay = 250) => {
+  const [v, setV] = useState(value);
+  useEffect(() => {
+    const id = setTimeout(() => setV(value), delay);
+    return () => clearTimeout(id);
+  }, [value, delay]);
+  return v;
+};
 
 const ProductPage = () => {
   const {
@@ -23,6 +34,66 @@ const ProductPage = () => {
     setPage,
   } = useProduct();
 
+  const [open, setOpen] = useState(false);
+  const [suggests, setSuggests] = useState([]);
+  const [activeIdx, setActiveIdx] = useState(-1);
+  const boxRef = useRef(null);
+  const debounced = useDebounce(search, 250);
+
+    useEffect(() => {
+    let mounted = true;
+    const fetchSuggest = async () => {
+      if (!debounced || debounced.trim().length < 2) {
+        setSuggests([]); setOpen(false); return;
+      }
+      try {
+        const { data, success } = await suggestProductsApi(debounced, 8);
+        if (!mounted) return;
+        if (success) {
+          setSuggests(data || []);
+          setOpen((data || []).length > 0);
+          setActiveIdx(-1);
+        } else {
+          setSuggests([]); setOpen(false);
+        }
+      } catch {
+        if (!mounted) return;
+        setSuggests([]); setOpen(false);
+      }
+    };
+    fetchSuggest();
+    return () => { mounted = false; };
+  }, [debounced]);
+
+  // click outside -> đóng
+  useEffect(() => {
+    const onClick = (e) => {
+      if (boxRef.current && !boxRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
+  const onKeyDown = (e) => {
+    if (!open || suggests.length === 0) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIdx((i) => (i + 1) % suggests.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIdx((i) => (i - 1 + suggests.length) % suggests.length);
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const pick = suggests[activeIdx] || suggests[0];
+      if (pick) {
+        setSearch(pick.name);
+        setOpen(false);
+      }
+    } else if (e.key === "Escape") {
+      setOpen(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-que-background">
       {/* Header */}
@@ -31,30 +102,56 @@ const ProductPage = () => {
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="bg-que-surface p-4 rounded-lg shadow mb-6 mt-20">
           {/* Thanh tìm kiếm */}
-          <div className="flex items-center gap-2 w-full max-w-md mb-4">
-            <input
-              type="text"
-              placeholder="Tìm sản phẩm..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-que-accent"
-            />
-            <button className="text-que-text-main">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
-                />
-              </svg>
-            </button>
+          <div className="relative w-full max-w-md mb-4" ref={boxRef}>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                placeholder="Tìm sản phẩm..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onFocus={() => suggests.length > 0 && setOpen(true)}
+                onKeyDown={onKeyDown}
+                className="flex-1 border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-que-accent"
+              />
+              <button className="text-que-text-main" aria-label="Search">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/>
+                </svg>
+              </button>
+            </div>
+
+            {open && suggests.length > 0 && (
+              <ul className="absolute z-20 mt-2 w-full bg-white border rounded shadow max-h-80 overflow-auto">
+                {suggests.map((s, idx) => (
+                  <li
+                    key={s._id}
+                    onMouseDown={(e) => { // dùng mousedown để không bị blur trước khi click
+                      e.preventDefault();
+                      setSearch(s.name);
+                      setOpen(false);
+                    }}
+                    className={`flex items-center gap-3 p-2 cursor-pointer ${
+                      idx === activeIdx ? "bg-que-accent/10" : "hover:bg-gray-50"
+                    }`}
+                  >
+                    {/* ảnh nhỏ */}
+                    {s.images?.[0] ? (
+                      <img src={s.images[0]} alt={s.name} className="w-8 h-8 object-cover rounded" />
+                    ) : (
+                      <div className="w-8 h-8 bg-gray-200 rounded" />
+                    )}
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">{s.name}</div>
+                      <div className="text-xs text-gray-500">
+                        {s.salePrice > 0 ? s.salePrice.toLocaleString() : s.price?.toLocaleString()}đ
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* Bộ lọc cùng 1 hàng */}

@@ -20,6 +20,12 @@ export const getAllProductsApi = (token, params = {}) =>
     },
   });
 
+export const suggestAdminProductsApi = (token, q, limit = 8) =>
+  axiosClient.get(`${BASE_URL}/suggest`, {
+    headers: { Authorization: `Bearer ${token}` },
+    params: { q, limit },
+  });
+
 export const getProductByIdApi = (token, id) =>
   axiosClient.get(`${BASE_URL}/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
