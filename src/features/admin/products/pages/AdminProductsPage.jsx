@@ -40,10 +40,10 @@ export default function AdminProductsPage() {
   const [productToDelete, setProductToDelete] = useState(null);
 
   const stats = {
-    total: pagination?.total ?? 0,
-    active: products.filter((p) => p.isActive).length,
-    inactive: products.filter((p) => !p.isActive).length,
-    outOfStock: products.filter((p) => p.stock === 0).length,
+    total: pagination?.stats?.total ?? pagination?.total ?? 0,
+    active: pagination?.stats?.active ?? 0,
+    inactive: pagination?.stats?.inactive ?? 0,
+    outOfStock: pagination?.stats?.outOfStock ?? 0,
   };
 
   const handleSave = async (formData) => {
