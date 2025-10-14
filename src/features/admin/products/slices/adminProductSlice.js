@@ -6,9 +6,50 @@ import {
   updateProductApi,
   toggleActiveProductApi,
   deleteProductApi,
+  bulkHideApi,
+  bulkShowApi,
 } from "../services/adminProductService";
 import { showError, showSuccess } from "../../../../utils/toastUtils";
+export const bulkHideProducts = createAsyncThunk(
+  "adminProducts/bulkHideProducts",
+  async (ids, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.accessToken;
+      const res = await bulkHideApi(token, ids);
+      if (res.success) {
+        showSuccess("Đã ẩn các sản phẩm đã chọn");
+        const last = thunkAPI.getState().adminProducts.lastFilters || {};
+        thunkAPI.dispatch(getAllProducts(last));
+        return res.data;
+      }
+      return thunkAPI.rejectWithValue(res.message);
+    } catch (err) {
+      showError(err);
+      return thunkAPI.rejectWithValue(err.response?.data?.message || "Server error");
+    }
+  }
+);
 
+// 👇 NEW: Hiện nhiều
+export const bulkShowProducts = createAsyncThunk(
+  "adminProducts/bulkShowProducts",
+  async (ids, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.accessToken;
+      const res = await bulkShowApi(token, ids);
+      if (res.success) {
+        showSuccess("Đã hiện các sản phẩm đã chọn");
+        const last = thunkAPI.getState().adminProducts.lastFilters || {};
+        thunkAPI.dispatch(getAllProducts(last));
+        return res.data;
+      }
+      return thunkAPI.rejectWithValue(res.message);
+    } catch (err) {
+      showError(err);
+      return thunkAPI.rejectWithValue(err.response?.data?.message || "Server error");
+    }
+  }
+);
 // Lấy danh sách sản phẩm
 export const getAllProducts = createAsyncThunk(
   "adminProducts/getAllProducts",

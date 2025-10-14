@@ -20,6 +20,12 @@ export const getAllProductsApi = (token, params = {}) =>
     },
   });
 
+export const suggestAdminProductsApi = (token, q, limit = 8) =>
+  axiosClient.get(`${BASE_URL}/suggest`, {
+    headers: { Authorization: `Bearer ${token}` },
+    params: { q, limit },
+  });
+
 export const getProductByIdApi = (token, id) =>
   axiosClient.get(`${BASE_URL}/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -49,5 +55,15 @@ export const toggleActiveProductApi = (token, id) =>
 
 export const deleteProductApi = (token, id) =>
   axiosClient.delete(`${BASE_URL}/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  
+export const bulkHideApi = (token, ids) =>
+  axiosClient.patch("/admin/products/bulk/hide", { ids }, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+export const bulkShowApi = (token, ids) =>
+  axiosClient.patch("/admin/products/bulk/show", { ids }, {
     headers: { Authorization: `Bearer ${token}` },
   });

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import LoadingOverlay from "../../../../components/LoadingOverlay";
 import vietnamProvinces from "../../../../data/vietnamProvinces.json";
 import categoriesData from "../../../../data/category.json";
@@ -33,12 +34,6 @@ export default function ProductDetailModal({
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
-  // Thông báo tối thiểu (có thể thay bằng toast lib)
-  const notify = (msg, type = "info") => {
-    // Ví dụ: alert, có thể thay bằng toast.success/toast.error
-    alert(`${type.toUpperCase()}: ${msg}`);
-  };
-
   const isCreate = currentMode === "create";
   const isView = currentMode === "view";
 
@@ -57,7 +52,6 @@ export default function ProductDetailModal({
       });
       setPreviewImages(product.images || []);
     } else if (mode === "create") {
-      // reset khi tạo mới
       setForm((f) => ({
         ...f,
         name: "",
@@ -83,19 +77,16 @@ export default function ProductDetailModal({
     const MAX_IMG_SIZE = 2 * 1024 * 1024; // 2MB
     const nextErrors = {};
 
-    // name
     if (!state.name?.trim()) {
       nextErrors.name = "Tên sản phẩm là bắt buộc.";
     } else if (state.name.trim().length < 2) {
       nextErrors.name = "Tên sản phẩm phải có ít nhất 2 ký tự.";
     }
 
-    // category
     if (!state.category) {
       nextErrors.category = "Vui lòng chọn danh mục.";
     }
 
-    // price
     const priceNum = Number(state.price);
     if (state.price === "" || state.price === null) {
       nextErrors.price = "Giá gốc là bắt buộc.";
@@ -103,7 +94,6 @@ export default function ProductDetailModal({
       nextErrors.price = "Giá gốc phải là số > 0.";
     }
 
-    // salePrice
     if (state.salePrice !== "" && state.salePrice !== null) {
       const saleNum = Number(state.salePrice);
       if (Number.isNaN(saleNum) || saleNum < 0) {
@@ -113,7 +103,6 @@ export default function ProductDetailModal({
       }
     }
 
-    // stock
     const stockNum = Number(state.stock);
     if (state.stock === "" || state.stock === null) {
       nextErrors.stock = "Tồn kho là bắt buộc.";
@@ -121,17 +110,14 @@ export default function ProductDetailModal({
       nextErrors.stock = "Tồn kho phải là số nguyên ≥ 0.";
     }
 
-    // region
     if (!state.region) {
       nextErrors.region = "Vui lòng chọn khu vực.";
     }
 
-    // description
     if (state.description && state.description.length > 1000) {
       nextErrors.description = "Mô tả tối đa 1000 ký tự.";
     }
 
-    // images (count/type/size)
     const existingCount = state.images?.length ?? 0;
     const newCount = state.newImages?.length ?? 0;
     const totalCount = existingCount + newCount;
@@ -153,7 +139,6 @@ export default function ProductDetailModal({
       }
     }
 
-    // Yêu cầu có ít nhất 1 ảnh khi tạo mới
     if (isCreate && totalCount === 0) {
       nextErrors.images = "Vui lòng thêm ít nhất 1 ảnh sản phẩm.";
     }
@@ -165,7 +150,6 @@ export default function ProductDetailModal({
     const { name, value } = e.target;
     setForm((prev) => {
       const next = { ...prev, [name]: value };
-      // validate theo field khi đang edit
       setErrors((prevErr) => {
         const v = validate(next);
         return { ...prevErr, [name]: v[name] };
@@ -187,12 +171,10 @@ export default function ProductDetailModal({
     const files = Array.from(e.target.files || []);
     setForm((f) => {
       const next = { ...f, newImages: files };
-      // cập nhật preview
       setPreviewImages([
         ...(next.images || []),
         ...files.map((file) => URL.createObjectURL(file)),
       ]);
-      // validate immediate
       const v = validate(next);
       setErrors((prev) => ({ ...prev, images: v.images }));
       setTouched((t) => ({ ...t, images: true }));
@@ -241,14 +223,13 @@ export default function ProductDetailModal({
     setErrors(v);
 
     if (Object.keys(v).length > 0) {
-      notify("Vui lòng kiểm tra lại các trường bị lỗi.", "error");
+      toast.error("Vui lòng kiểm tra lại các trường bị lỗi.");
       return;
     }
 
     setLoading(true);
     try {
       const data = new FormData();
-      // Gộp form thành payload
       Object.keys(form).forEach((key) => {
         if (key === "newImages" && form.newImages.length > 0) {
           form.newImages.forEach((file) => data.append("images", file));
@@ -260,12 +241,16 @@ export default function ProductDetailModal({
       });
 
       await onSave(data);
-      notify(isCreate ? "Thêm sản phẩm thành công." : "Cập nhật sản phẩm thành công.", "success");
+      toast.success(
+        isCreate
+          ? "Thêm sản phẩm thành công."
+          : "Cập nhật sản phẩm thành công."
+      );
       setCurrentMode("view");
       onModeChange?.("view");
     } catch (err) {
       console.error(err);
-      notify(err?.message || "Có lỗi xảy ra khi lưu sản phẩm.", "error");
+      toast.error(err?.message || "Có lỗi xảy ra khi lưu sản phẩm.");
     } finally {
       setLoading(false);
     }
@@ -274,7 +259,11 @@ export default function ProductDetailModal({
   if (!product && currentMode !== "create") return null;
 
   const fieldCls = (name) =>
-    `w-full border px-2 py-1 rounded ${errors[name] && (touched[name] || isCreate) ? "border-red-500" : "border-gray-300"}`;
+    `w-full border px-2 py-1 rounded ${
+      errors[name] && (touched[name] || isCreate)
+        ? "border-red-500"
+        : "border-gray-300"
+    }`;
 
   const HelpText = ({ name }) =>
     errors[name] && (touched[name] || isCreate) ? (
@@ -286,7 +275,6 @@ export default function ProductDetailModal({
       <div className="bg-white w-full max-w-5xl rounded-2xl shadow-xl p-6 relative animate-fadeIn overflow-y-auto max-h-[90vh]">
         <LoadingOverlay show={loading || globalLoading} />
 
-        {/* Close */}
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-black"
           onClick={onClose}
@@ -314,7 +302,9 @@ export default function ProductDetailModal({
               <div>
                 <span
                   className={`inline-block px-2 py-0.5 rounded text-xs ${
-                    product.isActive ? "bg-green-100 text-green-700" : "bg-gray-200 text-gray-600"
+                    product.isActive
+                      ? "bg-green-100 text-green-700"
+                      : "bg-gray-200 text-gray-600"
                   }`}
                 >
                   {product.isActive ? "Đang hiển thị" : "Đã ẩn"}
@@ -332,7 +322,9 @@ export default function ProductDetailModal({
             <div>
               <div className="text-gray-500">Đánh giá TB</div>
               <div className="font-medium">
-                {product.avgRating ? `${product.avgRating.toFixed(1)} / 5 ⭐` : "Chưa có"}
+                {product.avgRating
+                  ? `${product.avgRating.toFixed(1)} / 5 ⭐`
+                  : "Chưa có"}
               </div>
             </div>
             <div>
@@ -342,20 +334,27 @@ export default function ProductDetailModal({
             <div>
               <div className="text-gray-500">Ngày tạo</div>
               <div className="font-medium">
-                {product.createdAt ? new Date(product.createdAt).toLocaleString() : "-"}
+                {product.createdAt
+                  ? new Date(product.createdAt).toLocaleString()
+                  : "-"}
               </div>
             </div>
             <div>
               <div className="text-gray-500">Cập nhật gần nhất</div>
               <div className="font-medium">
-                {product.updatedAt ? new Date(product.updatedAt).toLocaleString() : "-"}
+                {product.updatedAt
+                  ? new Date(product.updatedAt).toLocaleString()
+                  : "-"}
               </div>
             </div>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4 text-sm" noValidate>
-          {/* ----- Field nhập liệu/ chỉnh sửa ----- */}
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-2 gap-4 text-sm"
+          noValidate
+        >
           <div>
             <label className="font-medium">
               Tên sản phẩm <span className="text-red-500">*</span>
@@ -373,7 +372,6 @@ export default function ProductDetailModal({
             <HelpText name="name" />
           </div>
 
-          {/* Danh mục (select) */}
           <div>
             <label className="font-medium">
               Danh mục <span className="text-red-500">*</span>
@@ -455,7 +453,6 @@ export default function ProductDetailModal({
             <HelpText name="stock" />
           </div>
 
-          {/* Khu vực (select 63 tỉnh) */}
           <div>
             <label className="font-medium">
               Khu vực <span className="text-red-500">*</span>
@@ -498,10 +495,11 @@ export default function ProductDetailModal({
             <HelpText name="description" />
           </div>
 
-          {/* Ảnh sản phẩm */}
           <div className="col-span-2">
             <label className="font-medium">
-              Ảnh sản phẩm{isCreate ? <span className="text-red-500"> *</span> : null}
+              Ảnh sản phẩm{isCreate ? (
+                <span className="text-red-500"> *</span>
+              ) : null}
             </label>
             {!isView && (
               <input
@@ -509,7 +507,9 @@ export default function ProductDetailModal({
                 multiple
                 onChange={handleFileChange}
                 className={`block w-full border p-1 rounded mb-2 ${
-                  errors.images && touched.images ? "border-red-500" : "border-gray-300"
+                  errors.images && touched.images
+                    ? "border-red-500"
+                    : "border-gray-300"
                 }`}
                 accept="image/*"
               />
@@ -539,7 +539,6 @@ export default function ProductDetailModal({
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="col-span-2 flex justify-end gap-3 mt-4">
             <button
               type="button"
