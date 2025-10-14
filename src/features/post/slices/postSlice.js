@@ -1,4 +1,3 @@
-// src/features/post/slices/postSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { getAllPostsApi, getPostDetailApi } from "../services/postService";
 
@@ -9,40 +8,34 @@ const initialState = {
     error: null,
 };
 
-// Async thunks
-export const fetchAllPosts = createAsyncThunk(
-    "post/fetchAll",
-    async (_, thunkAPI) => {
-        try {
-        const res = await getAllPostsApi();
+export const fetchAllPosts = createAsyncThunk("post/fetchAll", async (admin = false, thunkAPI) => {
+    try {
+        const res = await getAllPostsApi(admin);
         if (res.success) return res.data;
         return thunkAPI.rejectWithValue(res.message);
+    } catch (err) {
+        return thunkAPI.rejectWithValue(err.message);
+    }
+});
+
+export const fetchPostDetail = createAsyncThunk(
+    "post/fetchDetail",
+    async ({ slug, admin = false }, thunkAPI) => {
+        try {
+        const data = await getPostDetailApi(slug, admin);
+        return data;
         } catch (err) {
         return thunkAPI.rejectWithValue(err.message);
         }
     }
     );
 
-export const fetchPostDetail = createAsyncThunk(
-    "post/fetchDetail",
-    async (slug, thunkAPI) => {
-        try {
-        const data = await getPostDetailApi(slug); // đã trả về data trực tiếp
-        return data;
-        } catch (err) {
-        return thunkAPI.rejectWithValue(err.message);
-        }
-    }
-);
-
-
-const postSlice = createSlice({
+    const postSlice = createSlice({
     name: "post",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-        // all posts
         .addCase(fetchAllPosts.pending, (state) => {
             state.loading.all = true;
             state.error = null;
@@ -55,7 +48,6 @@ const postSlice = createSlice({
             state.loading.all = false;
             state.error = action.payload;
         })
-        // post detail
         .addCase(fetchPostDetail.pending, (state) => {
             state.loading.detail = true;
             state.error = null;
@@ -63,7 +55,7 @@ const postSlice = createSlice({
         })
         .addCase(fetchPostDetail.fulfilled, (state, action) => {
             state.loading.detail = false;
-            state.postDetail = action.payload; // payload giờ đã là postDetail
+            state.postDetail = action.payload;
             state.error = null;
         })
         .addCase(fetchPostDetail.rejected, (state, action) => {
