@@ -1,34 +1,62 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { io } from "socket.io-client";
-import { useDispatch } from "react-redux";
-import { addMessage, updatePresence } from "../slices/chatSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addMessage,
+  updatePresence,
+  incrementUnread,
+  markAsRead,
+} from "../slices/chatSlice";
 import { getAccessToken } from "../../../utils/storage";
 
-let socket;
+let chatSocket; 
 
-export const useChatSocket = () => {
+export const useChatSocket = (isOpen = false) => {
   const dispatch = useDispatch();
+  const { activeConversation } = useSelector((s) => s.chat);
+  const initialized = useRef(false);
 
   useEffect(() => {
     const token = getAccessToken();
-    if (!token) return;
+    if (!token || initialized.current) return;
+    initialized.current = true;
 
-    const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:8088";
-    socket = io(SOCKET_URL, {
+    const SOCKET_URL =
+      import.meta.env.VITE_SOCKET_URL || "http://localhost:8088";
+
+    chatSocket = io(SOCKET_URL, {
       auth: { token },
+      transports: ["websocket"],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 3000,
     });
 
-    socket.on("connect", () => console.log("🔌 Chat socket connected"));
-    socket.on("chat:message", (data) => {
+    const handleMessage = (data) => {
       dispatch(addMessage(data));
-    });
-    socket.on("presence", (data) => {
+      const currentConvId = activeConversation?._id;
+      const msgConvId = data?.conversationId;
+      if (!isOpen || msgConvId !== currentConvId) {
+        dispatch(incrementUnread(msgConvId));
+      } else {
+        dispatch(markAsRead(msgConvId));
+      }
+    };
+
+    const handlePresence = (data) => {
       dispatch(updatePresence(data));
-    });
-    socket.on("disconnect", () => console.log("❌ Chat socket disconnected"));
+    };
+
+    chatSocket.on("chat:message", handleMessage);
+    chatSocket.on("presence", handlePresence);
 
     return () => {
-      socket?.disconnect();
+      if (chatSocket) {
+        chatSocket.off("chat:message", handleMessage);
+        chatSocket.off("presence", handlePresence);
+      }
     };
-  }, [dispatch]);
+  }, [dispatch]); 
+
+  return chatSocket;
 };

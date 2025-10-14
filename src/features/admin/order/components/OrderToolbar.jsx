@@ -1,7 +1,7 @@
 export default function OrderToolbar({
   selectedOrders,
   onSearch,
-  onFilterChange,
+  onConfirmOrders,
 }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
@@ -24,8 +24,9 @@ export default function OrderToolbar({
               ? "bg-gray-200 text-gray-400 cursor-not-allowed"
               : "bg-que-secondary text-white hover:bg-que-primary"
           }`}
+          onClick={() => onConfirmOrders?.()}
         >
-          Cập nhật trạng thái
+          Xác nhận đơn hàng
         </button>
         <button
           disabled={selectedOrders.length === 0}

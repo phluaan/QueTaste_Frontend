@@ -16,7 +16,6 @@ const PaymentResultPage = () => {
   const resultCode = queryParams.get("resultCode");
   const orderId = queryParams.get("orderId");
 
-  // 🟢 flag để đảm bảo chỉ gọi 1 lần
   const hasUpdated = useRef(false);
 
   useEffect(() => {

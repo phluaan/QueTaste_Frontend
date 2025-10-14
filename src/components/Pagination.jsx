@@ -1,27 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Pagination = ({ page, limit, total, onPageChange, onLimitChange }) => {
-  if (!total) return null;
 
-  const totalPages = Math.ceil(total / limit);
   const [inputPage, setInputPage] = useState(page);
 
-  // Cập nhật input khi thay đổi page ngoài
-  if (inputPage !== page) {
-    setTimeout(() => setInputPage(page), 0);
-  }
+  useEffect(() => {
+    setInputPage(page);
+  }, [page]);
+  if (!total) return null;
 
+  const totalPages = Math.max(1, Math.ceil(total / Math.max(1, limit || 10)));
   const goToPage = (p) => {
-    if (p >= 1 && p <= totalPages) onPageChange(p);
+    const next = Math.min(Math.max(1, p), totalPages);
+    if (next !== page) onPageChange(next);
   };
 
   const handlePageInput = (e) => {
     e.preventDefault();
-    const p = parseInt(inputPage);
-    if (!isNaN(p)) goToPage(p);
+    const p = Number(inputPage);
+    if (Number.isFinite(p)) goToPage(p);
+    else setInputPage(page); // nếu rỗng/NaN thì trả về trang hiện tại
   };
 
-  // Logic hiển thị giới hạn số trang xung quanh trang hiện tại
+  // Hiển thị dãy nút số trang
   const visiblePages = [];
   const delta = 2;
   const start = Math.max(1, page - delta);
@@ -63,17 +64,13 @@ const Pagination = ({ page, limit, total, onPageChange, onLimitChange }) => {
 
         {visiblePages.map((p, i) =>
           p === "..." ? (
-            <span key={i} className="px-2 text-gray-400">
-              ...
-            </span>
+            <span key={i} className="px-2 text-gray-400">…</span>
           ) : (
             <button
               key={p}
               onClick={() => goToPage(p)}
               className={`px-3 py-1 border rounded ${
-                p === page
-                  ? "bg-blue-500 text-white border-blue-500"
-                  : "hover:bg-gray-100"
+                p === page ? "bg-blue-500 text-white border-blue-500" : "hover:bg-gray-100"
               }`}
             >
               {p}
@@ -91,17 +88,28 @@ const Pagination = ({ page, limit, total, onPageChange, onLimitChange }) => {
       </div>
 
       {/* Ô nhập trang */}
-      <form
-        onSubmit={handlePageInput}
-        className="flex items-center gap-2 text-sm"
-      >
+      <form onSubmit={handlePageInput} className="flex items-center gap-2 text-sm">
         <span>Trang:</span>
         <input
           type="number"
           min={1}
           max={totalPages}
           value={inputPage}
-          onChange={(e) => setInputPage(e.target.value)}
+          onChange={(e) => {
+            const v = e.target.value;
+            // cho phép rỗng khi đang gõ
+            if (v === "") setInputPage("");
+            else {
+              const num = Number(v);
+              // clamp trong [1, totalPages] để không văng ngoài
+              setInputPage(Math.max(1, Math.min(totalPages, num)));
+            }
+          }}
+          onBlur={() => {
+            if (inputPage === "" || !Number.isFinite(Number(inputPage))) {
+              setInputPage(page);
+            }
+          }}
           className="w-16 border rounded px-2 py-1 text-center"
         />
         <span>/ {totalPages}</span>

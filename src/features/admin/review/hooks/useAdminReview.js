@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllReviews } from "../slices/adminReviewSlice";
+import { deleteReview, getAllReviews } from "../slices/adminReviewSlice";
 
-// ✅ dùng object cho dễ đọc
 const useReview = ({
   productId = null,
   rating = null,
@@ -23,7 +22,11 @@ const useReview = ({
     );
   }, [dispatch, productId, rating, search, orderBy, page, limit]);
 
-  return { reviews, pagination, loading, error };
+  const handleDelete = (id) => {
+    dispatch(deleteReview(id));
+  };
+
+  return { reviews, pagination, loading, error, handleDelete };
 };
 
 export default useReview;

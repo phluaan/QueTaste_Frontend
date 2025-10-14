@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { MdAccessTime } from "react-icons/md";      // Chờ xác nhận
-import { FaTruck } from "react-icons/fa";           // Vận chuyển
-import { MdLocalShipping } from "react-icons/md";   // Chờ giao hàng
-import { MdCheckCircle } from "react-icons/md";     // Hoàn thành
-import { MdCancel } from "react-icons/md";          // Đã hủy
-import { MdReplay } from "react-icons/md";          // Trả hàng/Hoàn tiền
+import { MdAccessTime } from "react-icons/md"; // Chờ xác nhận
+import { FaTruck } from "react-icons/fa"; // Vận chuyển
+import { MdLocalShipping } from "react-icons/md"; // Chờ giao hàng
+import { MdCheckCircle } from "react-icons/md"; // Hoàn thành
+import { MdCancel } from "react-icons/md"; // Đã hủy
+import { MdReplay } from "react-icons/md"; // Trả hàng/Hoàn tiền
 import { MdArrowForwardIos } from "react-icons/md";
 import OrderDetailModal from "./OrderDetailItem";
 import OrderActions from "./OrderActions";
@@ -27,7 +27,6 @@ const STATUS_NOTES = {
   refund: "🔄 Đơn hàng trong quá trình trả hàng/hoàn tiền",
 };
 
-
 const OrderItem = ({ order }) => {
   const [selectedOrder, setSelectedOrder] = useState(null);
 
@@ -39,47 +38,45 @@ const OrderItem = ({ order }) => {
           <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">
             Yêu thích
           </span>
-          <h2 className="font-semibold">Đơn hàng #{order.items[0].product.name}</h2>
-
+          <h2 className="font-semibold">
+            Đơn hàng #{order.items[0].product.name}
+          </h2>
         </div>
         <div className="flex flex-col items-end">
-        <span
-          className={`inline-flex items-center gap-1 text-sm px-3 py-1 rounded-full ${
-            order.status === "new"
-              ? "bg-yellow-100 text-yellow-600"
-              : order.status === "confirmed"
-              ? "bg-yellow-100 text-yellow-600"
-              : order.status === "processing"
-              ? "bg-blue-100 text-blue-600"
-              : order.status === "shipping"
-              ? "bg-blue-100 text-blue-600"
-              : order.status === "delivering"
-              ? "bg-indigo-100 text-indigo-600"
-              : order.status === "completed"
-              ? "bg-green-100 text-green-600"
-              : order.status === "cancelled"
-              ? "bg-red-100 text-red-600"
-              : order.status === "cancel_requested"
-              ? "bg-orange-100 text-orange-600"
-              : order.status === "refund"
-              ? "bg-purple-100 text-purple-600"
-              : "bg-gray-100 text-gray-500"
-          }`}
-        >
-          {order.status === "new" && <MdAccessTime size={16} />}
-          {order.status === "confirmed" && <MdAccessTime size={16} />}
-          {order.status === "processing" && <FaTruck size={16} />}
-          {order.status === "shipping" && <FaTruck size={16} />}
-          {order.status === "delivering" && <MdLocalShipping size={16} />}
-          {order.status === "completed" && <MdCheckCircle size={16} />}
-          {order.status === "cancelled" && <MdCancel size={16} />}
-          {order.status === "refund" && <MdReplay size={16} />}
-          {order.status === "cancel_requested" && <MdCancel size={16} />}
-          {order.statusLabel || order.status}
-        </span>
-
-
-
+          <span
+            className={`inline-flex items-center gap-1 text-sm px-3 py-1 rounded-full ${
+              order.status === "new"
+                ? "bg-yellow-100 text-yellow-600"
+                : order.status === "confirmed"
+                ? "bg-yellow-100 text-yellow-600"
+                : order.status === "processing"
+                ? "bg-blue-100 text-blue-600"
+                : order.status === "shipping"
+                ? "bg-blue-100 text-blue-600"
+                : order.status === "delivering"
+                ? "bg-indigo-100 text-indigo-600"
+                : order.status === "completed"
+                ? "bg-green-100 text-green-600"
+                : order.status === "cancelled"
+                ? "bg-red-100 text-red-600"
+                : order.status === "cancel_requested"
+                ? "bg-orange-100 text-orange-600"
+                : order.status === "refund"
+                ? "bg-purple-100 text-purple-600"
+                : "bg-gray-100 text-gray-500"
+            }`}
+          >
+            {order.status === "new" && <MdAccessTime size={16} />}
+            {order.status === "confirmed" && <MdAccessTime size={16} />}
+            {order.status === "processing" && <FaTruck size={16} />}
+            {order.status === "shipping" && <FaTruck size={16} />}
+            {order.status === "delivering" && <MdLocalShipping size={16} />}
+            {order.status === "completed" && <MdCheckCircle size={16} />}
+            {order.status === "cancelled" && <MdCancel size={16} />}
+            {order.status === "refund" && <MdReplay size={16} />}
+            {order.status === "cancel_requested" && <MdCancel size={16} />}
+            {order.statusLabel || order.status}
+          </span>
         </div>
       </div>
 
@@ -92,7 +89,9 @@ const OrderItem = ({ order }) => {
             className="w-16 h-16 object-cover rounded-lg border shadow-sm hover:scale-105 transition"
           />
           <div>
-            <p className="text-gray-600 font-medium">{order.items[0].product.name}</p>
+            <p className="text-gray-600 font-medium">
+              {order.items[0].product.name}
+            </p>
             <p className="text-xs text-gray-400 mt-1">
               Số lượng sản phẩm: x{order.items.length}
             </p>
@@ -111,7 +110,6 @@ const OrderItem = ({ order }) => {
             Xem chi tiết
             <MdArrowForwardIos size={14} />
           </button>
-
         </div>
       </div>
 
@@ -120,7 +118,6 @@ const OrderItem = ({ order }) => {
         onClose={() => setSelectedOrder(null)}
         order={selectedOrder}
       />
-
 
       {/* Footer: tổng tiền + hành động + Phí vận chuyển */}
       <div className="px-4 py-3 bg-gray-50 flex justify-between items-start border-t">
@@ -132,7 +129,7 @@ const OrderItem = ({ order }) => {
               +{order.shippingFee.toLocaleString()}₫
             </span>
           </p>
-                    
+
           <p className="text-xs text-gray-400">
             Ngày đặt: {new Date(order.createdAt).toLocaleDateString("vi-VN")}
           </p>
@@ -140,7 +137,6 @@ const OrderItem = ({ order }) => {
           <p className="text-xs text-gray-500 italic mt-2">
             {STATUS_NOTES[order.status]}
           </p>
-
         </div>
 
         {/* Bên phải: Tổng tiền + nút hành động */}
@@ -154,7 +150,6 @@ const OrderItem = ({ order }) => {
           <OrderActions order={order} />
         </div>
       </div>
-
     </div>
   );
 };

@@ -1,9 +1,10 @@
 // src/features/admin/components/AdminSidebar.jsx
 import { Link } from "react-router-dom";
 import {
-  Home,
+  ShoppingBag,
   Users as UsersIcon,
   FileText,
+  Home,
   Package,
   Ticket,
   MessageSquare,
@@ -21,6 +22,17 @@ export default function AdminSidebar() {
             >
               <Home className="w-5 h-5 mr-2 text-que-text-main" />
               Trang chủ
+            </Link>
+          </li>
+
+          {/* ✅ Quản lý sản phẩm */}
+          <li>
+            <Link
+              to="/admin/products"
+              className="flex items-center px-4 py-2 text-que-text-muted hover:text-que-primary hover:bg-que-background rounded-md transition-colors"
+            >
+              <ShoppingBag className="w-5 h-5 mr-2 text-que-text-main" />
+              Quản lý sản phẩm
             </Link>
           </li>
 

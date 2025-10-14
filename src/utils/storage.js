@@ -1,4 +1,5 @@
 export const setTokens = (accessToken, refreshToken, rememberMe) => {
+  clearTokens();
   if (rememberMe) {
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);

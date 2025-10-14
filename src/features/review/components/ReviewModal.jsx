@@ -76,13 +76,17 @@ export default function ReviewModal({ open, onClose, product, orderId }) {
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full border border-que-border rounded-md px-3 py-2 mb-4 focus:ring focus:ring-que-primary/30 focus:border-que-primary text-que-text-main"
+              className="w-full border border-que-border rounded-md px-3 py-2 focus:ring focus:ring-que-primary/30 focus:border-que-primary text-que-text-main"
               rows={3}
               placeholder="Nhập nhận xét của bạn..."
+              maxLength={100}
             />
+            <div className="text-right text-sm text-gray-500">
+              {comment.length}/100
+            </div>
 
             {/* Actions */}
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 mt-4">
               <button
                 onClick={onClose}
                 className="px-4 py-2 bg-que-secondary text-que-text-main rounded hover:bg-que-border transition"

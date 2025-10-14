@@ -44,9 +44,9 @@ export const updateProfile = createAsyncThunk(
 
 export const searchUsers = createAsyncThunk(
   "user/searchUsers",
-  async ({ keyword, role }, { rejectWithValue }) => {
+  async ({ keyword }, { rejectWithValue }) => {
     try {
-      return await searchUsersApi(keyword, role);
+      return await searchUsersApi(keyword);
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
