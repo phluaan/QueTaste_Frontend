@@ -30,11 +30,12 @@ const CheckoutForm = ({ onSubmit }) => {
 
   const [errors, setErrors] = useState({ phone: "" });
   const [touched, setTouched] = useState({ phone: false });
+  const [submitting, setSubmitting] = useState(false);
 
   const { provinces, districts, wards, fetchDistricts, fetchWards } = useVietnamProvinces();
 
   const setField = (name, value) => {
-    setShippingAddress(prev => ({ ...prev, [name]: value }));
+    setShippingAddress((prev) => ({ ...prev, [name]: value }));
   };
 
   const validatePhone = (val) => {
@@ -47,26 +48,27 @@ const CheckoutForm = ({ onSubmit }) => {
     const onlyDigits = e.target.value.replace(/\D/g, "").slice(0, 10);
     setField("phone", onlyDigits);
     if (touched.phone) {
-      setErrors(prev => ({ ...prev, phone: validatePhone(onlyDigits) }));
+      setErrors((prev) => ({ ...prev, phone: validatePhone(onlyDigits) }));
     }
   };
 
   const handlePhoneBlur = () => {
-    setTouched(prev => ({ ...prev, phone: true }));
-    setErrors(prev => ({ ...prev, phone: validatePhone(shippingAddress.phone) }));
+    setTouched((prev) => ({ ...prev, phone: true }));
+    setErrors((prev) => ({ ...prev, phone: validatePhone(shippingAddress.phone) }));
   };
 
   const handleChange = (e) => {
     setField(e.target.name, e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
 
     const phoneErr = validatePhone(shippingAddress.phone);
     if (phoneErr) {
-      setTouched(prev => ({ ...prev, phone: true }));
-      setErrors(prev => ({ ...prev, phone: phoneErr }));
+      setTouched((prev) => ({ ...prev, phone: true }));
+      setErrors((prev) => ({ ...prev, phone: phoneErr }));
       return;
     }
 
@@ -82,11 +84,24 @@ const CheckoutForm = ({ onSubmit }) => {
       postalCode: shippingAddress.province || "",
     };
 
-    onSubmit({ shippingAddress: finalAddress, paymentMethod });
+    const idempotencyKey =
+      (typeof crypto !== "undefined" && crypto.randomUUID && crypto.randomUUID()) ||
+      `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+    try {
+      setSubmitting(true);
+      await Promise.resolve(onSubmit({ shippingAddress: finalAddress, paymentMethod, idempotencyKey }));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-md space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className={`bg-white p-6 rounded-xl shadow-md space-y-4 ${submitting ? "opacity-95" : ""}`}
+      aria-busy={submitting}
+    >
       <h3 className="text-xl font-bold mb-4 text-que-primary">Shipping Information</h3>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -102,6 +117,7 @@ const CheckoutForm = ({ onSubmit }) => {
             className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-que-primary"
             required
             aria-required="true"
+            disabled={submitting}
           />
         </div>
 
@@ -118,11 +134,14 @@ const CheckoutForm = ({ onSubmit }) => {
             value={shippingAddress.phone}
             onChange={handlePhoneChange}
             onBlur={handlePhoneBlur}
-            className={`w-full border p-3 rounded-lg focus:ring-2 focus:ring-que-primary ${errors.phone && touched.phone ? "border-red-500" : ""}`}
+            className={`w-full border p-3 rounded-lg focus:ring-2 focus:ring-que-primary ${
+              errors.phone && touched.phone ? "border-red-500" : ""
+            }`}
             required
             aria-required="true"
             aria-invalid={!!(errors.phone && touched.phone)}
             aria-describedby="phone-error"
+            disabled={submitting}
           />
           {errors.phone && touched.phone ? (
             <p id="phone-error" className="mt-1 text-sm text-red-600">
@@ -143,12 +162,13 @@ const CheckoutForm = ({ onSubmit }) => {
             value={shippingAddress.province || ""}
             onChange={(e) => {
               const code = Number(e.target.value);
-              setShippingAddress(prev => ({ ...prev, province: code, district: null, ward: null }));
+              setShippingAddress((prev) => ({ ...prev, province: code, district: null, ward: null }));
               fetchDistricts(code);
             }}
             className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-que-primary"
             required
             aria-required="true"
+            disabled={submitting}
           >
             <option value="">Select Province/City</option>
             {provinces.map((p) => (
@@ -167,10 +187,10 @@ const CheckoutForm = ({ onSubmit }) => {
             value={shippingAddress.district || ""}
             onChange={(e) => {
               const code = Number(e.target.value);
-              setShippingAddress(prev => ({ ...prev, district: code, ward: null }));
+              setShippingAddress((prev) => ({ ...prev, district: code, ward: null }));
               fetchWards(code);
             }}
-            disabled={!shippingAddress.province}
+            disabled={!shippingAddress.province || submitting}
             className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-que-primary disabled:bg-gray-50"
             required
             aria-required="true"
@@ -190,8 +210,8 @@ const CheckoutForm = ({ onSubmit }) => {
             id="ward"
             name="ward"
             value={shippingAddress.ward || ""}
-            onChange={(e) => setShippingAddress(prev => ({ ...prev, ward: Number(e.target.value) }))}
-            disabled={!shippingAddress.district}
+            onChange={(e) => setShippingAddress((prev) => ({ ...prev, ward: Number(e.target.value) }))}
+            disabled={!shippingAddress.district || submitting}
             className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-que-primary disabled:bg-gray-50"
             required
             aria-required="true"
@@ -218,6 +238,7 @@ const CheckoutForm = ({ onSubmit }) => {
           className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-que-primary"
           required
           aria-required="true"
+          disabled={submitting}
         />
       </div>
 
@@ -228,7 +249,7 @@ const CheckoutForm = ({ onSubmit }) => {
             key={method.id}
             className={`relative cursor-pointer border rounded-lg p-4 flex flex-col items-center transition ${
               paymentMethod === method.id ? "border-que-primary ring-2 ring-que-accent" : "border-gray-300"
-            }`}
+            } ${submitting ? "pointer-events-none opacity-75" : ""}`}
           >
             <input
               type="radio"
@@ -237,6 +258,7 @@ const CheckoutForm = ({ onSubmit }) => {
               checked={paymentMethod === method.id}
               onChange={(e) => setPaymentMethod(e.target.value)}
               className="absolute top-2 right-2 w-5 h-5 accent-que-primary cursor-pointer"
+              disabled={submitting}
             />
             <img src={method.image} alt={method.label} className="h-16 object-contain mb-2" />
             <span className="font-medium text-sm text-center text-que-text-main">{method.label}</span>
@@ -246,9 +268,12 @@ const CheckoutForm = ({ onSubmit }) => {
 
       <button
         type="submit"
-        className="mt-6 w-full bg-que-primary hover:bg-que-secondary text-white py-4 rounded-lg font-bold text-lg transition-colors"
+        disabled={submitting}
+        className={`mt-6 w-full text-white py-4 rounded-lg font-bold text-lg transition-colors ${
+          submitting ? "bg-gray-400 cursor-not-allowed" : "bg-que-primary hover:bg-que-secondary"
+        }`}
       >
-        Place Order
+        {submitting ? "Processing…" : "Place Order"}
       </button>
     </form>
   );
