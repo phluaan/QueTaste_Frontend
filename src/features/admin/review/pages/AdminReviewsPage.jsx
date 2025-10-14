@@ -13,7 +13,7 @@ const AdminReviewsPage = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
 
-  const { reviews, pagination, loading, error } = useAdminReview({
+  const { reviews, pagination, loading, error, handleDelete } = useAdminReview({
     productId,
     rating,
     search,
@@ -25,10 +25,10 @@ const AdminReviewsPage = () => {
   const handleView = (r) => setSelected(r);
   const handleClose = () => setSelected(null);
 
-  const handleDelete = (id) => {
+  const onDelete = (id) => {
     if (window.confirm("Bạn có chắc muốn xóa đánh giá này?")) {
       console.log("Xóa review:", id);
-      // dispatch(deleteReview(id)) nếu có API
+      handleDelete(id);
     }
   };
 
@@ -41,9 +41,9 @@ const AdminReviewsPage = () => {
         <h1 className="text-2xl font-semibold text-que-primary">
           Quản lý đánh giá
         </h1>
-        <button className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600">
+        {/* <button className="px-4 py-2 bg-green-500 text-white rounded-lg text-sm hover:bg-green-600">
           Xuất CSV
-        </button>
+        </button> */}
       </div>
 
       {/* Bộ lọc */}
@@ -116,6 +116,9 @@ const AdminReviewsPage = () => {
                 <th className="px-4 py-3 font-medium">Đánh giá</th>
                 <th className="px-4 py-3 font-medium">Nội dung</th>
                 <th className="px-4 py-3 font-medium">Ngày</th>
+                <th className="px-4 py-3 font-medium text-center">
+                  Trạng thái
+                </th>
                 <th className="px-4 py-3 font-medium text-center">Hành động</th>
               </tr>
             </thead>
@@ -145,11 +148,12 @@ const AdminReviewsPage = () => {
                     ))}
                   </td>
                   <td className="px-4 py-3 truncate max-w-[200px]">
-                    {r.content}
+                    {r.comment}
                   </td>
                   <td className="px-4 py-3 text-gray-600">
                     {new Date(r.createdAt).toLocaleDateString("vi-VN")}
                   </td>
+                  <td className="px-4 py-3">{r.isDeleted && <p>Đã xóa</p>}</td>
                   <td className="px-4 py-3 text-center flex justify-center gap-2">
                     <button
                       onClick={() => handleView(r)}
@@ -159,9 +163,11 @@ const AdminReviewsPage = () => {
                       <Eye size={18} />
                     </button>
                     <button
-                      onClick={() => handleDelete(r._id)}
-                      className="p-1.5 rounded-lg text-red-600 hover:bg-red-50"
-                      title="Xóa"
+                      onClick={() => onDelete(r._id)}
+                      disabled={r.isDeleted}
+                      className={`p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition
+    ${r.isDeleted ? "opacity-40 cursor-not-allowed hover:bg-transparent" : ""}`}
+                      title={r.isDeleted ? "Đánh giá đã bị xóa" : "Xóa"}
                     >
                       <Trash2 size={18} />
                     </button>

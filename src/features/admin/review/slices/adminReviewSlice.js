@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllReviewApi } from "../services/reviewService";
-import { showError } from "../../../../utils/toastUtils";
+import { deleteReviewApi, getAllReviewApi } from "../services/reviewService";
+import { showError, showSuccess } from "../../../../utils/toastUtils";
 
 // 🔹 Lấy danh sách review
 export const getAllReviews = createAsyncThunk(
@@ -29,6 +29,24 @@ export const getAllReviews = createAsyncThunk(
   }
 );
 
+export const deleteReview = createAsyncThunk(
+  "review/deleteReview",
+  async (reviewId, thunkAPI) => {
+    try {
+      const res = await deleteReviewApi(reviewId);
+      if (res.success) {
+        showSuccess("Đã xóa đánh giá thành công");
+        return reviewId; // trả về id để cập nhật lại state
+      }
+      return thunkAPI.rejectWithValue(res.message);
+    } catch (err) {
+      const msg = err.response?.data?.message || "Không thể xóa đánh giá ";
+      showError(msg);
+      return thunkAPI.rejectWithValue(msg);
+    }
+  }
+);
+
 const adminReviewSlice = createSlice({
   name: "adminReviews",
   initialState: {
@@ -51,6 +69,21 @@ const adminReviewSlice = createSlice({
         state.pagination = action.payload.pagination || null;
       })
       .addCase(getAllReviews.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteReview.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteReview.fulfilled, (state, action) => {
+        state.loading = false;
+        // Xóa ngay trong state
+        state.reviews = state.reviews.filter(
+          (review) => review._id !== action.payload
+        );
+      })
+      .addCase(deleteReview.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
