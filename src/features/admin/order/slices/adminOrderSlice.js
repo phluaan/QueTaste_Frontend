@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { cancelOrderApi } from "../../../order/services/orderService";
 import { showError, showSuccess } from "../../../../utils/toastUtils";
 import {
+  cancelOrdersApi,
   confirmOrderApi,
   confirmOrdersApi,
   getAllOrdersApi,
@@ -112,6 +113,48 @@ export const confirmOrdersSlice = createAsyncThunk(
   }
 );
 
+export const cancelOrdersSlice = createAsyncThunk(
+  "adminOrders/cancelOrders",
+  async (listOrderIds, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.accessToken;
+      const res = await cancelOrdersApi(token, listOrderIds);
+
+      if (!res?.success) {
+        return thunkAPI.rejectWithValue(res?.message || "Unknown error");
+      }
+
+      const {
+        updated = [],
+        skippedInvalid = [],
+        notFound = [],
+      } = res.data || {};
+
+      if (updated.length > 0) {
+        showSuccess(`Hủy đơn thành công: ${updated.length}`);
+      }
+      if (skippedInvalid.length > 0) {
+        showError(`Đơn hàng không hợp lệ: ${skippedInvalid.length}`);
+      }
+      if (notFound.length) {
+        showError(`Không tìm thấy: ${notFound.length}`);
+      }
+
+      // ✅ trả về payload để fulfilled xử lý
+      return {
+        updatedIds: updated.map((o) => String(o._id)),
+        skippedInvalid, // [{ id, status }]
+        notFound, // [id]
+      };
+    } catch (err) {
+      const message =
+        err?.response?.data?.message || err?.message || "Server error";
+      showError(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const adminOrderSlice = createSlice({
   name: "adminOrders",
   initialState: {
@@ -190,6 +233,26 @@ const adminOrderSlice = createSlice({
         }
       })
       .addCase(confirmOrdersSlice.rejected, (state, action) => {
+        state.confirming = false;
+        state.error = action.payload;
+      })
+      // cancelOrders
+      .addCase(cancelOrdersSlice.pending, (state) => {
+        state.confirming = true;
+      })
+      .addCase(cancelOrdersSlice.fulfilled, (state, action) => {
+        state.confirming = false;
+        const { updatedIds } = action.payload || { updatedIds: [] };
+        if (updatedIds?.length) {
+          const setIds = new Set(updatedIds.map(String));
+          state.allOrders = state.allOrders.map((order) =>
+            setIds.has(String(order.id))
+              ? { ...order, status: "cancelled" }
+              : order
+          );
+        }
+      })
+      .addCase(cancelOrdersSlice.rejected, (state, action) => {
         state.confirming = false;
         state.error = action.payload;
       });

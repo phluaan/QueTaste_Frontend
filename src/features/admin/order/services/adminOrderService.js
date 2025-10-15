@@ -33,3 +33,17 @@ export const confirmOrdersApi = async (token, listOrderId) => {
   );
   return response.data;
 };
+
+export const cancelOrdersApi = async (token, listOrderId) => {
+  console.log(listOrderId);
+  const response = await axios.put(
+    `${API_BASE_URL}/order/cancelOrders`,
+    { listOrderId },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};

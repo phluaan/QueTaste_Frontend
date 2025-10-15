@@ -27,6 +27,7 @@ export default function AdminOrdersPage() {
     error,
     confirmOrder,
     confirmOrders,
+    cancelOrders,
   } = useAdminOrders(filters);
 
   // Toggle chọn đơn
@@ -69,10 +70,7 @@ export default function AdminOrdersPage() {
     refund: "bg-gray-200 text-gray-700",
   };
 
-  useEffect(() => {
-  }, [orders, pagination]);
-
-  const [openConfirm, setOpenConfirm] = useState(false);
+  useEffect(() => {}, [orders, pagination]);
 
   return (
     <AdminLayout>
@@ -94,7 +92,8 @@ export default function AdminOrdersPage() {
         <OrderToolbar
           selectedOrders={selectedOrders}
           onSearch={(q) => setFilters((f) => ({ ...f, search: q, page: 1 }))}
-          onConfirmOrders={() => setOpenConfirm(true)}
+          onConfirmOrders={confirmOrders}
+          onCancelOrders={cancelOrders}
         />
 
         {/* Loading / Error */}
@@ -135,20 +134,6 @@ export default function AdminOrdersPage() {
               onLimitChange={(l) =>
                 setFilters((f) => ({ ...f, limit: l, page: 1 }))
               }
-            />
-
-            {/* Xác nhận */}
-            <ConfirmModal
-              open={openConfirm}
-              onClose={() => setOpenConfirm(false)}
-              onConfirm={async () => {
-                await confirmOrders(selectedOrders);
-                setOpenConfirm(false);
-              }}
-              title="Xác nhận các đơn đã chọn"
-              message={`Bạn có chắc muốn xác nhận ${selectedOrders.length} đơn hàng?`}
-              confirmText="Xác nhận"
-              cancelText="Đóng"
             />
           </>
         )}
