@@ -4,6 +4,7 @@ import {
   getAllOrders,
   confirmOrderSlice,
   confirmOrdersSlice,
+  cancelOrdersSlice,
 } from "../slices/adminOrderSlice";
 
 // useAdminOrders.js
@@ -27,6 +28,11 @@ const useAdminOrders = ({ status, search, page, limit }) => {
     dispatch(confirmOrdersSlice(listOrderId));
   };
 
+  const cancelOrders = (listOrderId) => {
+    console.log("Hủy nhiều đơn hàng");
+    dispatch(cancelOrdersSlice(listOrderId));
+  };
+
   return {
     orders: allOrders,
     pagination: pagination,
@@ -34,6 +40,7 @@ const useAdminOrders = ({ status, search, page, limit }) => {
     error: error,
     confirmOrder,
     confirmOrders,
+    cancelOrders,
   };
 };
 
