@@ -4,16 +4,51 @@ import CartItem from "../components/CartItem";
 import useCart from "../hooks/useCart";
 import Header from "../../../components/Header/Header";
 import Footer from "../../../components/Footer";
+import { useState, useMemo } from "react";
+import ConfirmModal from "../../../components/ConfirmModal";
 
 const CartPage = () => {
-  const { items, loading, handleUpdate, handleRemove } = useCart();
+  const { items, loading, handleUpdate, handleRemove, error } = useCart();
   const navigate = useNavigate();
 
-  const subtotal = items.reduce(
-    (total, item) =>
-      total + (item.product.salePrice || item.product.price) * item.quantity,
-    0
+  // state cho confirm
+  const [confirmState, setConfirmState] = useState({
+    open: false,
+    productId: null,
+    productName: "",
+  });
+
+  // mở modal với thông tin item
+  const askRemove = (item) => {
+    setConfirmState({
+      open: true,
+      productId: item.product._id,
+      productName: item.product.name || item.product.title || "sản phẩm",
+    });
+  };
+
+  // xác nhận xóa
+  const confirmRemove = () => {
+    if (confirmState.productId) {
+      handleRemove(confirmState.productId);
+    }
+    setConfirmState({ open: false, productId: null, productName: "" });
+  };
+
+  // hủy
+  const closeConfirm = () =>
+    setConfirmState({ open: false, productId: null, productName: "" });
+
+  const subtotal = useMemo(
+    () =>
+      items.reduce(
+        (total, item) =>
+          total + (item.product.salePrice || item.product.price) * item.quantity,
+        0
+      ),
+    [items]
   );
+
   const delivery = 36000;
   const total = subtotal + delivery;
 
@@ -27,12 +62,8 @@ const CartPage = () => {
         ) : items.length === 0 ? (
           <div className="flex flex-col items-center justify-center mt-20">
             <FaShoppingCart className="text-gray-300 text-8xl mb-6" />
-            <h2 className="text-2xl font-bold mb-2 text-que-text-main">
-              Giỏ hàng trống
-            </h2>
-            <p className="text-que-text-muted mb-6">
-              Bạn chưa có sản phẩm nào trong giỏ.
-            </p>
+            <h2 className="text-2xl font-bold mb-2 text-que-text-main">Giỏ hàng trống</h2>
+            <p className="text-que-text-muted mb-6">Bạn chưa có sản phẩm nào trong giỏ.</p>
             <Link
               to="/products"
               className="bg-que-primary hover:bg-que-secondary text-white py-3 px-6 rounded-lg font-medium transition-colors"
@@ -50,7 +81,8 @@ const CartPage = () => {
                     key={item.product._id}
                     item={item}
                     handleUpdate={handleUpdate}
-                    handleRemove={handleRemove}
+                    // ⚠️ thay vì gọi xóa ngay, ta mở modal xác nhận
+                    handleRemove={() => askRemove(item)}
                   />
                 ))}
               </div>
@@ -59,9 +91,7 @@ const CartPage = () => {
             {/* Order Summary */}
             <div className="lg:w-1/3">
               <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold mb-6 text-que-text-main">
-                  Order Summary
-                </h2>
+                <h2 className="text-2xl font-bold mb-6 text-que-text-main">Order Summary</h2>
                 <div className="space-y-4 text-que-text-main">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
@@ -93,6 +123,17 @@ const CartPage = () => {
       </div>
 
       <Footer />
+
+      {/* Modal xác nhận xóa */}
+      <ConfirmModal
+        open={confirmState.open}
+        title="Xóa sản phẩm khỏi giỏ hàng"
+        message={`Bạn có chắc muốn xóa "${confirmState.productName}" khỏi giỏ hàng?`}
+        confirmText="Xóa"
+        cancelText="Hủy"
+        onClose={closeConfirm}
+        onConfirm={confirmRemove}
+      />
     </main>
   );
 };
