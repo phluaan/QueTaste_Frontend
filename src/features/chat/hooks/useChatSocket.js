@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "react";
-import { io } from "socket.io-client";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addMessage,
@@ -7,30 +6,20 @@ import {
   incrementUnread,
   markAsRead,
 } from "../slices/chatSlice";
-import { getAccessToken } from "../../../utils/storage";
-
-let chatSocket; 
+import { initSocket, getSocket } from "../../../utils/socketManager";
 
 export const useChatSocket = (isOpen = false) => {
   const dispatch = useDispatch();
   const { activeConversation } = useSelector((s) => s.chat);
-  const initialized = useRef(false);
 
   useEffect(() => {
-    const token = getAccessToken();
-    if (!token || initialized.current) return;
-    initialized.current = true;
-
     const SOCKET_URL =
       import.meta.env.VITE_SOCKET_URL || "http://localhost:8088";
 
-    chatSocket = io(SOCKET_URL, {
-      auth: { token },
-      transports: ["websocket"],
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 3000,
-    });
+    const socket =
+      getSocket("chat") || initSocket("chat", SOCKET_URL);
+
+    if (!socket) return;
 
     const handleMessage = (data) => {
       dispatch(addMessage(data));
@@ -47,16 +36,12 @@ export const useChatSocket = (isOpen = false) => {
       dispatch(updatePresence(data));
     };
 
-    chatSocket.on("chat:message", handleMessage);
-    chatSocket.on("presence", handlePresence);
+    socket.on("chat:message", handleMessage);
+    socket.on("presence", handlePresence);
 
     return () => {
-      if (chatSocket) {
-        chatSocket.off("chat:message", handleMessage);
-        chatSocket.off("presence", handlePresence);
-      }
+      socket.off("chat:message", handleMessage);
+      socket.off("presence", handlePresence);
     };
-  }, [dispatch]); 
-
-  return chatSocket;
+  }, [dispatch, activeConversation?._id, isOpen]);
 };
