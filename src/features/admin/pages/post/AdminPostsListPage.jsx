@@ -1,4 +1,3 @@
-// src/features/admin/pages/post/AdminPostsListPage.jsx
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -7,13 +6,10 @@ import usePost from "../../../post/hooks/usePost";
 import PostCard from "../../../post/components/PostCard";
 
 const normalize = (s) =>
-    (s || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/\p{Diacritic}/gu, "");
+    (s || "").toLowerCase().normalize("NFD").replace(/\p{Diacritic}/gu, "");
 
 export default function AdminPostsListPage() {
-    const { allPosts, loading, error } = usePost();
+    const { allPosts, loading, error } = usePost({ admin: true });
     const [q, setQ] = useState("");
 
     const filtered = useMemo(() => {
@@ -24,14 +20,11 @@ export default function AdminPostsListPage() {
 
     return (
         <AdminLayout>
-        {/* Header */}
         <div className="mb-6 flex items-center justify-between gap-3 flex-wrap">
             <div>
             <h1 className="text-2xl font-semibold">Danh sách bài viết</h1>
             <p className="text-sm text-gray-500">Tìm kiếm & quản trị bài viết</p>
             </div>
-
-            {/* Quay lại Dashboard bài viết */}
             <Link
             to="/admin/posts"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition"
@@ -44,7 +37,6 @@ export default function AdminPostsListPage() {
             </Link>
         </div>
 
-        {/* Search */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4">
             <div className="w-full md:w-96">
             <label htmlFor="post-search" className="sr-only">Tìm bài viết</label>
@@ -63,44 +55,27 @@ export default function AdminPostsListPage() {
             </div>
         </div>
 
-        {/* State: Loading / Error */}
         {loading ? (
-            <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center text-gray-500">
-            Đang tải danh sách bài viết…
-            </div>
+            <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center text-gray-500">Đang tải danh sách bài viết…</div>
         ) : error ? (
-            <div className="bg-white rounded-2xl border border-red-100 p-8 text-center text-red-600">
-            ❌ {error}
-            </div>
+            <div className="bg-white rounded-2xl border border-red-100 p-8 text-center text-red-600">❌ {error}</div>
         ) : (
             <>
-            {/* Summary */}
             <div className="flex items-center justify-between mb-3">
                 <div className="text-sm text-gray-500">
                 Tổng: <b>{filtered?.length || 0}</b> bài viết
-                {q && (
-                    <span className="ml-2 text-gray-400">
-                    (lọc theo: “{q}”)
-                    </span>
-                )}
+                {q && <span className="ml-2 text-gray-400">(lọc theo: “{q}”)</span>}
                 </div>
             </div>
 
-            {/* Grid Posts */}
             {filtered && filtered.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4">
                 {filtered.map((post) => (
-                    <PostCard
-                        key={post._id || post.id}
-                        post={post}
-                        to={`/admin/posts/${post.slug || post._id}`}
-                    />
+                    <PostCard key={post._id || post.id} post={post} to={`/admin/posts/${post.slug || post._id}`} />
                 ))}
                 </div>
             ) : (
-                <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-10 text-center text-gray-500">
-                Không tìm thấy bài viết phù hợp.
-                </div>
+                <div className="bg-white rounded-2xl border border-dashed border-gray-2 00 p-10 text-center text-gray-500">Không tìm thấy bài viết phù hợp.</div>
             )}
             </>
         )}
