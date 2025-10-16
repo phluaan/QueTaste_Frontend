@@ -75,5 +75,5 @@ quetaste-frontend/
 ---
 
 ## 📝 Ghi chú
-- Repo này **chỉ chứa frontend**.  
+- Repo này **chỉ chứa frontend**.
 - Để chạy đầy đủ, cần kết nối với **backend QueTaste** ([repo backend](https://github.com/MihnNathja/QueTaste.git)).  
