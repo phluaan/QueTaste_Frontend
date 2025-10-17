@@ -1,3 +1,4 @@
+// src/features/chat/hooks/useChatSocket.js
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,14 +12,13 @@ import { initSocket, getSocket } from "../../../utils/socketManager";
 export const useChatSocket = (isOpen = false) => {
   const dispatch = useDispatch();
   const { activeConversation } = useSelector((s) => s.chat);
+  const accessToken = useSelector((s) => s.auth.accessToken);
 
   useEffect(() => {
-    const SOCKET_URL =
-      import.meta.env.VITE_SOCKET_URL || "http://localhost:8088";
+    if (!accessToken) return;
 
-    const socket =
-      getSocket("chat") || initSocket("chat", SOCKET_URL);
-
+    const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || "http://localhost:8088";
+    const socket = getSocket("chat") || initSocket("chat", SOCKET_URL);
     if (!socket) return;
 
     const handleMessage = (data) => {
@@ -43,5 +43,5 @@ export const useChatSocket = (isOpen = false) => {
       socket.off("chat:message", handleMessage);
       socket.off("presence", handlePresence);
     };
-  }, [dispatch, activeConversation?._id, isOpen]);
+  }, [dispatch, accessToken, activeConversation?._id, isOpen]);
 };
