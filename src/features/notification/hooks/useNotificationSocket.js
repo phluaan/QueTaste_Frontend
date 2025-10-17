@@ -1,43 +1,28 @@
-import { useEffect, useRef } from "react";
-import { io } from "socket.io-client";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addNotification } from "../slices/notificationSlice";
-import { getAccessToken } from "../../../utils/storage";
-
-let notiSocket;
+import { initSocket, getSocket } from "../../../utils/socketManager";
 
 export const useNotificationSocket = () => {
   const dispatch = useDispatch();
-  const initialized = useRef(false);
 
   useEffect(() => {
-    const token = getAccessToken();
-    if (!token || initialized.current) return;
-    initialized.current = true;
-
     const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const wsUrl = apiUrl.replace("/api", "");
 
-    notiSocket = io(wsUrl, {
-      auth: { token },
-      transports: ["websocket"],
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 3000,
-    });
+    const socket =
+      getSocket("notification") || initSocket("notification", wsUrl);
 
-    const handleNotification = (noti) => {
+    if (!socket) return;
+
+    const handleNoti = (noti) => {
       dispatch(addNotification(noti));
     };
 
-    notiSocket.on("notification", handleNotification);
+    socket.on("notification", handleNoti);
 
     return () => {
-      if (notiSocket) {
-        notiSocket.off("notification", handleNotification);
-      }
+      socket.off("notification", handleNoti);
     };
   }, [dispatch]);
-
-  return notiSocket;
 };
