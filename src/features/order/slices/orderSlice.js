@@ -3,6 +3,7 @@ import {
   getMyOrdersApi,
   cancelOrderApi,
   requestCancelOrderApi,
+  reOrderApi,
 } from "../services/orderService";
 import { showError, showSuccess } from "../../../utils/toastUtils";
 
@@ -65,6 +66,18 @@ export const requestCancelOrder = createAsyncThunk(
         err.response?.data?.message || "Server error"
       );
     }
+  }
+);
+
+export const reOrder = createAsyncThunk(
+  "orders/reOrder",
+  async ({ orderId }, thunkAPI) => {
+    const token = thunkAPI.getState().auth.accessToken;
+    console.log("re-Order: ", token);
+    console.log(orderId);
+    const res = await reOrderApi(token, orderId);
+    if (!res.success) return thunkAPI.rejectWithValue(res.message);
+    return res.data; // { cart, added, skipped }
   }
 );
 

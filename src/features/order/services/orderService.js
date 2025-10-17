@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_BASE_URL } from "../../../config";
+import axiosClient from "../../../utils/axiosClient";
 
 export const getMyOrdersApi = async (token, params) => {
   //console.log(params);
@@ -37,4 +38,9 @@ export const requestCancelOrderApi = async (token, orderId, reason) => {
     }
   );
   return response.data;
+};
+export const reOrderApi = async (token, orderId) => {
+  const res = await axiosClient.post(`/order/re-order/${orderId}`);
+  console.log(res);
+  return res.data;
 };

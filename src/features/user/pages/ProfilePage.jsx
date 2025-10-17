@@ -23,11 +23,11 @@ const ProfilePage = () => {
           isActive={tabFromUrl === "profile"}
           onClick={() => navigate("/profile?tab=profile")}
         />
-        <SidebarButton
+        {/* <SidebarButton
           label="Đổi mật khẩu"
           isActive={tabFromUrl === "password"}
           onClick={() => navigate("/profile?tab=password")}
-        />
+        /> */}
         <SidebarButton
           label="Đơn hàng của tôi"
           isActive={tabFromUrl === "orders"}
@@ -43,7 +43,7 @@ const ProfilePage = () => {
       {/* Nội dung chính */}
       <div className="w-4/5 p-6 min-h-[50vh] bg-que-surface rounded-r-xl shadow-md">
         {tabFromUrl === "profile" && <ProfileForm />}
-        {tabFromUrl === "password" && <ChangePasswordForm />}
+        {/* {tabFromUrl === "password" && <ChangePasswordForm />} */}
         {tabFromUrl === "orders" && <OrderForm />}
         {tabFromUrl === "coupons" && <UserCouponForm />}
       </div>
