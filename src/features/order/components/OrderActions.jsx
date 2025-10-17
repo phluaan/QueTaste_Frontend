@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import useCancelOrder from "../hooks/useCancelOrder";
 import CancelRequestModal from "./CancelRequestModal";
 import ConfirmModal from "../../../components/ConfirmModal";
+import useOrder from "../hooks/useOrder";
+import useOrderActions from "../hooks/useOrderActions";
 
 const OrderActions = ({ order }) => {
   const navigate = useNavigate();
@@ -12,10 +14,17 @@ const OrderActions = ({ order }) => {
   const [showCancelModal, setShowCancelModal] = useState(false); // modal gửi yêu cầu hủy (processing)
   const [openConfirm, setOpenConfirm] = useState(false); // modal xác nhận hủy trực tiếp (new/confirmed)
 
+  const { reorder, cancel, requestCancel, loading } = useOrderActions();
+
+  const handleReOrder = async () => {
+    const action = await reorder(_id);
+    if (action.type.endsWith("/fulfilled")) {
+      navigate("/cart");
+    }
+  };
   const renderPrimary = () => {
     switch (status) {
       case "new":
-      case "confirmed":
         // Hủy trực tiếp
         return (
           <>
@@ -40,7 +49,7 @@ const OrderActions = ({ order }) => {
           </>
         );
 
-      case "processing":
+      case "confirmed":
         // Gửi yêu cầu hủy + liên hệ
         return (
           <>
@@ -63,17 +72,17 @@ const OrderActions = ({ order }) => {
           </>
         );
 
-      case "shipping":
-        return (
-          <button
-            className="px-4 py-2 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
-            onClick={() => navigate(`/orders/${_id}/tracking`)}
-          >
-            Theo dõi vận chuyển
-          </button>
-        );
+      // case "shipping":
+      //   return (
+      //     <button
+      //       className="px-4 py-2 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
+      //       onClick={() => navigate(`/orders/${_id}/tracking`)}
+      //     >
+      //       Theo dõi vận chuyển
+      //     </button>
+      //   );
 
-      case "delivering":
+      case "done-shipping":
         return (
           <button
             className="px-4 py-2 rounded text-sm bg-green-500 text-white hover:bg-green-600"
@@ -84,34 +93,27 @@ const OrderActions = ({ order }) => {
         );
 
       case "completed":
-        return (
-          <button
-            className="px-4 py-2 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
-            onClick={() => navigate(`/products/reorder?orderId=${_id}`)}
-          >
-            Mua lại
-          </button>
-        );
-
       case "cancelled":
+      case "cancel_requested":
         return (
           <button
-            className="px-4 py-2 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
-            onClick={() => navigate(`/products/reorder?orderId=${_id}`)}
+            className="px-4 py-2 rounded text-sm bg-blue-500 text-white hover:bg-blue-600 disabled:opacity-50"
+            onClick={handleReOrder}
+            disabled={loading.reorder}
           >
-            Mua lại
+            {loading.reorder ? "Đang thêm..." : "Mua lại"}
           </button>
         );
 
-      case "refund":
-        return (
-          <button
-            className="px-4 py-2 rounded text-sm bg-purple-500 text-white hover:bg-purple-600"
-            onClick={() => navigate(`/orders/${_id}/refund`)}
-          >
-            Xem chi tiết khiếu nại
-          </button>
-        );
+      // case "refund":
+      //   return (
+      //     <button
+      //       className="px-4 py-2 rounded text-sm bg-purple-500 text-white hover:bg-purple-600"
+      //       onClick={() => navigate(`/orders/${_id}/refund`)}
+      //     >
+      //       Xem chi tiết khiếu nại
+      //     </button>
+      //   );
 
       default:
         return null;
