@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../assets/gauhai.png";
 import defaultAvatar from "../../assets/defaultAvatar.jpg";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,10 +10,13 @@ import {
 } from "../../features/notification/slices/notificationSlice";
 import { useNotificationSocket } from "../../features/notification/hooks/useNotificationSocket";
 import { FiBell } from "react-icons/fi";
+import AdminMenu from "../AdminMenu";
+import { logoutAsync } from "../../features/auth/slices/authSlice";
 
 export default function AdminHeader() {
   const dispatch = useDispatch();
-  const { accessToken } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const { accessToken, user } = useSelector((state) => state.auth);
   const { items, unreadCount } = useSelector((s) => s.notification);
   const [showNoti, setShowNoti] = useState(false);
 
@@ -25,6 +28,15 @@ export default function AdminHeader() {
       dispatch(fetchNotifications());
     }
   }, [accessToken, dispatch]);
+
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutAsync()).unwrap();
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
 
   return (
     <header className="h-16 bg-que-surface shadow flex items-center justify-between px-6">
@@ -42,12 +54,15 @@ export default function AdminHeader() {
             {/* Notification bell */}
             <div className="relative">
               <button
-                onClick={() => setShowNoti(!showNoti)}
+                onClick={() => setShowNoti((v) => !v)}
                 className="relative flex items-center justify-center w-10 h-10 rounded-full bg-que-background hover:bg-que-secondary/20 transition-colors"
+                aria-haspopup="true"
+                aria-expanded={showNoti}
+                aria-label="Notifications"
               >
-                <FiBell className="h-6 w-6 text-que-text-main group-hover:text-que-primary" />
+                <FiBell className="h-6 w-6 text-que-text-main" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-que-danger border-2 border-white text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center animate-pulse"></span>
+                  <span className="absolute -top-1 -right-1 bg-que-danger border-2 border-white text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center animate-pulse" />
                 )}
               </button>
 
@@ -86,7 +101,7 @@ export default function AdminHeader() {
                           <div className="flex items-center gap-2">
                             <span>{n.message}</span>
                             {!n.isRead && (
-                              <span className="inline-block w-2 h-2 bg-que-secondary rounded-full ml-1"></span>
+                              <span className="inline-block w-2 h-2 bg-que-secondary rounded-full ml-1" />
                             )}
                           </div>
                           <div className="text-xs text-que-text-muted">
@@ -100,15 +115,12 @@ export default function AdminHeader() {
               )}
             </div>
 
-            {/* Avatar */}
-            <div className="flex items-center gap-2 cursor-pointer">
-              <img
-                src={defaultAvatar}
-                alt="avatar"
-                className="w-8 h-8 rounded-full border"
-              />
-              <span className="text-que-text-main">Admin</span>
-            </div>
+            {/* Admin dropdown (không có Đơn hàng) */}
+            <AdminMenu
+              avatar={defaultAvatar}
+              name={user?.fullName || user?.name || "Admin"}
+              onLogout={handleLogout}
+            />
           </>
         ) : (
           <div className="flex gap-2">
