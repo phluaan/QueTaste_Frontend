@@ -7,12 +7,26 @@ let sockets = {
   notification: null,
 };
 
+let lastToken = {
+  chat: null,
+  notification: null,
+};
+
 export const initSocket = (type, url, options = {}) => {
   const token = getAccessToken();
   if (!token) return null;
 
-  // Đảm bảo chỉ tạo 1 instance cho mỗi loại
-  if (sockets[type]) return sockets[type];
+  // Nếu đã có socket nhưng token đã đổi -> disconnect & tạo mới
+  if (sockets[type]) {
+    if (lastToken[type] === token) {
+      // Đúng token hiện tại -> đảm bảo đã connect
+      if (!sockets[type].connected) sockets[type].connect();
+      return sockets[type];
+    }
+    sockets[type].removeAllListeners();
+    sockets[type].disconnect();
+    sockets[type] = null;
+  }
 
   const socket = io(url, {
     auth: { token },
@@ -24,6 +38,8 @@ export const initSocket = (type, url, options = {}) => {
   });
 
   sockets[type] = socket;
+  lastToken[type] = token;
+
   return socket;
 };
 
@@ -32,6 +48,7 @@ export const disconnectSocket = (type) => {
     sockets[type].removeAllListeners();
     sockets[type].disconnect();
     sockets[type] = null;
+    lastToken[type] = null;
   }
 };
 
