@@ -1,10 +1,18 @@
 import { useState } from "react";
 import axiosClient from "../utils/axiosClient";
 import { showError, showSuccess } from "../utils/toastUtils";
+import { useSelector } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const initialForm = { fullName: "", email: "", phone: "", message: "" };
 
 const ContactPage = () => {
+  // ✅ lấy accessToken đúng chỗ (ngoài mọi hàm thường)
+  const accessToken = useSelector((state) => state.auth.accessToken);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [formData, setFormData] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -44,14 +52,16 @@ const ContactPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!accessToken) {
+      showError("Vui lòng đăng nhập để tiếp tục");
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+
     const ve = validate(formData);
     setErrors(ve);
-    setTouched({
-      fullName: true,
-      email: true,
-      phone: true,
-      message: true,
-    });
+    setTouched({ fullName: true, email: true, phone: true, message: true });
     if (Object.keys(ve).length) {
       showError("Vui lòng kiểm tra lại các trường bị lỗi.");
       return;
@@ -60,7 +70,10 @@ const ContactPage = () => {
     try {
       setLoading(true);
 
+      // NOTE: backend của bạn đang đọc body phẳng { fullName, email, ... }
       const res = await axiosClient.post("/contact/send", formData);
+      console.log(res);
+
       const ok = res?.success;
       if (ok) {
         showSuccess("Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi sớm.");
@@ -68,14 +81,12 @@ const ContactPage = () => {
         setTouched({});
         setErrors({});
       } else {
-        const msg = res?.data?.message || "Gửi liên hệ thất bại";
+        const msg = res?.message || "Gửi liên hệ thất bại";
         showError(msg);
       }
     } catch (err) {
       const msg =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Có lỗi xảy ra khi gửi liên hệ";
+        err?.res?.message || err?.message || "Có lỗi xảy ra khi gửi liên hệ";
       showError(msg);
     } finally {
       setLoading(false);
@@ -109,7 +120,7 @@ const ContactPage = () => {
               width="100%"
               height="250"
               style={{ border: 0 }}
-              allowFullScreen=""
+              allowFullScreen={true}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="map"
@@ -137,6 +148,7 @@ const ContactPage = () => {
                   : "border"
               }`}
               required
+              autoComplete="name"
               aria-invalid={!!(touched.fullName && errors.fullName)}
               aria-describedby="err-fullName"
             />
@@ -159,6 +171,7 @@ const ContactPage = () => {
                 touched.email && errors.email ? "border-red-500" : "border"
               }`}
               required
+              autoComplete="email"
               aria-invalid={!!(touched.email && errors.email)}
               aria-describedby="err-email"
             />
@@ -181,6 +194,8 @@ const ContactPage = () => {
                 touched.phone && errors.phone ? "border-red-500" : "border"
               }`}
               required
+              autoComplete="tel"
+              pattern="[0-9+().\-\s]{8,20}"
               aria-invalid={!!(touched.phone && errors.phone)}
               aria-describedby="err-phone"
             />
