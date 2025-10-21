@@ -39,8 +39,19 @@ export const requestCancelOrderApi = async (token, orderId, reason) => {
   );
   return response.data;
 };
-export const reOrderApi = async (token, orderId) => {
-  const res = await axiosClient.post(`/order/re-order/${orderId}`);
-  console.log(res);
-  return res.data;
+
+export const reOrderApi = async (orderId) => {
+  try {
+    const res = await axiosClient.post(`/order/re-order/${orderId}`);
+    // success case: { success, message, data: { cart, added, skipped, code? } }
+    return res;
+  } catch (err) {
+    // error case (4xx/5xx): axios ném lỗi -> trả về data chuẩn hóa
+    if (err.response?.data) return err.response.data; // { success:false, message, data:{...} }
+    return {
+      success: false,
+      message: err.message || "Network error",
+      data: { code: "NETWORK_ERROR", cart: null, added: [], skipped: [] },
+    };
+  }
 };

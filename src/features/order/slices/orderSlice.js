@@ -72,11 +72,22 @@ export const requestCancelOrder = createAsyncThunk(
 export const reOrder = createAsyncThunk(
   "orders/reOrder",
   async ({ orderId }, thunkAPI) => {
-    const token = thunkAPI.getState().auth.accessToken;
-    console.log("re-Order: ", token);
-    console.log(orderId);
-    const res = await reOrderApi(token, orderId);
-    if (!res.success) return thunkAPI.rejectWithValue(res.message);
+    const res = await reOrderApi(orderId);
+    //console.log("response: ", res);
+
+    if (!res.success) {
+      const payload = {
+        message: res.message,
+        code: res.data?.code ?? "REORDER_BAD_REQUEST",
+        cart: res.data?.cart ?? null,
+        added: res.data?.added ?? [],
+        skipped: res.data?.skipped ?? [],
+      };
+      showError(payload.message);
+      return thunkAPI.rejectWithValue(payload);
+    }
+
+    showSuccess(res.message);
     return res.data; // { cart, added, skipped }
   }
 );
