@@ -108,12 +108,20 @@ const cartSlice = createSlice({
       })
       .addCase(reOrder.fulfilled, (state, action) => {
         state.loading = false;
-        const cart = action.payload?.cart;
+        const { cart, added, skipped } = action.payload; // luôn có
+        state.cart = cart;
         state.items = cart?.items ?? [];
+        state.lastReorder = {
+          added,
+          skipped,
+          partial: (added?.length || 0) > 0 && (skipped?.length || 0) > 0,
+        };
       })
       .addCase(reOrder.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Re-order failed";
+        const p = action.payload || {};
+        state.error = p.message || "Re-order failed";
+        state.lastReorderError = p; // có { code, skipped, ... } để UI render dialog/tooltip
       });
   },
 });
