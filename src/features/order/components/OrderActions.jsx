@@ -14,7 +14,8 @@ const OrderActions = ({ order }) => {
   const [showCancelModal, setShowCancelModal] = useState(false); // modal gửi yêu cầu hủy (processing)
   const [openConfirm, setOpenConfirm] = useState(false); // modal xác nhận hủy trực tiếp (new/confirmed)
 
-  const { reorder, cancel, requestCancel, loading } = useOrderActions();
+  const { reorder, confirmReceived, requestCancel, loading } =
+    useOrderActions();
 
   const handleReOrder = async () => {
     const action = await reorder(_id);
@@ -38,7 +39,7 @@ const OrderActions = ({ order }) => {
               open={openConfirm}
               onClose={() => setOpenConfirm(false)}
               onConfirm={async () => {
-                await handleCancel(_id); // thunk sẽ hiện toast lỗi/thành công
+                await handleCancel(_id);
                 setOpenConfirm(false);
               }}
               title="Xác nhận hủy đơn"
@@ -72,24 +73,38 @@ const OrderActions = ({ order }) => {
           </>
         );
 
-      // case "shipping":
-      //   return (
-      //     <button
-      //       className="px-4 py-2 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
-      //       onClick={() => navigate(`/orders/${_id}/tracking`)}
-      //     >
-      //       Theo dõi vận chuyển
-      //     </button>
-      //   );
+      case "shipping":
+        return (
+          <button
+            className="px-4 py-2 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
+            onClick={() => navigate(`/orders/${_id}/tracking`)}
+          >
+            Theo dõi vận chuyển
+          </button>
+        );
 
       case "done-shipping":
         return (
-          <button
-            className="px-4 py-2 rounded text-sm bg-green-500 text-white hover:bg-green-600"
-            onClick={() => navigate(`/orders/${_id}/receive`)}
-          >
-            Đã nhận hàng
-          </button>
+          <>
+            <button
+              className="bg-green-600 text-white px-4 py-2 rounded"
+              onClick={() => setOpenConfirm(true)}
+            >
+              Đã nhận được hàng
+            </button>
+            <ConfirmModal
+              open={openConfirm}
+              onClose={() => setOpenConfirm(false)}
+              onConfirm={async () => {
+                await confirmReceived(_id);
+                setOpenConfirm(false);
+              }}
+              title="Xác nhận đã nhận được đơn hàng"
+              message="Bạn xác nhận đã nhận được đơn hàng này?"
+              confirmText="Xác nhận"
+              cancelText="Đóng"
+            />
+          </>
         );
 
       case "completed":

@@ -43,7 +43,8 @@ const CartPage = () => {
     () =>
       items.reduce(
         (total, item) =>
-          total + (item.product.salePrice || item.product.price) * item.quantity,
+          total +
+          (item.product.salePrice || item.product.price) * item.quantity,
         0
       ),
     [items]
@@ -62,8 +63,12 @@ const CartPage = () => {
         ) : items.length === 0 ? (
           <div className="flex flex-col items-center justify-center mt-20">
             <FaShoppingCart className="text-gray-300 text-8xl mb-6" />
-            <h2 className="text-2xl font-bold mb-2 text-que-text-main">Giỏ hàng trống</h2>
-            <p className="text-que-text-muted mb-6">Bạn chưa có sản phẩm nào trong giỏ.</p>
+            <h2 className="text-2xl font-bold mb-2 text-que-text-main">
+              Giỏ hàng trống
+            </h2>
+            <p className="text-que-text-muted mb-6">
+              Bạn chưa có sản phẩm nào trong giỏ.
+            </p>
             <Link
               to="/products"
               className="bg-que-primary hover:bg-que-secondary text-white py-3 px-6 rounded-lg font-medium transition-colors"
@@ -91,7 +96,9 @@ const CartPage = () => {
             {/* Order Summary */}
             <div className="lg:w-1/3">
               <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-2xl font-bold mb-6 text-que-text-main">Order Summary</h2>
+                <h2 className="text-2xl font-bold mb-6 text-que-text-main">
+                  Order Summary
+                </h2>
                 <div className="space-y-4 text-que-text-main">
                   <div className="flex justify-between">
                     <span>Subtotal</span>

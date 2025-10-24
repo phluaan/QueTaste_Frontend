@@ -7,7 +7,6 @@ import OrderDetailModal from "../components/OrderDetailModal";
 import TabBar from "../../../order/components/TabBar";
 import Pagination from "../../../../components/Pagination";
 import useAdminOrders from "../hooks/useAdminOrder";
-import ConfirmModal from "../../../../components/ConfirmModal";
 
 export default function AdminOrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -67,13 +66,15 @@ export default function AdminOrdersPage() {
     completed: "bg-green-100 text-green-600",
     cancelled: "bg-red-100 text-red-600",
     cancel_requested: "bg-amber-100 text-amber-700",
+    done_shipping: "bg-indigo-100 text-indigo-600",
+    request_cancelled: "bg-orange-100 text-orange-600",
     refund: "bg-gray-200 text-gray-700",
   };
 
   useEffect(() => {}, [orders, pagination]);
 
   return (
-    <AdminLayout>
+    <>
       <div className="p-6">
         <h1 className="text-2xl font-semibold mb-4">Quản lý đơn hàng</h1>
 
@@ -138,6 +139,6 @@ export default function AdminOrdersPage() {
           </>
         )}
       </div>
-    </AdminLayout>
+    </>
   );
 }

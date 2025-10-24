@@ -31,12 +31,20 @@ const useOrderActions = () => {
     [dispatch]
   );
 
+  const confirmReceived = useCallback(
+    async (orderId) => {
+      return await dispatch(confirmReceivedOrder({ orderId }));
+    },
+    [dispatch]
+  );
+
   // loading tổng hợp cho các action
   const loading = useMemo(
     () => ({
       reorder: cartLoading,
       cancel: canceling,
       requestCancel: canceling,
+      confirmReceived: canceling,
     }),
     [cartLoading, canceling]
   );
@@ -46,6 +54,7 @@ const useOrderActions = () => {
     reorder,
     cancel,
     requestCancel,
+    confirmReceived,
     // states
     loading,
     error: { cancel: cancelError },

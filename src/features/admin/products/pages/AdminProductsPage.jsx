@@ -37,13 +37,10 @@ export default function AdminProductsPage() {
     bulkShowProducts,
   } = useAdminProducts(filters);
 
-  const {
-    open, suggests, activeIdx,
-    boxRef, onKeyDown, onPick, setOpen,
-  } = useAdminProductSuggestions(
-    filters.search,
-    (name) => setFilters((f) => ({ ...f, search: name, page: 1 }))
-  );
+  const { open, suggests, activeIdx, boxRef, onKeyDown, onPick, setOpen } =
+    useAdminProductSuggestions(filters.search, (name) =>
+      setFilters((f) => ({ ...f, search: name, page: 1 }))
+    );
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalMode, setModalMode] = useState(null);
@@ -110,7 +107,7 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <AdminLayout>
+    <>
       <div className="p-6">
         <h1 className="text-2xl font-semibold mb-4">Quản lý sản phẩm</h1>
 
@@ -122,7 +119,9 @@ export default function AdminProductsPage() {
               type="text"
               placeholder="Tìm sản phẩm..."
               value={filters.search}
-              onChange={(e) => setFilters((f) => ({ ...f, search: e.target.value, page: 1 }))}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, search: e.target.value, page: 1 }))
+              }
               onFocus={() => suggests.length > 0 && setOpen(true)}
               onKeyDown={onKeyDown}
               className="border rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -138,12 +137,22 @@ export default function AdminProductsPage() {
                     }`}
                   >
                     {s.images?.[0] ? (
-                      <img src={s.images[0]} alt={s.name} className="w-8 h-8 object-cover rounded" />
-                    ) : <div className="w-8 h-8 bg-gray-200 rounded" />}
+                      <img
+                        src={s.images[0]}
+                        alt={s.name}
+                        className="w-8 h-8 object-cover rounded"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 bg-gray-200 rounded" />
+                    )}
                     <div className="flex-1">
                       <div className="text-sm font-medium">{s.name}</div>
                       <div className="text-xs text-gray-500">
-                        {(s.salePrice > 0 ? s.salePrice : s.price)?.toLocaleString()}đ
+                        {(s.salePrice > 0
+                          ? s.salePrice
+                          : s.price
+                        )?.toLocaleString()}
+                        đ
                       </div>
                     </div>
                   </li>
@@ -153,7 +162,10 @@ export default function AdminProductsPage() {
           </div>
 
           <button
-            onClick={() => { setSelectedProduct(null); setModalMode("create"); }}
+            onClick={() => {
+              setSelectedProduct(null);
+              setModalMode("create");
+            }}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             + Thêm sản phẩm
@@ -307,7 +319,7 @@ export default function AdminProductsPage() {
               }}
               onToggleActive={toggleActiveProduct}
               onDelete={handleDeleteRequest}
-              onBulkHide={bulkHideProducts} 
+              onBulkHide={bulkHideProducts}
               onBulkShow={bulkShowProducts}
             />
 
@@ -345,6 +357,6 @@ export default function AdminProductsPage() {
           message="Bạn có chắc chắn muốn xóa sản phẩm này?"
         />
       </div>
-    </AdminLayout>
+    </>
   );
 }
