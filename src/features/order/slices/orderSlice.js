@@ -4,6 +4,8 @@ import {
   cancelOrderApi,
   requestCancelOrderApi,
   reOrderApi,
+  confirmReceivedOrderApi,
+  getOrderTracking,
 } from "../services/orderService";
 import { showError, showSuccess } from "../../../utils/toastUtils";
 
@@ -92,6 +94,41 @@ export const reOrder = createAsyncThunk(
   }
 );
 
+export const confirmReceivedOrder = createAsyncThunk(
+  "userOrders/confirmReceivedOrder",
+  async ({ orderId }, thunkAPI) => {
+    try {
+      const res = await confirmReceivedOrderApi(orderId);
+      console.log(res);
+      if (res.success) {
+        showSuccess("Xác nhận đã nhận hàng thành công!");
+        return res.data; // đơn hàng sau khi update
+      }
+
+      showError(res.message || "Không thể xác nhận đơn hàng.");
+      return thunkAPI.rejectWithValue(res.message);
+    } catch (err) {
+      const message =
+        err.response?.data?.message || err.message || "Server error";
+      showError(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const fetchOrderTracking = createAsyncThunk(
+  "userOrders/fetchTrackingOrder",
+  async (orderId, thunkAPI) => {
+    try {
+      const res = await getOrderTracking(orderId);
+      console.log(res);
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 const userOrderSlice = createSlice({
   name: "userOrders",
   initialState: {
@@ -101,6 +138,11 @@ const userOrderSlice = createSlice({
     error: null,
     canceling: false,
     cancelError: null,
+    tracking: {
+      data: null,
+      loading: false,
+      error: null,
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -152,6 +194,35 @@ const userOrderSlice = createSlice({
       .addCase(requestCancelOrder.rejected, (state, action) => {
         state.canceling = false;
         state.cancelError = action.payload;
+      })
+      // confirmReceivedOrder
+      .addCase(confirmReceivedOrder.pending, (state) => {
+        state.canceling = true;
+      })
+      .addCase(confirmReceivedOrder.fulfilled, (state, action) => {
+        state.canceling = false;
+        state.myOrders = state.myOrders.map((order) =>
+          order._id === action.payload._id
+            ? { ...order, status: "completed" }
+            : order
+        );
+      })
+      .addCase(confirmReceivedOrder.rejected, (state, action) => {
+        state.canceling = false;
+        state.cancelError = action.payload;
+      })
+      //Order tracking
+      .addCase(fetchOrderTracking.pending, (state) => {
+        state.tracking.loading = true;
+        state.tracking.error = null;
+      })
+      .addCase(fetchOrderTracking.fulfilled, (state, action) => {
+        state.tracking.loading = false;
+        state.tracking.data = action.payload;
+      })
+      .addCase(fetchOrderTracking.rejected, (state, action) => {
+        state.tracking.loading = false;
+        state.tracking.error = action.payload;
       });
   },
 });

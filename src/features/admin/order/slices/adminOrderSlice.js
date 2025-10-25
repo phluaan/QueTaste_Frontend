@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { cancelOrderApi } from "../../../order/services/orderService";
 import { showError, showSuccess } from "../../../../utils/toastUtils";
 import {
+  callShipperApi,
   cancelOrdersApi,
   confirmOrderApi,
   confirmOrdersApi,
@@ -89,13 +90,13 @@ export const confirmOrdersSlice = createAsyncThunk(
       } = res.data || {};
 
       if (updated.length > 0) {
-        showSuccess(`Xác nhận thành công: ${updated.length}`);
+        showSuccess(`Xác nhận thành công: ${updated.length} đơn`);
       }
       if (skippedInvalid.length > 0) {
-        showError(`Đơn hàng không hợp lệ: ${skippedInvalid.length}`);
+        showError(`Đơn hàng không hợp lệ: ${skippedInvalid.length} đơn`);
       }
       if (notFound.length) {
-        showError(`Không tìm thấy: ${notFound.length}`);
+        showError(`Không tìm thấy: ${notFound.length} đơn`);
       }
 
       // ✅ trả về payload để fulfilled xử lý
@@ -131,13 +132,13 @@ export const cancelOrdersSlice = createAsyncThunk(
       } = res.data || {};
 
       if (updated.length > 0) {
-        showSuccess(`Hủy đơn thành công: ${updated.length}`);
+        showSuccess(`Hủy đơn thành công: ${updated.length} đơn`);
       }
       if (skippedInvalid.length > 0) {
-        showError(`Đơn hàng không hợp lệ: ${skippedInvalid.length}`);
+        showError(`Đơn hàng không hợp lệ: ${skippedInvalid.length} đơn`);
       }
       if (notFound.length) {
-        showError(`Không tìm thấy: ${notFound.length}`);
+        showError(`Không tìm thấy: ${notFound.length} đơn`);
       }
 
       // ✅ trả về payload để fulfilled xử lý
@@ -155,6 +156,46 @@ export const cancelOrdersSlice = createAsyncThunk(
   }
 );
 
+export const callShipper = createAsyncThunk(
+  "adminOrders/callShipper",
+  async (orderIds, thunkAPI) => {
+    try {
+      console.log(orderIds);
+      const res = await callShipperApi(orderIds);
+      console.log(res);
+      if (!res.success) {
+        showError(res.message);
+        return thunkAPI.rejectWithValue(res.message);
+      }
+      const {
+        updated = [],
+        skippedInvalid = [],
+        notFound = [],
+      } = res.data || {};
+
+      if (updated.length > 0) {
+        showSuccess(`Vận chuyển đơn thành công: ${updated.length} đơn`);
+      }
+      if (skippedInvalid.length > 0) {
+        showError(`Đơn hàng không hợp lệ: ${skippedInvalid.length} đơn`);
+      }
+      if (notFound.length) {
+        showError(`Không tìm thấy: ${notFound.length} đơn`);
+      }
+
+      // ✅ trả về payload để fulfilled xử lý
+      return {
+        updatedIds: updated.map((o) => String(o._id)),
+        skippedInvalid, // [{ id, status }]
+        notFound, // [id]
+      };
+    } catch (err) {
+      showError("Lỗi khi gọi shipper");
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
+
 const adminOrderSlice = createSlice({
   name: "adminOrders",
   initialState: {
@@ -164,6 +205,7 @@ const adminOrderSlice = createSlice({
     error: null,
     canceling: false,
     confirming: false,
+    shipping: false,
   },
   extraReducers: (builder) => {
     builder
@@ -255,6 +297,24 @@ const adminOrderSlice = createSlice({
       .addCase(cancelOrdersSlice.rejected, (state, action) => {
         state.confirming = false;
         state.error = action.payload;
+      })
+      .addCase(callShipper.pending, (state) => {
+        state.shipping = true;
+      })
+      .addCase(callShipper.fulfilled, (state, action) => {
+        state.shipping = false;
+        const { updatedIds } = action.payload || { updatedIds: [] };
+        if (updatedIds?.length) {
+          const setIds = new Set(updatedIds.map(String));
+          state.allOrders = state.allOrders.map((order) =>
+            setIds.has(String(order.id))
+              ? { ...order, status: "shipping" }
+              : order
+          );
+        }
+      })
+      .addCase(callShipper.rejected, (state) => {
+        state.shipping = false;
       });
   },
 });

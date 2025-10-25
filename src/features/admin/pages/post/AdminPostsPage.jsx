@@ -17,8 +17,8 @@ import usePost from "../../../post/hooks/usePost";
 const fmtNumber = (n) => new Intl.NumberFormat("vi-VN").format(n);
 
 const makeLCG = (seed) => {
-  let v = (seed >>> 0) || 123456789;
-  return () => ((v = (1664525 * v + 1013904223) >>> 0) / 2 ** 32);
+  let v = seed >>> 0 || 123456789;
+  return () => (v = (1664525 * v + 1013904223) >>> 0) / 2 ** 32;
 };
 
 const genYearSeries = (
@@ -108,11 +108,13 @@ export default function AdminPostsPage() {
   const { allPosts } = usePost();
 
   return (
-    <AdminLayout>
+    <>
       <div className="mb-6 flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold">Quản lý bài viết</h1>
-          <p className="text-sm text-gray-500">Thống kê & quản trị bài viết đặc sản</p>
+          <p className="text-sm text-gray-500">
+            Thống kê & quản trị bài viết đặc sản
+          </p>
         </div>
 
         <Link
@@ -128,7 +130,12 @@ export default function AdminPostsPage() {
             fill="none"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 5l7 7-7 7"
+            />
           </svg>
         </Link>
       </div>
@@ -146,7 +153,11 @@ export default function AdminPostsPage() {
                 onChange={(e) => setYear(parseInt(e.target.value))}
                 className="px-3 py-1.5 text-sm border border-gray-200 rounded-lg bg-white"
               >
-                {[now.getFullYear() - 2, now.getFullYear() - 1, now.getFullYear()].map((y) => (
+                {[
+                  now.getFullYear() - 2,
+                  now.getFullYear() - 1,
+                  now.getFullYear(),
+                ].map((y) => (
                   <option key={y} value={y}>
                     {y}
                   </option>
@@ -157,7 +168,10 @@ export default function AdminPostsPage() {
 
           <div className="h-[340px]">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={yearlyData} margin={{ left: 20, right: 20, bottom: 24, top: 8 }}>
+              <LineChart
+                data={yearlyData}
+                margin={{ left: 20, right: 20, bottom: 24, top: 8 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis
                   dataKey="month"
@@ -165,10 +179,17 @@ export default function AdminPostsPage() {
                   padding={{ left: 0, right: 8 }}
                   tickFormatter={(m) => monthNames[m - 1]}
                 />
-                <YAxis width={56} tickMargin={8} tickFormatter={(v) => fmtNumber(v)} />
+                <YAxis
+                  width={56}
+                  tickMargin={8}
+                  tickFormatter={(v) => fmtNumber(v)}
+                />
                 <Tooltip
                   labelFormatter={(m) => monthNames[m - 1]}
-                  formatter={(val) => [`${fmtNumber(val)} lượt xem`, "Lượt xem"]}
+                  formatter={(val) => [
+                    `${fmtNumber(val)} lượt xem`,
+                    "Lượt xem",
+                  ]}
                 />
                 <Line
                   type="monotone"
@@ -191,7 +212,9 @@ export default function AdminPostsPage() {
                 <Eye className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-sm text-gray-500">Tổng lượt xem toàn bộ bài viết</div>
+                <div className="text-sm text-gray-500">
+                  Tổng lượt xem toàn bộ bài viết
+                </div>
                 <div className="text-3xl font-bold leading-tight">
                   {loading.total ? "…" : fmtNumber(totalViews || 0)}
                 </div>
@@ -203,7 +226,9 @@ export default function AdminPostsPage() {
             <div className="h-full flex items-center">
               <div>
                 <div className="text-sm text-gray-500">Tổng bài viết</div>
-                <div className="text-2xl font-bold leading-tight">{fmtNumber(allPosts?.length || 0)}</div>
+                <div className="text-2xl font-bold leading-tight">
+                  {fmtNumber(allPosts?.length || 0)}
+                </div>
               </div>
             </div>
           </div>
@@ -237,9 +262,13 @@ export default function AdminPostsPage() {
                   <tr key={p._id || p.slug} className="border-b last:border-0">
                     <td className="py-2 pr-4 text-gray-500">{idx + 1}</td>
                     <td className="py-2 pr-4 font-medium">{p.title}</td>
-                    <td className="py-2 pr-4 font-semibold">{fmtNumber(p.views || 0)}</td>
+                    <td className="py-2 pr-4 font-semibold">
+                      {fmtNumber(p.views || 0)}
+                    </td>
                     <td className="py-2 pr-4 text-gray-500">
-                      {p.updatedAt ? new Date(p.updatedAt).toLocaleDateString("vi-VN") : "—"}
+                      {p.updatedAt
+                        ? new Date(p.updatedAt).toLocaleDateString("vi-VN")
+                        : "—"}
                     </td>
                   </tr>
                 ))
@@ -254,6 +283,6 @@ export default function AdminPostsPage() {
           </table>
         </div>
       </div>
-    </AdminLayout>
+    </>
   );
 }

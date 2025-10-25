@@ -40,11 +40,13 @@ const ProductPage = () => {
   const boxRef = useRef(null);
   const debounced = useDebounce(search, 250);
 
-    useEffect(() => {
+  useEffect(() => {
     let mounted = true;
     const fetchSuggest = async () => {
       if (!debounced || debounced.trim().length < 2) {
-        setSuggests([]); setOpen(false); return;
+        setSuggests([]);
+        setOpen(false);
+        return;
       }
       try {
         const { data, success } = await suggestProductsApi(debounced, 8);
@@ -54,15 +56,19 @@ const ProductPage = () => {
           setOpen((data || []).length > 0);
           setActiveIdx(-1);
         } else {
-          setSuggests([]); setOpen(false);
+          setSuggests([]);
+          setOpen(false);
         }
       } catch {
         if (!mounted) return;
-        setSuggests([]); setOpen(false);
+        setSuggests([]);
+        setOpen(false);
       }
     };
     fetchSuggest();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [debounced]);
 
   // click outside -> đóng
@@ -96,11 +102,8 @@ const ProductPage = () => {
 
   return (
     <main className="min-h-screen bg-que-background">
-      {/* Header */}
-      <Header />
-
       <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="bg-que-surface p-4 rounded-lg shadow mb-6 mt-20">
+        <div className="bg-que-surface p-4 rounded-lg shadow mb-6">
           {/* Thanh tìm kiếm */}
           <div className="relative w-full max-w-md mb-4" ref={boxRef}>
             <div className="flex items-center gap-2">
@@ -114,10 +117,19 @@ const ProductPage = () => {
                 className="flex-1 border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-que-accent"
               />
               <button className="text-que-text-main" aria-label="Search">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
+                  />
                 </svg>
               </button>
             </div>
@@ -127,25 +139,35 @@ const ProductPage = () => {
                 {suggests.map((s, idx) => (
                   <li
                     key={s._id}
-                    onMouseDown={(e) => { // dùng mousedown để không bị blur trước khi click
+                    onMouseDown={(e) => {
+                      // dùng mousedown để không bị blur trước khi click
                       e.preventDefault();
                       setSearch(s.name);
                       setOpen(false);
                     }}
                     className={`flex items-center gap-3 p-2 cursor-pointer ${
-                      idx === activeIdx ? "bg-que-accent/10" : "hover:bg-gray-50"
+                      idx === activeIdx
+                        ? "bg-que-accent/10"
+                        : "hover:bg-gray-50"
                     }`}
                   >
                     {/* ảnh nhỏ */}
                     {s.images?.[0] ? (
-                      <img src={s.images[0]} alt={s.name} className="w-8 h-8 object-cover rounded" />
+                      <img
+                        src={s.images[0]}
+                        alt={s.name}
+                        className="w-8 h-8 object-cover rounded"
+                      />
                     ) : (
                       <div className="w-8 h-8 bg-gray-200 rounded" />
                     )}
                     <div className="flex-1">
                       <div className="text-sm font-medium">{s.name}</div>
                       <div className="text-xs text-gray-500">
-                        {s.salePrice > 0 ? s.salePrice.toLocaleString() : s.price?.toLocaleString()}đ
+                        {s.salePrice > 0
+                          ? s.salePrice.toLocaleString()
+                          : s.price?.toLocaleString()}
+                        đ
                       </div>
                     </div>
                   </li>
@@ -372,9 +394,6 @@ const ProductPage = () => {
           &gt;
         </button>
       </div>
-
-      {/* Footer */}
-      <Footer />
     </main>
   );
 };

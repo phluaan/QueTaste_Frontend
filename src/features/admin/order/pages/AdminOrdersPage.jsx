@@ -7,7 +7,7 @@ import OrderDetailModal from "../components/OrderDetailModal";
 import TabBar from "../../../order/components/TabBar";
 import Pagination from "../../../../components/Pagination";
 import useAdminOrders from "../hooks/useAdminOrder";
-import ConfirmModal from "../../../../components/ConfirmModal";
+import MiniStats from "../components/MiniStats";
 
 export default function AdminOrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -28,6 +28,7 @@ export default function AdminOrdersPage() {
     confirmOrder,
     confirmOrders,
     cancelOrders,
+    handleCallShipper,
   } = useAdminOrders(filters);
 
   // Toggle chọn đơn
@@ -49,15 +50,12 @@ export default function AdminOrdersPage() {
   };
 
   const stats = {
-    total: orders.length,
     new: orders.filter((o) => o.status === "new").length,
     confirmed: orders.filter((o) => o.status === "confirmed").length,
     shipping: orders.filter((o) => o.status === "shipping").length,
+    done_shipping: orders.filter((o) => o.status === "done_shipping").length,
     completed: orders.filter((o) => o.status === "completed").length,
     cancelled: orders.filter((o) => o.status === "cancelled").length,
-    cancel_requested: orders.filter((o) => o.status === "cancel_requested")
-      .length,
-    refund: orders.filter((o) => o.status === "refund").length,
   };
 
   const statusColors = {
@@ -67,39 +65,40 @@ export default function AdminOrdersPage() {
     completed: "bg-green-100 text-green-600",
     cancelled: "bg-red-100 text-red-600",
     cancel_requested: "bg-amber-100 text-amber-700",
+    done_shipping: "bg-indigo-100 text-indigo-600",
+    request_cancelled: "bg-orange-100 text-orange-600",
     refund: "bg-gray-200 text-gray-700",
   };
 
   useEffect(() => {}, [orders, pagination]);
 
   return (
-    <AdminLayout>
+    <>
       <div className="p-6">
         <h1 className="text-2xl font-semibold mb-4">Quản lý đơn hàng</h1>
-
         {/* Thống kê */}
-        <OrderStats stats={stats} />
-
-        {/* Bộ lọc trạng thái */}
+        {/* <MiniStats
+          stats={stats}
+          onClick={(status) => setFilters({ ...filters, status })}
+        /> */}
+        ;{/* Bộ lọc trạng thái */}
         <TabBar
           activeTab={filters.status}
           onTabChange={(status) =>
             setFilters((f) => ({ ...f, status, page: 1 }))
           }
         />
-
         {/* Thanh công cụ tìm kiếm */}
         <OrderToolbar
           selectedOrders={selectedOrders}
           onSearch={(q) => setFilters((f) => ({ ...f, search: q, page: 1 }))}
           onConfirmOrders={confirmOrders}
           onCancelOrders={cancelOrders}
+          onCallingShipper={handleCallShipper}
         />
-
         {/* Loading / Error */}
         {loading && <p>Đang tải đơn hàng...</p>}
         {error && <p className="text-red-500">{error}</p>}
-
         {/* Bảng đơn hàng */}
         {!loading && !error && (
           <>
@@ -138,6 +137,6 @@ export default function AdminOrdersPage() {
           </>
         )}
       </div>
-    </AdminLayout>
+    </>
   );
 }

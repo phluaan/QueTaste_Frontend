@@ -1,7 +1,12 @@
 // hooks/useOrderActions.js
 import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { reOrder, cancelOrder, requestCancelOrder } from "../slices/orderSlice";
+import {
+  reOrder,
+  cancelOrder,
+  requestCancelOrder,
+  confirmReceivedOrder,
+} from "../slices/orderSlice";
 
 const useOrderActions = () => {
   const dispatch = useDispatch();
@@ -31,12 +36,20 @@ const useOrderActions = () => {
     [dispatch]
   );
 
+  const confirmReceived = useCallback(
+    async (orderId) => {
+      return await dispatch(confirmReceivedOrder({ orderId }));
+    },
+    [dispatch]
+  );
+
   // loading tổng hợp cho các action
   const loading = useMemo(
     () => ({
       reorder: cartLoading,
       cancel: canceling,
       requestCancel: canceling,
+      confirmReceived: canceling,
     }),
     [cartLoading, canceling]
   );
@@ -46,6 +59,7 @@ const useOrderActions = () => {
     reorder,
     cancel,
     requestCancel,
+    confirmReceived,
     // states
     loading,
     error: { cancel: cancelError },
