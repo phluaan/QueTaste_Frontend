@@ -1,6 +1,7 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import ReviewModal from "../../review/components/ReviewModal";
+import { Link } from "react-router-dom";
 
 export default function OrderDetailModal({
   open,
@@ -125,24 +126,30 @@ export default function OrderDetailModal({
                             key={item._id || idx}
                             className="flex justify-between items-center border-b pb-2"
                           >
-                            <div className="flex items-center gap-3">
-                              <img
-                                src={
-                                  item.product?.images?.[0] || "/no-image.png"
-                                }
-                                alt={item.product?.name}
-                                className="w-14 h-14 object-cover rounded-md border"
-                              />
-                              <div>
-                                <p className="font-medium">
-                                  {item.product?.name}
-                                </p>
-                                <p className="text-xs text-que-text-muted">
-                                  SL: {item.quantity} ×{" "}
-                                  {item.price.toLocaleString()}₫
-                                </p>
+                            <Link
+                              to={`/product/${item.product._id}`}
+                              className="flex-1"
+                            >
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={
+                                    item.product?.images?.[0] || "/no-image.png"
+                                  }
+                                  alt={item.product?.name}
+                                  className="w-14 h-14 object-cover rounded-md border"
+                                />
+
+                                <div>
+                                  <p className="font-medium">
+                                    {item.product?.name}
+                                  </p>
+                                  <p className="text-xs text-que-text-muted">
+                                    SL: {item.quantity} ×{" "}
+                                    {item.price.toLocaleString()}₫
+                                  </p>
+                                </div>
                               </div>
-                            </div>
+                            </Link>
 
                             <div className="flex items-center gap-3">
                               <span className="font-semibold">
