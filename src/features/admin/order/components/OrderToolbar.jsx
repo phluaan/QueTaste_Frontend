@@ -15,6 +15,7 @@ export default function OrderToolbar({
     message: "",
     confirmText: "",
     onConfirm: null,
+    loading: false,
   });
 
   const closeModal = () => setModalInfo((prev) => ({ ...prev, open: false }));
@@ -23,7 +24,7 @@ export default function OrderToolbar({
     if (!selectedOrders.length) return;
 
     const count = selectedOrders.length;
-    const base = { open: true, onConfirm: null };
+    const base = { open: true, loading: false };
 
     switch (type) {
       case "confirm":
@@ -32,7 +33,11 @@ export default function OrderToolbar({
           title: "Xác nhận đơn hàng",
           message: `Bạn có chắc muốn xác nhận ${count} đơn hàng này?`,
           confirmText: "Xác nhận",
-          onConfirm: () => onConfirmOrders(selectedOrders),
+          onConfirm: async () => {
+            setModalInfo((m) => ({ ...m, loading: true }));
+            await onConfirmOrders(selectedOrders);
+            closeModal();
+          },
         });
         break;
 
@@ -42,7 +47,11 @@ export default function OrderToolbar({
           title: "Hủy đơn hàng",
           message: `Bạn có chắc muốn hủy ${count} đơn hàng này?`,
           confirmText: "Hủy đơn",
-          onConfirm: () => onCancelOrders(selectedOrders),
+          onConfirm: async () => {
+            setModalInfo((m) => ({ ...m, loading: true }));
+            await onCancelOrders(selectedOrders);
+            closeModal();
+          },
         });
         break;
 
@@ -52,9 +61,14 @@ export default function OrderToolbar({
           title: "Vận chuyển",
           message: `Bạn có chắc muốn chuyển ${count} đơn sang trạng thái “Đang giao”?`,
           confirmText: "Vận chuyển",
-          onConfirm: () => onCallingShipper(selectedOrders),
+          onConfirm: async () => {
+            setModalInfo((m) => ({ ...m, loading: true }));
+            await onCallingShipper(selectedOrders);
+            closeModal();
+          },
         });
         break;
+
       default:
         return;
     }
@@ -63,7 +77,7 @@ export default function OrderToolbar({
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        {/* Search box */}
+        {/* Ô tìm kiếm */}
         <div className="flex items-center gap-2 flex-1 max-w-md bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm">
           <Search size={18} className="text-gray-500" />
           <input
@@ -74,18 +88,17 @@ export default function OrderToolbar({
           />
         </div>
 
-        {/* Bulk actions */}
+        {/* Các nút thao tác hàng loạt */}
         <div className="flex gap-3 flex-wrap">
           {/* Nút vận chuyển */}
           <button
             onClick={() => handleAction("shipper")}
             disabled={!selectedOrders.length}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium shadow-sm transition-all
-              ${
-                selectedOrders.length
-                  ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium shadow-sm transition-all ${
+              selectedOrders.length
+                ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            }`}
           >
             <Truck size={18} />
             <span>Vận chuyển</span>
@@ -95,12 +108,11 @@ export default function OrderToolbar({
           <button
             onClick={() => handleAction("confirm")}
             disabled={!selectedOrders.length}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium shadow-sm transition-all
-              ${
-                selectedOrders.length
-                  ? "bg-green-600 text-white hover:bg-green-700 active:scale-[0.98]"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium shadow-sm transition-all ${
+              selectedOrders.length
+                ? "bg-green-600 text-white hover:bg-green-700 active:scale-[0.98]"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            }`}
           >
             <CheckCircle size={18} />
             <span>Xác nhận</span>
@@ -110,12 +122,11 @@ export default function OrderToolbar({
           <button
             onClick={() => handleAction("cancel")}
             disabled={!selectedOrders.length}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium shadow-sm transition-all
-              ${
-                selectedOrders.length
-                  ? "bg-red-600 text-white hover:bg-red-700 active:scale-[0.98]"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium shadow-sm transition-all ${
+              selectedOrders.length
+                ? "bg-red-600 text-white hover:bg-red-700 active:scale-[0.98]"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            }`}
           >
             <XCircle size={18} />
             <span>Hủy đơn</span>
@@ -123,7 +134,7 @@ export default function OrderToolbar({
         </div>
       </div>
 
-      {/* Confirm modal */}
+      {/* Modal xác nhận */}
       <ConfirmModal
         open={modalInfo.open}
         title={modalInfo.title}
@@ -131,10 +142,8 @@ export default function OrderToolbar({
         confirmText={modalInfo.confirmText}
         cancelText="Đóng"
         onClose={closeModal}
-        onConfirm={async () => {
-          await modalInfo.onConfirm?.();
-          closeModal();
-        }}
+        onConfirm={modalInfo.onConfirm}
+        loading={modalInfo.loading}
       />
     </>
   );

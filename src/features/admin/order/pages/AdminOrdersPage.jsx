@@ -7,6 +7,7 @@ import OrderDetailModal from "../components/OrderDetailModal";
 import TabBar from "../../../order/components/TabBar";
 import Pagination from "../../../../components/Pagination";
 import useAdminOrders from "../hooks/useAdminOrder";
+import MiniStats from "../components/MiniStats";
 
 export default function AdminOrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -49,15 +50,12 @@ export default function AdminOrdersPage() {
   };
 
   const stats = {
-    total: orders.length,
     new: orders.filter((o) => o.status === "new").length,
     confirmed: orders.filter((o) => o.status === "confirmed").length,
     shipping: orders.filter((o) => o.status === "shipping").length,
     done_shipping: orders.filter((o) => o.status === "done_shipping").length,
     completed: orders.filter((o) => o.status === "completed").length,
     cancelled: orders.filter((o) => o.status === "cancelled").length,
-    cancel_requested: orders.filter((o) => o.status === "cancel_requested")
-      .length,
   };
 
   const statusColors = {
@@ -78,18 +76,18 @@ export default function AdminOrdersPage() {
     <>
       <div className="p-6">
         <h1 className="text-2xl font-semibold mb-4">Quản lý đơn hàng</h1>
-
         {/* Thống kê */}
-        {/* <OrderStats stats={stats} /> */}
-
-        {/* Bộ lọc trạng thái */}
+        {/* <MiniStats
+          stats={stats}
+          onClick={(status) => setFilters({ ...filters, status })}
+        /> */}
+        ;{/* Bộ lọc trạng thái */}
         <TabBar
           activeTab={filters.status}
           onTabChange={(status) =>
             setFilters((f) => ({ ...f, status, page: 1 }))
           }
         />
-
         {/* Thanh công cụ tìm kiếm */}
         <OrderToolbar
           selectedOrders={selectedOrders}
@@ -98,11 +96,9 @@ export default function AdminOrdersPage() {
           onCancelOrders={cancelOrders}
           onCallingShipper={handleCallShipper}
         />
-
         {/* Loading / Error */}
         {loading && <p>Đang tải đơn hàng...</p>}
         {error && <p className="text-red-500">{error}</p>}
-
         {/* Bảng đơn hàng */}
         {!loading && !error && (
           <>
