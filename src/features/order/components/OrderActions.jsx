@@ -121,15 +121,15 @@ const OrderActions = ({ order }) => {
           </button>
         );
 
-      // case "refund":
-      //   return (
-      //     <button
-      //       className="px-4 py-2 rounded text-sm bg-purple-500 text-white hover:bg-purple-600"
-      //       onClick={() => navigate(`/orders/${_id}/refund`)}
-      //     >
-      //       Xem chi tiết khiếu nại
-      //     </button>
-      //   );
+      case "refund":
+        return (
+          <button
+            className="px-4 py-2 rounded text-sm bg-purple-500 text-white hover:bg-purple-600"
+            onClick={() => navigate(`/orders/${_id}/refund`)}
+          >
+            Xem chi tiết khiếu nại
+          </button>
+        );
 
       default:
         return null;
@@ -137,16 +137,16 @@ const OrderActions = ({ order }) => {
   };
 
   const renderSecondary = () => {
-    if (status === "completed") {
-      return (
-        <button
-          className="px-4 py-2 rounded text-sm border bg-red-500 text-white hover:bg-red-600"
-          onClick={() => navigate(`/orders/${_id}/return`)}
-        >
-          Trả hàng/Hoàn tiền
-        </button>
-      );
-    }
+    // if (status === "completed") {
+    //   return (
+    //     <button
+    //       className="px-4 py-2 rounded text-sm border bg-red-500 text-white hover:bg-red-600"
+    //       onClick={() => navigate(`/orders/${_id}/return`)}
+    //     >
+    //       Trả hàng/Hoàn tiền
+    //     </button>
+    //   );
+    // }
     // Mặc định: Liên hệ người bán
     return (
       <button

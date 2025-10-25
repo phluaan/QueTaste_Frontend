@@ -4,10 +4,9 @@ const TabBar = ({ activeTab, onTabChange }) => {
     { label: "Chờ xác nhận", value: "new" },
     { label: "Chờ giao hàng", value: "confirmed" },
     { label: "Vận chuyển", value: "shipping" },
+    { label: "Đã giao", value: "done_shipping" },
     { label: "Hoàn thành", value: "completed" },
     { label: "Đã hủy", value: "cancelled" },
-    { label: "Yêu cầu hủy", value: "cancel_requested" },
-    { label: "Trả hàng/Hoàn tiền", value: "refund" },
   ];
 
   return (
