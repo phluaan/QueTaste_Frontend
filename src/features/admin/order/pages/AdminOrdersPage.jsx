@@ -27,6 +27,7 @@ export default function AdminOrdersPage() {
     confirmOrder,
     confirmOrders,
     cancelOrders,
+    handleCallShipper,
   } = useAdminOrders(filters);
 
   // Toggle chọn đơn
@@ -52,11 +53,11 @@ export default function AdminOrdersPage() {
     new: orders.filter((o) => o.status === "new").length,
     confirmed: orders.filter((o) => o.status === "confirmed").length,
     shipping: orders.filter((o) => o.status === "shipping").length,
+    done_shipping: orders.filter((o) => o.status === "done_shipping").length,
     completed: orders.filter((o) => o.status === "completed").length,
     cancelled: orders.filter((o) => o.status === "cancelled").length,
     cancel_requested: orders.filter((o) => o.status === "cancel_requested")
       .length,
-    refund: orders.filter((o) => o.status === "refund").length,
   };
 
   const statusColors = {
@@ -79,7 +80,7 @@ export default function AdminOrdersPage() {
         <h1 className="text-2xl font-semibold mb-4">Quản lý đơn hàng</h1>
 
         {/* Thống kê */}
-        <OrderStats stats={stats} />
+        {/* <OrderStats stats={stats} /> */}
 
         {/* Bộ lọc trạng thái */}
         <TabBar
@@ -95,6 +96,7 @@ export default function AdminOrdersPage() {
           onSearch={(q) => setFilters((f) => ({ ...f, search: q, page: 1 }))}
           onConfirmOrders={confirmOrders}
           onCancelOrders={cancelOrders}
+          onCallingShipper={handleCallShipper}
         />
 
         {/* Loading / Error */}

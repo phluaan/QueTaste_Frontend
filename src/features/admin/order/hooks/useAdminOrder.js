@@ -5,6 +5,7 @@ import {
   confirmOrderSlice,
   confirmOrdersSlice,
   cancelOrdersSlice,
+  callShipper,
 } from "../slices/adminOrderSlice";
 
 // useAdminOrders.js
@@ -33,6 +34,11 @@ const useAdminOrders = ({ status, search, page, limit }) => {
     dispatch(cancelOrdersSlice(listOrderId));
   };
 
+  const handleCallShipper = async (orderIds) => {
+    if (!orderIds || orderIds.length === 0) return;
+    await dispatch(callShipper(orderIds));
+  };
+
   return {
     orders: allOrders,
     pagination: pagination,
@@ -41,6 +47,7 @@ const useAdminOrders = ({ status, search, page, limit }) => {
     confirmOrder,
     confirmOrders,
     cancelOrders,
+    handleCallShipper,
   };
 };
 
