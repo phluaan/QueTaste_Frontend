@@ -1,149 +1,151 @@
-import { useEffect, useState } from "react";
-import { CheckCircle, Clock, Truck, MapPin, Package } from "lucide-react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useOrderTracking } from "../hooks/useOrderTracking";
+import { ArrowLeft, Truck, CheckCircle, XCircle } from "lucide-react";
 
-export default function OrderTrackingList() {
-  const [driverPos, setDriverPos] = useState([10.7769, 106.7009]);
-  const customerPos = [10.7626, 106.6822];
-  const [progress, setProgress] = useState(0); // 0–100 %
+export default function OrderTrackingPage() {
+  const { id } = useParams(); // Lấy orderId từ URL
+  const navigate = useNavigate();
 
-  // Mô phỏng shipper di chuyển, cập nhật % hoàn thành
-  useEffect(() => {
-    const totalDistance = Math.sqrt(
-      Math.pow(customerPos[0] - driverPos[0], 2) +
-        Math.pow(customerPos[1] - driverPos[1], 2)
+  const { order, loading, error } = useOrderTracking(id);
+
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-600">
+        Đang tải dữ liệu theo dõi đơn hàng...
+      </div>
     );
-    let distance = totalDistance;
 
-    const interval = setInterval(() => {
-      setDriverPos(([lat, lng]) => {
-        const [targetLat, targetLng] = customerPos;
-        const step = 0.0005;
-        const dirLat = targetLat > lat ? step : -step;
-        const dirLng = targetLng > lng ? step : -step;
-        const newLat = lat + dirLat;
-        const newLng = lng + dirLng;
+  if (error)
+    return (
+      <div className="flex flex-col justify-center items-center h-screen text-red-600">
+        <p>Không thể tải thông tin đơn hàng.</p>
+        <p className="text-sm">{error.message || String(error)}</p>
+      </div>
+    );
 
-        // tính % hoàn thành
-        distance = Math.sqrt(
-          Math.pow(customerPos[0] - newLat, 2) +
-            Math.pow(customerPos[1] - newLng, 2)
-        );
-        const percent = Math.max(0, 100 - (distance / totalDistance) * 100);
-        setProgress(percent);
+  if (!order)
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-600">
+        Không có dữ liệu theo dõi.
+      </div>
+    );
 
-        return [newLat, newLng];
-      });
-    }, 2000);
+  // Dữ liệu từ backend
+  const {
+    orderId,
+    status,
+    shippingAddress,
+    createdAt,
+    updatedAt,
+    distanceKm,
+    estimateMinutes,
+    estimatedDeliveryTime,
+  } = order;
 
-    return () => clearInterval(interval);
-  }, []);
+  // Hiển thị label thân thiện
+  const statusLabel = {
+    new: "Chờ xác nhận",
+    confirmed: "Đã xác nhận",
+    shipping: "Đang vận chuyển",
+    done_shipping: "Đã giao cho khách",
+    completed: "Hoàn tất đơn hàng",
+    cancelled: "Đã hủy",
+    cancel_requested: "Khách yêu cầu hủy",
+    shipper_cancel_requested: "Shipper yêu cầu hủy",
+    refund: "Hoàn trả / hoàn tiền",
+  }[status];
 
-  // Các mốc trạng thái
-  const steps = [
-    {
-      id: 1,
-      label: "Đã xác nhận đơn hàng",
-      icon: <CheckCircle className="text-green-500 w-5 h-5" />,
-      time: "14:00 hôm nay",
-    },
-    {
-      id: 2,
-      label: "Đang chuẩn bị hàng",
-      icon: <Package className="text-yellow-500 w-5 h-5" />,
-      time: "14:10 hôm nay",
-    },
-    {
-      id: 3,
-      label: "Đang giao hàng",
-      icon: <Truck className="text-blue-500 w-5 h-5" />,
-      time: "14:30 hôm nay",
-    },
-    {
-      id: 4,
-      label: "Đang đến gần địa chỉ giao",
-      icon: <MapPin className="text-purple-500 w-5 h-5" />,
-      time: "15:00 hôm nay",
-    },
-    {
-      id: 5,
-      label: "Giao hàng thành công",
-      icon: <CheckCircle className="text-green-600 w-5 h-5" />,
-      time: "15:30 hôm nay",
-    },
-  ];
+  // Tiến trình mô phỏng theo trạng thái
+  const statusProgressMap = {
+    new: 10,
+    confirmed: 30,
+    shipping: 60,
+    done_shipping: 85,
+    completed: 100,
+    cancelled: 100,
+  };
+  const progress = statusProgressMap[status] || 0;
 
-  // Xác định trạng thái hiện tại theo % progress
-  const currentStepIndex =
-    progress < 20
-      ? 0
-      : progress < 40
-      ? 1
-      : progress < 70
-      ? 2
-      : progress < 99
-      ? 3
-      : 4;
+  const formatTime = (iso) =>
+    new Date(iso).toLocaleString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+    });
 
   return (
-    <div className="flex flex-col items-center p-4 space-y-4 bg-gray-50 min-h-screen">
-      <div className="w-full max-w-2xl bg-white p-5 rounded-2xl shadow">
-        <h1 className="text-xl font-bold mb-2">
-          🚚 Theo dõi đơn hàng #ORD12345
+    <div className="flex flex-col items-center p-4 bg-gray-50 min-h-screen">
+      {/* Nút quay lại */}
+      <div className="flex items-center w-full max-w-2xl mb-2">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center text-blue-600 hover:text-blue-800"
+        >
+          <ArrowLeft className="w-5 h-5 mr-1" /> Quay lại
+        </button>
+      </div>
+
+      {/* Khung nội dung */}
+      <div className="w-full max-w-2xl bg-white p-6 rounded-2xl shadow">
+        <h1 className="text-xl font-bold mb-3">
+          🚚 Theo dõi đơn hàng #{orderId}
         </h1>
-        <p className="text-gray-600">
-          Trạng thái:{" "}
-          <span className="font-semibold text-blue-600">
-            {steps[currentStepIndex].label}
-          </span>
+
+        <p className="text-gray-700">
+          <span className="font-medium">Trạng thái:</span>{" "}
+          <span className="text-blue-600 font-semibold">{statusLabel}</span>
         </p>
-        <p className="text-gray-600">Người giao: Nguyễn Văn A</p>
-        <p className="text-gray-600 mb-4">
-          Dự kiến giao: <span className="font-semibold">15:30 hôm nay</span>
+        <p className="text-gray-700">
+          <span className="font-medium">Ngày đặt:</span> {formatTime(createdAt)}
+        </p>
+        <p className="text-gray-700">
+          <span className="font-medium">Cập nhật gần nhất:</span>{" "}
+          {formatTime(updatedAt)}
+        </p>
+        <p className="text-gray-700">
+          <span className="font-medium">Địa chỉ giao:</span>{" "}
+          {shippingAddress?.address}, {shippingAddress?.city}
+        </p>
+        <p className="text-gray-700">
+          <span className="font-medium">Khoảng cách:</span> {distanceKm} km (ước
+          tính)
+        </p>
+        <p className="text-gray-700 mb-2">
+          <span className="font-medium">Thời gian giao dự kiến:</span>{" "}
+          {formatTime(estimatedDeliveryTime)}{" "}
+          <span className="text-gray-500 text-sm">
+            (~ {estimateMinutes} phút)
+          </span>
         </p>
 
         {/* Thanh tiến trình */}
-        <div className="w-full bg-gray-200 rounded-full h-3 mb-6">
+        <div className="w-full bg-gray-200 rounded-full h-3 my-4">
           <div
-            className="bg-blue-500 h-3 rounded-full transition-all duration-500"
+            className={`h-3 rounded-full transition-all duration-500 ${
+              status === "cancelled" ? "bg-red-400" : "bg-blue-500"
+            }`}
             style={{ width: `${progress}%` }}
           />
         </div>
 
-        {/* Danh sách trạng thái */}
-        <ul className="space-y-4">
-          {steps.map((step, index) => (
-            <li
-              key={step.id}
-              className={`flex items-center space-x-3 ${
-                index <= currentStepIndex ? "opacity-100" : "opacity-40"
-              }`}
-            >
-              <div
-                className={`${
-                  index <= currentStepIndex ? "bg-blue-100" : "bg-gray-100"
-                } p-2 rounded-full`}
-              >
-                {step.icon}
-              </div>
-              <div>
-                <p
-                  className={`font-medium ${
-                    index <= currentStepIndex
-                      ? "text-gray-800"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {step.label}
-                </p>
-                <p className="text-sm text-gray-400">{step.time}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="text-sm text-gray-400">
-        Cập nhật vị trí mỗi 2 giây (mô phỏng)
+        {/* Mô tả trạng thái */}
+        <div className="flex items-center space-x-3 text-gray-600 mt-2">
+          {status === "completed" ? (
+            <CheckCircle className="text-green-500 w-6 h-6" />
+          ) : status.includes("cancel") ? (
+            <XCircle className="text-red-500 w-6 h-6" />
+          ) : (
+            <Truck className="text-blue-500 w-6 h-6" />
+          )}
+          <span>
+            {status === "completed"
+              ? "Đơn hàng đã được giao thành công."
+              : status === "cancelled"
+              ? "Đơn hàng đã bị hủy."
+              : "Đơn hàng đang được xử lý hoặc vận chuyển..."}
+          </span>
+        </div>
       </div>
     </div>
   );

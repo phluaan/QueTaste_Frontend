@@ -77,7 +77,10 @@ const OrderActions = ({ order }) => {
         return (
           <button
             className="px-4 py-2 rounded text-sm bg-blue-500 text-white hover:bg-blue-600"
-            onClick={() => navigate(`/orders/${_id}/tracking`)}
+            onClick={() => {
+              navigate(`/orders/${_id}/tracking`);
+              console.log(_id);
+            }}
           >
             Theo dõi vận chuyển
           </button>

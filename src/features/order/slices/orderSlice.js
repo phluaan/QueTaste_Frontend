@@ -5,6 +5,7 @@ import {
   requestCancelOrderApi,
   reOrderApi,
   confirmReceivedOrderApi,
+  getOrderTracking,
 } from "../services/orderService";
 import { showError, showSuccess } from "../../../utils/toastUtils";
 
@@ -115,6 +116,19 @@ export const confirmReceivedOrder = createAsyncThunk(
   }
 );
 
+export const fetchOrderTracking = createAsyncThunk(
+  "userOrders/fetchTrackingOrder",
+  async (orderId, thunkAPI) => {
+    try {
+      const res = await getOrderTracking(orderId);
+      console.log(res);
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 const userOrderSlice = createSlice({
   name: "userOrders",
   initialState: {
@@ -124,6 +138,11 @@ const userOrderSlice = createSlice({
     error: null,
     canceling: false,
     cancelError: null,
+    tracking: {
+      data: null,
+      loading: false,
+      error: null,
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -191,6 +210,19 @@ const userOrderSlice = createSlice({
       .addCase(confirmReceivedOrder.rejected, (state, action) => {
         state.canceling = false;
         state.cancelError = action.payload;
+      })
+      //Order tracking
+      .addCase(fetchOrderTracking.pending, (state) => {
+        state.tracking.loading = true;
+        state.tracking.error = null;
+      })
+      .addCase(fetchOrderTracking.fulfilled, (state, action) => {
+        state.tracking.loading = false;
+        state.tracking.data = action.payload;
+      })
+      .addCase(fetchOrderTracking.rejected, (state, action) => {
+        state.tracking.loading = false;
+        state.tracking.error = action.payload;
       });
   },
 });
