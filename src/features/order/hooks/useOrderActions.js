@@ -1,7 +1,12 @@
 // hooks/useOrderActions.js
 import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { reOrder, cancelOrder, requestCancelOrder } from "../slices/orderSlice";
+import {
+  reOrder,
+  cancelOrder,
+  requestCancelOrder,
+  confirmReceivedOrder,
+} from "../slices/orderSlice";
 
 const useOrderActions = () => {
   const dispatch = useDispatch();

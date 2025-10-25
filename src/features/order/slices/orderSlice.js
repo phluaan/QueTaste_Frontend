@@ -4,6 +4,7 @@ import {
   cancelOrderApi,
   requestCancelOrderApi,
   reOrderApi,
+  confirmReceivedOrderApi,
 } from "../services/orderService";
 import { showError, showSuccess } from "../../../utils/toastUtils";
 
@@ -92,6 +93,28 @@ export const reOrder = createAsyncThunk(
   }
 );
 
+export const confirmReceivedOrder = createAsyncThunk(
+  "userOrders/confirmReceivedOrder",
+  async ({ orderId }, thunkAPI) => {
+    try {
+      const res = await confirmReceivedOrderApi(orderId);
+      console.log(res);
+      if (res.success) {
+        showSuccess("Xác nhận đã nhận hàng thành công!");
+        return res.data; // đơn hàng sau khi update
+      }
+
+      showError(res.message || "Không thể xác nhận đơn hàng.");
+      return thunkAPI.rejectWithValue(res.message);
+    } catch (err) {
+      const message =
+        err.response?.data?.message || err.message || "Server error";
+      showError(message);
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const userOrderSlice = createSlice({
   name: "userOrders",
   initialState: {
@@ -150,6 +173,22 @@ const userOrderSlice = createSlice({
         );
       })
       .addCase(requestCancelOrder.rejected, (state, action) => {
+        state.canceling = false;
+        state.cancelError = action.payload;
+      })
+      // confirmReceivedOrder
+      .addCase(confirmReceivedOrder.pending, (state) => {
+        state.canceling = true;
+      })
+      .addCase(confirmReceivedOrder.fulfilled, (state, action) => {
+        state.canceling = false;
+        state.myOrders = state.myOrders.map((order) =>
+          order._id === action.payload._id
+            ? { ...order, status: "completed" }
+            : order
+        );
+      })
+      .addCase(confirmReceivedOrder.rejected, (state, action) => {
         state.canceling = false;
         state.cancelError = action.payload;
       });

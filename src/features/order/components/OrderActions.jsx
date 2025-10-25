@@ -83,14 +83,15 @@ const OrderActions = ({ order }) => {
           </button>
         );
 
-      case "done-shipping":
+      case "done_shipping":
         return (
           <>
             <button
-              className="bg-green-600 text-white px-4 py-2 rounded"
               onClick={() => setOpenConfirm(true)}
+              disabled={loading.confirmReceived}
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm disabled:opacity-60"
             >
-              Đã nhận được hàng
+              Tôi đã nhận hàng
             </button>
             <ConfirmModal
               open={openConfirm}

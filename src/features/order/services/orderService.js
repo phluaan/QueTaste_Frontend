@@ -55,3 +55,8 @@ export const reOrderApi = async (orderId) => {
     };
   }
 };
+
+export const confirmReceivedOrderApi = async (orderId) => {
+  const res = await axiosClient.put(`/order/${orderId}/update-to-completed`);
+  return res;
+};
