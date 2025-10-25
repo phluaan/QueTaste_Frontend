@@ -36,6 +36,7 @@ import AdminUserDetailPage from "../features/admin/pages/user/AdminUserDetailPag
 import AdminPostsPage from "../features/admin/pages/post/AdminPostsPage";
 import AdminPostsListPage from "../features/admin/pages/post/AdminPostsListPage";
 import AdminPostDetailPage from "../features/admin/pages/post/AdminPostDetailPage";
+import ShipperOrdersPage from "../features/admin/order/pages/ShipperOrderPage";
 
 export default function AppRoutes() {
   return (
@@ -54,6 +55,7 @@ export default function AppRoutes() {
           path="/orders/:orderId/tracking"
           element={<OrderTrackingPage />}
         />
+        <Route path="/shipper" element={<ShipperOrdersPage />} />
       </Route>
 
       {/* ---------- AUTH ---------- */}
