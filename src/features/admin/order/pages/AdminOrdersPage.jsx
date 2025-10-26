@@ -112,17 +112,17 @@ export default function AdminOrdersPage() {
             />
 
             {/* Modal chi tiết đơn */}
-            {selectedOrder && (
-              <OrderDetailModal
-                order={selectedOrder}
-                onClose={() => setSelectedOrder(null)}
-                statusColors={statusColors}
-                onConfirm={(id) => {
-                  confirmOrder(id);
-                  setSelectedOrder(null); // đóng modal sau khi xác nhận
-                }}
-              />
-            )}
+
+            <OrderDetailModal
+              open={selectedOrder}
+              order={selectedOrder}
+              onClose={() => setSelectedOrder(null)}
+              statusColors={statusColors}
+              onConfirm={(id) => {
+                confirmOrder(id);
+                setSelectedOrder(null); // đóng modal sau khi xác nhận
+              }}
+            />
 
             {/* Phân trang */}
             <Pagination

@@ -6,13 +6,12 @@ import {
   Clock,
   PackageCheck,
   BadgeCheck,
-  XCircle,
+  X,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ReviewModal from "../../review/components/ReviewModal";
-import Logo from "../../../components/Logo";
 
-export default function OrderDetailModal({
+export default function CustomerOrderDetailModal({
   open,
   onClose,
   order,
@@ -34,7 +33,6 @@ export default function OrderDetailModal({
       currency: "VND",
     }).format(Number(n || 0));
 
-  // === Tiến trình trạng thái ===
   const steps = [
     { key: "new", label: "Chờ xác nhận", icon: <Clock size={16} /> },
     { key: "confirmed", label: "Đã xác nhận", icon: <CheckCircle size={16} /> },
@@ -52,16 +50,17 @@ export default function OrderDetailModal({
     <>
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-50" onClose={onClose}>
+          {/* Overlay sáng nhẹ */}
           <Transition.Child
             as={Fragment}
-            enter="ease-out duration-300"
+            enter="ease-out duration-200"
             enterFrom="opacity-0"
             enterTo="opacity-100"
-            leave="ease-in duration-200"
+            leave="ease-in duration-150"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+            <div className="fixed inset-0 bg-gray-900/10 backdrop-blur-sm transition-opacity" />
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
@@ -78,27 +77,27 @@ export default function OrderDetailModal({
                 <Dialog.Panel className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl relative border border-gray-200">
                   {/* Đóng */}
                   <button
-                    className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
                     onClick={onClose}
+                    className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition"
                   >
-                    ✕
+                    <X size={20} />
                   </button>
 
                   {/* Header */}
-                  <div className="border-b pb-3 mb-4">
-                    <Dialog.Title className="text-2xl font-semibold text-gray-800">
-                      Đơn hàng #{order.code || order._id}
+                  <div className="border-b pb-3 mb-4 text-center">
+                    <Dialog.Title className="text-2xl font-bold text-que-primary">
+                      Đơn hàng #{order.code || order._id.slice(-6)}
                     </Dialog.Title>
                     <p className="text-sm text-gray-500 mt-1">
                       Cảm ơn bạn đã mua sắm cùng{" "}
-                      <b className="text-que-accent">QueTaste</b>
+                      <b className="text-que-accent">QueTaste</b> 💚
                     </p>
                   </div>
 
-                  {/* === Timeline === */}
-                  <div className="flex items-center justify-between mb-6 relative">
+                  {/* Timeline */}
+                  <div className="flex items-center justify-between mb-8 relative">
                     {steps.map((step, index) => {
-                      const isDone = index <= currentIndex;
+                      const done = index <= currentIndex;
                       return (
                         <div
                           key={step.key}
@@ -106,16 +105,16 @@ export default function OrderDetailModal({
                         >
                           <div
                             className={`w-8 h-8 mx-auto flex items-center justify-center rounded-full border-2 transition-all ${
-                              isDone
+                              done
                                 ? "border-green-500 bg-green-500 text-white"
-                                : "border-gray-300 text-gray-400 bg-white"
+                                : "border-gray-300 bg-white text-gray-400"
                             }`}
                           >
                             {step.icon}
                           </div>
                           <p
                             className={`mt-2 text-xs ${
-                              isDone
+                              done
                                 ? "text-green-600 font-medium"
                                 : "text-gray-400"
                             }`}
@@ -129,28 +128,26 @@ export default function OrderDetailModal({
                                   ? "bg-green-500"
                                   : "bg-gray-300"
                               }`}
-                            ></div>
+                            />
                           )}
                         </div>
                       );
                     })}
                   </div>
 
-                  {/* Thông tin đơn hàng */}
+                  {/* Thông tin giao hàng */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm mb-6">
                     <div className="space-y-2">
-                      <h3 className="font-semibold text-gray-800">
-                        Thông tin đơn
+                      <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                        🧾 Thông tin đơn
                       </h3>
                       <p>
-                        <b>Ngày đặt:</b> {order.createdAt}
+                        <b>Ngày đặt:</b>{" "}
+                        {new Date(order.createdAt).toLocaleString("vi-VN")}
                       </p>
                       <p>
                         <b>Thanh toán:</b> {order.paymentMethod} /{" "}
                         {order.paymentStatus}
-                      </p>
-                      <p>
-                        <b>Giao hàng:</b> {order.deliveryStatus}
                       </p>
                       <p>
                         <b>Trạng thái:</b>{" "}
@@ -166,8 +163,8 @@ export default function OrderDetailModal({
                     </div>
 
                     <div className="space-y-2">
-                      <h3 className="font-semibold text-gray-800">
-                        Người nhận
+                      <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                        👤 Người nhận
                       </h3>
                       <p>
                         <b>Họ tên:</b> {order.shippingAddress?.fullName}
@@ -185,7 +182,7 @@ export default function OrderDetailModal({
                   {/* Danh sách sản phẩm */}
                   <div className="border-t pt-4">
                     <h3 className="font-semibold text-gray-800 mb-3 text-sm">
-                      Sản phẩm trong đơn hàng
+                      🛍️ Sản phẩm trong đơn
                     </h3>
                     <div className="space-y-4">
                       {order.items.map((item, idx) => (
@@ -246,11 +243,11 @@ export default function OrderDetailModal({
                       </p>
                     </div>
                     <div className="flex items-center justify-center">
-                      <div className="bg-green-50 rounded-lg px-4 py-2 text-center">
-                        <p className="text-sm text-gray-500 font-medium">
-                          Khách trả
+                      <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-2 text-center shadow-sm">
+                        <p className="text-sm text-gray-600 font-medium">
+                          Tổng thanh toán
                         </p>
-                        <p className="text-xl font-bold text-green-600">
+                        <p className="text-2xl font-bold text-green-600">
                           {formatVND(order.finalAmount)}
                         </p>
                       </div>
@@ -259,7 +256,7 @@ export default function OrderDetailModal({
 
                   {/* Ghi chú */}
                   {order.notes && (
-                    <div className="mt-4 text-sm text-gray-700">
+                    <div className="mt-4 text-sm text-gray-700 border-t pt-3">
                       <b>Ghi chú:</b> {order.notes}
                     </div>
                   )}

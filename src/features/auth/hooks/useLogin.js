@@ -24,6 +24,8 @@ const useLogin = () => {
         .then((profile) => {
           if (profile.role === "admin") {
             navigate("/admin", { replace: true });
+          } else if (profile.role === "shipper") {
+            navigate("/shipper", { replace: true });
           } else {
             const from = location.state?.from || "/";
             navigate(from, { replace: true });
@@ -42,13 +44,14 @@ const useLogin = () => {
 
     if (Object.keys(validationErrors).length === 0) {
       try {
-        await dispatch(login({ 
-          ...formData, 
-          rememberMe 
-        })).unwrap();
-        
-        await dispatch(getProfile()).unwrap();
+        await dispatch(
+          login({
+            ...formData,
+            rememberMe,
+          })
+        ).unwrap();
 
+        await dispatch(getProfile()).unwrap();
       } catch (err) {
         console.error("❌ Login failed: ", err);
       }

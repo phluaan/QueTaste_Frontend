@@ -37,6 +37,7 @@ import AdminPostsPage from "../features/admin/pages/post/AdminPostsPage";
 import AdminPostsListPage from "../features/admin/pages/post/AdminPostsListPage";
 import AdminPostDetailPage from "../features/admin/pages/post/AdminPostDetailPage";
 import ShipperOrdersPage from "../features/admin/order/pages/ShipperOrderPage";
+import ShipperLayout from "../features/admin/layouts/ShipperLayout";
 
 export default function AppRoutes() {
   return (
@@ -52,7 +53,6 @@ export default function AppRoutes() {
         <Route path="/product/:id" element={<ProductDetailPage />} />
         <Route path="/post/:slug" element={<PostDetailPage />} />
         <Route path="/orders/:id/tracking" element={<OrderTrackingPage />} />
-        <Route path="/shipper" element={<ShipperOrdersPage />} />
       </Route>
 
       {/* ---------- AUTH ---------- */}
@@ -85,6 +85,11 @@ export default function AppRoutes() {
         <Route path="/admin/posts" element={<AdminPostsPage />} />
         <Route path="/admin/posts-list" element={<AdminPostsListPage />} />
         <Route path="/admin/posts/:slug" element={<AdminPostDetailPage />} />
+      </Route>
+
+      {/* ---------- SHIPPER ---------- */}
+      <Route path="/shipper" element={<ShipperLayout />}>
+        <Route path="/shipper" element={<ShipperOrdersPage />} />
       </Route>
     </Routes>
   );
