@@ -3,19 +3,18 @@ import { Dialog, Transition } from "@headlessui/react";
 import {
   Truck,
   CheckCircle,
-  XCircle,
   Clock,
   PackageCheck,
   BadgeCheck,
+  MapPin,
+  Phone,
+  CreditCard,
+  DollarSign,
+  X,
+  ExternalLink,
 } from "lucide-react";
 
-export default function OrderDetailModal({
-  open,
-  onClose,
-  order,
-  statusColors,
-  onConfirm,
-}) {
+export default function ShipperOrderDetailModal({ open, onClose, order }) {
   if (!order) return null;
 
   const formatVND = (n) =>
@@ -24,9 +23,7 @@ export default function OrderDetailModal({
       currency: "VND",
     }).format(Number(n || 0));
 
-  // 🔹 Các bước trạng thái
   const steps = [
-    { key: "new", label: "Chờ xác nhận", icon: <Clock size={16} /> },
     { key: "confirmed", label: "Đã xác nhận", icon: <CheckCircle size={16} /> },
     { key: "shipping", label: "Đang giao", icon: <Truck size={16} /> },
     {
@@ -34,7 +31,7 @@ export default function OrderDetailModal({
       label: "Đã giao",
       icon: <PackageCheck size={16} />,
     },
-    { key: "completed", label: "Hoàn thành", icon: <BadgeCheck size={16} /> },
+    { key: "completed", label: "Hoàn tất", icon: <BadgeCheck size={16} /> },
   ];
 
   const currentIndex = steps.findIndex((s) => s.key === order.status);
@@ -42,7 +39,7 @@ export default function OrderDetailModal({
   return (
     <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
-        {/* Overlay sáng nhẹ */}
+        {/* Overlay sáng hơn, có hiệu ứng mờ */}
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-200"
@@ -66,29 +63,19 @@ export default function OrderDetailModal({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-3xl bg-white rounded-2xl shadow-2xl border border-gray-200 p-6 relative">
+              <Dialog.Panel className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl border border-gray-200 relative">
                 {/* Nút đóng */}
                 <button
                   onClick={onClose}
                   className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition"
                 >
-                  ✕
+                  <X size={20} />
                 </button>
 
-                {/* Header */}
-                <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-200">
-                  <h2 className="text-2xl font-bold text-que-primary">
-                    Đơn hàng #{order.code || order.id}
-                  </h2>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
-                      statusColors?.[order.status] ||
-                      "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
-                </div>
+                {/* Tiêu đề */}
+                <Dialog.Title className="text-2xl font-bold text-que-primary mb-4">
+                  Đơn hàng #{order.code || order._id.slice(-6)}
+                </Dialog.Title>
 
                 {/* Timeline trạng thái */}
                 <div className="flex items-center justify-between mb-6 relative">
@@ -131,52 +118,66 @@ export default function OrderDetailModal({
                   })}
                 </div>
 
-                {/* Thông tin đơn + khách */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                  {/* Thông tin đơn hàng */}
+                {/* Thông tin giao hàng + khách hàng */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 text-sm">
                   <div className="space-y-2">
                     <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-                      <Truck size={16} /> Thông tin đơn hàng
+                      <Truck size={16} /> Thông tin giao hàng
                     </h3>
                     <p>
                       <b>Ngày đặt:</b>{" "}
                       {new Date(order.createdAt).toLocaleString("vi-VN")}
                     </p>
                     <p>
-                      <b>Thanh toán:</b> {order.paymentMethod} /{" "}
-                      {order.paymentStatus}
+                      <b>Phương thức:</b> {order.paymentMethod}
                     </p>
                     <p>
-                      <b>Ghi chú:</b> {order.notes || "-"}
+                      <b>Trạng thái:</b>{" "}
+                      <span className="px-2 py-1 bg-que-secondary/10 text-que-primary rounded text-xs">
+                        {order.status}
+                      </span>
                     </p>
                   </div>
 
-                  {/* Thông tin khách hàng */}
                   <div className="space-y-2">
                     <h3 className="font-semibold text-gray-800 flex items-center gap-2">
-                      <CheckCircle size={16} /> Khách hàng
+                      <MapPin size={16} /> Người nhận
                     </h3>
                     <p>
-                      <b>Người đặt:</b>{" "}
-                      {order.user?.personalInfo?.fullName || "Không rõ"}
+                      <b>Họ tên:</b> {order.shippingAddress?.fullName}
                     </p>
-                    <p>
-                      <b>Người nhận:</b> {order.shippingAddress?.fullName}
+                    <p className="flex items-center gap-2">
+                      <Phone size={14} className="text-gray-500" />
+                      {order.shippingAddress?.phone}
+                      {/* <a
+                        href={`tel:${order.shippingAddress?.phone}`}
+                        className="ml-2 text-que-primary text-xs hover:underline"
+                      >
+                        Gọi ngay
+                      </a> */}
                     </p>
-                    <p>
-                      <b>SĐT:</b> {order.shippingAddress?.phone}
-                    </p>
-                    <p>
-                      <b>Địa chỉ:</b>{" "}
-                      {`${order.shippingAddress?.address || ""}, ${
-                        order.shippingAddress?.city || ""
-                      }`}
+                    <p className="flex items-center gap-2 text-gray-700">
+                      <MapPin size={14} className="text-gray-400" />
+                      {order.shippingAddress?.address},{" "}
+                      {order.shippingAddress?.city}
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          order.shippingAddress?.address +
+                            "," +
+                            order.shippingAddress?.city
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-2 text-que-primary text-xs hover:underline flex items-center gap-1"
+                      >
+                        <ExternalLink size={12} /> Xem bản đồ
+                      </a>
                     </p>
                   </div>
                 </div>
 
                 {/* Danh sách sản phẩm */}
-                <div className="border-t pt-4 mt-4">
+                <div className="border-t pt-4 mb-4">
                   <h3 className="font-semibold text-gray-800 mb-3 text-sm">
                     Sản phẩm trong đơn
                   </h3>
@@ -209,19 +210,21 @@ export default function OrderDetailModal({
                   </div>
                 </div>
 
-                {/* Thông tin tài chính */}
-                <div className="mt-6 border-t border-gray-200 pt-4 grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                {/* Tổng tiền */}
+                <div className="border-t pt-4 grid grid-cols-2 gap-6 text-sm">
                   <div className="space-y-1">
+                    <p>
+                      <CreditCard size={14} className="inline mr-1" />
+                      <b>Thanh toán:</b> {order.paymentStatus}
+                    </p>
                     <p>
                       <b>Phí ship:</b> {formatVND(order.shippingFee)}
                     </p>
                     <p>
                       <b>Tổng tiền:</b> {formatVND(order.totalAmount)}
                     </p>
-                    <p>
-                      <b>Giảm giá:</b> {formatVND(order.discount)}
-                    </p>
                   </div>
+
                   <div className="flex items-center justify-center">
                     <div className="bg-green-50 border border-green-200 rounded-lg px-5 py-3 text-center shadow-sm">
                       <p className="text-sm text-gray-600 font-medium">
@@ -234,33 +237,12 @@ export default function OrderDetailModal({
                   </div>
                 </div>
 
-                {/* Nút hành động */}
-                <div className="flex justify-end gap-3 mt-8 border-t pt-4">
-                  {order.status === "new" && (
-                    <button
-                      onClick={() => onConfirm(order._id || order.id)}
-                      className="px-4 py-2 flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow transition-all"
-                    >
-                      <CheckCircle size={16} /> Xác nhận đơn
-                    </button>
-                  )}
-
-                  {order.status === "confirmed" && (
-                    <button
-                      onClick={() => onConfirm(order._id || order.id)}
-                      className="px-4 py-2 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow transition-all"
-                    >
-                      <Truck size={16} /> Giao hàng
-                    </button>
-                  )}
-
-                  <button
-                    onClick={onClose}
-                    className="px-4 py-2 flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg border border-gray-300 transition-all"
-                  >
-                    <XCircle size={16} /> Đóng
-                  </button>
-                </div>
+                {/* Ghi chú */}
+                {order.notes && (
+                  <div className="mt-4 text-sm text-gray-700 border-t pt-3">
+                    <b>Ghi chú:</b> {order.notes}
+                  </div>
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>
