@@ -120,7 +120,7 @@ const ProfileForm = () => {
               </div>
             </label>
 
-            <div className="mt-1 border border-que-border rounded-lg px-3 py-2 bg-gray-50 text-que-text font-semibold text-center">
+            <div className="mt-1 border border-que-border rounded-lg px-3 py-2 bg-gray-50 text-que-text font-semibold text-left">
               {user?.pointsBalance ?? 0}
             </div>
           </div>
