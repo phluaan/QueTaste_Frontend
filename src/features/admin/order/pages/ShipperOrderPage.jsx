@@ -20,6 +20,7 @@ export default function ShipperOrdersPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [actionType, setActionType] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [openDetail, setOpenDetail] = useState(false);
 
   const openConfirm = (order, type) => {
     setSelectedOrder(order);
@@ -129,6 +130,7 @@ export default function ShipperOrdersPage() {
                 <button
                   onClick={() => {
                     console.log(o);
+                    setOpenDetail(true);
                     setSelectedOrder(o);
                   }}
                   className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl
@@ -139,8 +141,11 @@ export default function ShipperOrdersPage() {
                 </button>
 
                 <ShipperOrderDetailModal
-                  open={!!selectedOrder}
-                  onClose={() => setSelectedOrder(null)}
+                  open={openDetail}
+                  onClose={() => {
+                    setOpenDetail(false);
+                    setSelectedOrder(null);
+                  }}
                   order={selectedOrder}
                 />
               </div>

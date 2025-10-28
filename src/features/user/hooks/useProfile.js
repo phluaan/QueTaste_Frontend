@@ -8,6 +8,7 @@ const useProfile = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { accessToken } = useSelector((state) => state.auth);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [previewAvatar, setPreviewAvatar] = useState(
     user?.avatar || defaultAvatar
@@ -127,7 +128,7 @@ const useProfile = () => {
     setErrors({});
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const formPayload = new FormData();
@@ -135,8 +136,6 @@ const useProfile = () => {
       formPayload.append("phone", formData.phone);
       formPayload.append("gender", formData.personalInfo.gender);
       formPayload.append("dateOfBirth", formData.personalInfo.dateOfBirth);
-
-      // Gửi shippingAddress object dưới dạng JSON string
       formPayload.append(
         "shippingAddress",
         JSON.stringify(formData.personalInfo.shippingAddress)
@@ -146,9 +145,9 @@ const useProfile = () => {
         formPayload.append("avatar", formData.avatarFile);
       }
 
-      dispatch(updateProfile(formPayload));
+      await dispatch(updateProfile(formPayload));
       if (accessToken) {
-        dispatch(getProfile(accessToken));
+        await dispatch(getProfile(accessToken));
       }
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -200,10 +199,15 @@ const useProfile = () => {
   };
 
   // Handle submit với validation
-  const handleSubmitWithValidation = (e) => {
+  const handleSubmitWithValidation = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      handleSubmit(e); // gọi handleSubmit từ hook useProfile
+    if (!validateForm()) return;
+
+    try {
+      setIsLoading(true); // bật loading
+      await handleSubmit(e);
+    } finally {
+      setIsLoading(false); // tắt loading khi xong
     }
   };
 
@@ -220,6 +224,7 @@ const useProfile = () => {
     setErrors,
     setFormData,
     setPreviewAvatar,
+    isLoading,
   };
 };
 
