@@ -34,6 +34,12 @@ const ProductDetailPage = () => {
     return <p className="text-center text-que-primary"> Loading... </p>;
   if (error) return <p className="text-center text-que-danger"> ❌ {error} </p>;
   if (!productDetail) return null;
+  if (productDetail) {
+    console.log(productDetail);
+  }
+  if (stats) {
+    console.log(stats);
+  }
 
   return (
     <div className="min-h-screen bg-que-background">
@@ -178,11 +184,9 @@ const ProductDetailPage = () => {
                       }
                     />
                   ))}
-                  {stats && (
-                    <span className="ml-1 text-que-text-muted">
-                      | {stats.totalComments} Đánh giá
-                    </span>
-                  )}
+                  <span className="ml-1 text-que-text-muted">
+                    | {productDetail.totalReviews} Đánh giá
+                  </span>
                 </div>
               </div>
 
@@ -199,11 +203,9 @@ const ProductDetailPage = () => {
                 <span className="text-que-secondary">
                   Còn hàng ({productDetail.stock} có sẵn)
                 </span>
-                {stats && (
-                  <span className="text-que-text-muted">
-                    | Đã bán {stats.totalBuyers}
-                  </span>
-                )}
+                <span className="text-que-text-muted">
+                  | Đã bán {productDetail.totalSold}
+                </span>
               </div>
               <p className="text-que-text-muted">{productDetail.description}</p>
 

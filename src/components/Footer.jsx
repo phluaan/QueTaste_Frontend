@@ -4,6 +4,7 @@ import vietgap from "../assets/vietgap.png";
 import ocop from "../assets/ocop.png";
 import iso22000 from "../assets/iso_22000.png";
 import haccp from "../assets/haccp.png";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -66,9 +67,13 @@ const Footer = () => {
                 placeholder="Enter your email"
                 className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-que-primary"
               />
-              <button className="w-full px-3 py-2 bg-que-primary text-white rounded-lg text-sm hover:bg-que-accent transition-colors">
+              <Link
+                to="/contact"
+                className="w-full block text-center px-3 py-2 bg-que-primary text-white rounded-lg text-sm hover:bg-que-accent transition-colors"
+              >
                 Subscribe
-              </button>
+              </Link>
+
               <div className="flex space-x-3">
                 <FaFacebookF className="text-que-text-muted hover:text-que-primary cursor-pointer" />
                 <FaTwitter className="text-que-text-muted hover:text-que-primary cursor-pointer" />

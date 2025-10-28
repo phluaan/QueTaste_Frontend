@@ -16,7 +16,7 @@ const UserCouponForm = () => {
         privateCouponsPage, privateTotalPage, privatePage, setPrivatePage,
         myCouponsPage, myTotalPage, myPage, setMyPage,
         loadingMy, redeemCoupon, fetchMyCoupons,
-    } = useCoupon({ role: "user", token, filterStatus: "active", limit: 9 });
+    } = useCoupon({ role: "user", token, filterStatus: "active", limit: 6 });
 
     const [selectedCouponId, setSelectedCouponId] = useState(null);
 
@@ -43,14 +43,14 @@ const UserCouponForm = () => {
                 <Spin />
             ) : (
                 <>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 auto-rows-fr">
                     {publicCouponsPage.map((c) => (
-                    <CouponCard
+                        <CouponCard
                         key={c._id}
                         c={c}
                         disableLink
                         onClick={() => setSelectedCouponId(c._id)}
-                    />
+                        />
                     ))}
                 </div>
                 <Pagination
@@ -68,25 +68,25 @@ const UserCouponForm = () => {
                 <Spin />
             ) : (
                 <>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 auto-rows-fr">
                     {privateCouponsPage.map((c) => (
-                    <div key={c._id} className="relative">
+                        <div key={c._id} className="relative">
                         <CouponCard
-                        c={c}
-                        disableLink
-                        onClick={() => setSelectedCouponId(c._id)}
+                            c={c}
+                            disableLink
+                            onClick={() => setSelectedCouponId(c._id)}
                         />
                         <Button
-                        type="primary"
-                        className="mt-2"
-                        onClick={(e) => {
-                            e.stopPropagation(); // chặn mở modal khi bấm nút
+                            type="primary"
+                            className="mt-2"
+                            onClick={(e) => {
+                            e.stopPropagation();
                             handleRedeem(c._id);
-                        }}
+                            }}
                         >
-                        Đổi bằng {c.redeemCost} điểm
+                            Đổi bằng {c.redeemCost} điểm
                         </Button>
-                    </div>
+                        </div>
                     ))}
                 </div>
                 <Pagination
@@ -104,14 +104,14 @@ const UserCouponForm = () => {
                 <Spin />
             ) : (
                 <>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 auto-rows-fr">
                     {myCouponsPage.map((uc) => (
-                    <CouponCard
+                        <CouponCard
                         key={uc.id}
-                        c={uc.coupon}
+                        c={{ ...uc.coupon, status: uc.status }}
                         disableLink
                         onClick={() => setSelectedCouponId(uc.coupon.id)}
-                    />
+                        />
                     ))}
                 </div>
                 <Pagination

@@ -19,7 +19,6 @@ export default function AdminOrdersPage() {
     limit: 20,
   });
 
-  // Gọi API
   const {
     orders = [],
     pagination,

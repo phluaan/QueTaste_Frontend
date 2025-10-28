@@ -20,6 +20,7 @@ export const getAllOrders = createAsyncThunk(
       if (search) params.search = search;
       if (page) params.page = page;
       if (limit) params.limit = limit;
+      console.log(params);
 
       const res = await getAllOrdersApi(token, params);
       if (res.success) return res.data;
