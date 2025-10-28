@@ -12,12 +12,12 @@ import OrderActions from "./OrderActions";
 const STATUS_NOTES = {
   // Chờ xác nhận (gom new + confirmed)
   new: "🆕 Đơn hàng vừa được tạo, chờ shop xác nhận",
-  confirmed: "✅ Đơn hàng đã được xác nhận, chuẩn bị xử lý",
+  confirmed: "Đơn hàng đã được xác nhận, chuẩn bị xử lý",
   // Đang xử lý
   processing: "🛒 Shop đang chuẩn bị đơn hàng cho bạn",
   // Vận chuyển
   shipping: "🚚 Đơn hàng đang trên đường giao đến bạn",
-  // ✅ Bổ sung done_shipping
+  // Bổ sung done_shipping
   done_shipping:
     "📦 Đơn hàng đã được giao thành công. Vui lòng xác nhận nếu bạn đã nhận hàng.",
   // Hoàn thành

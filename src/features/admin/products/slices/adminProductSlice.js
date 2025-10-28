@@ -87,7 +87,6 @@ export const createProduct = createAsyncThunk(
       const token = thunkAPI.getState().auth.accessToken;
       const res = await createProductApi(token, formData);
       if (res.success) {
-        showSuccess("Thêm sản phẩm thành công!");
        const last = thunkAPI.getState().adminProducts.lastFilters || {};
        thunkAPI.dispatch(getAllProducts(last));
         return res.data;
@@ -108,7 +107,6 @@ export const updateProduct = createAsyncThunk(
       const token = thunkAPI.getState().auth.accessToken;
       const res = await updateProductApi(token, id, formData);
       if (res.success) {
-        showSuccess("Cập nhật sản phẩm thành công!");
         return res.data;
       }
       return thunkAPI.rejectWithValue(res.message);

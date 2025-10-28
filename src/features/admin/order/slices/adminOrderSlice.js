@@ -40,7 +40,7 @@ export const cancelOrder = createAsyncThunk(
       const token = thunkAPI.getState().auth.accessToken;
       const res = await cancelOrderApi(token, orderId);
       if (res.success) {
-        showSuccess("Order cancelled successfully");
+        showSuccess("Hủy đơn hàng thành công");
         return res.data;
       }
       return thunkAPI.rejectWithValue(res.message);
@@ -60,7 +60,7 @@ export const confirmOrderSlice = createAsyncThunk(
       const token = thunkAPI.getState().auth.accessToken;
       const res = await confirmOrderApi(token, orderId);
       if (res.success) {
-        showSuccess("Order confirmed successfully");
+        showSuccess("Xác nhận đơn hàng thành công");
         return res.data;
       }
       return thunkAPI.rejectWithValue(res.message);
@@ -100,7 +100,7 @@ export const confirmOrdersSlice = createAsyncThunk(
         showError(`Không tìm thấy: ${notFound.length} đơn`);
       }
 
-      // ✅ trả về payload để fulfilled xử lý
+      // trả về payload để fulfilled xử lý
       return {
         updatedIds: updated.map((o) => String(o._id)),
         skippedInvalid, // [{ id, status }]
@@ -142,7 +142,7 @@ export const cancelOrdersSlice = createAsyncThunk(
         showError(`Không tìm thấy: ${notFound.length} đơn`);
       }
 
-      // ✅ trả về payload để fulfilled xử lý
+      // trả về payload để fulfilled xử lý
       return {
         updatedIds: updated.map((o) => String(o._id)),
         skippedInvalid, // [{ id, status }]
@@ -184,7 +184,7 @@ export const callShipper = createAsyncThunk(
         showError(`Không tìm thấy: ${notFound.length} đơn`);
       }
 
-      // ✅ trả về payload để fulfilled xử lý
+      // trả về payload để fulfilled xử lý
       return {
         updatedIds: updated.map((o) => String(o._id)),
         skippedInvalid, // [{ id, status }]

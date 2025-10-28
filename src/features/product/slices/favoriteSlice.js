@@ -30,10 +30,14 @@ const favoriteSlice = createSlice({
         state.list = action.payload;
       })
       .addCase(addFavorite.fulfilled, (state, action) => {
-        state.list.push({ productId: action.payload });
+        state.list.push({ productId: { _id: action.payload } });
       })
       .addCase(removeFavorite.fulfilled, (state, action) => {
-        state.list = state.list.filter((f) => f.productId !== action.payload);
+        state.list = state.list.filter(
+          (f) =>
+            f.productId !== action.payload &&
+            f.productId?._id !== action.payload
+        );
       });
   },
 });

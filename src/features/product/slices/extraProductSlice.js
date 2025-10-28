@@ -40,16 +40,20 @@ const extraProductSlice = createSlice({
         state.related = action.payload;
       })
       .addCase(fetchViewedProducts.fulfilled, (state, action) => {
-        const unique = [];
-        const map = new Map();
-        action.payload.forEach((v) => {
-            if (!map.has(v.productId._id)) {
-            map.set(v.productId._id, true);
-            unique.push(v.productId);
-            }
-        });
-        state.viewed = unique;
-        })
+  const unique = [];
+  const map = new Map();
+
+  action.payload.forEach((v) => {
+    const product = v?.productId;
+    if (product && product._id && !map.has(product._id)) {
+      map.set(product._id, true);
+      unique.push(product);
+    }
+  });
+
+  state.viewed = unique;
+})
+
       .addCase(fetchProductStats.fulfilled, (state, action) => {
         state.stats = action.payload;
       });

@@ -39,7 +39,7 @@ export const cancelOrder = createAsyncThunk(
       const token = thunkAPI.getState().auth.accessToken;
       const data = await cancelOrderApi(token, orderId);
 
-      showSuccess("Order cancelled successfully");
+      showSuccess("Hủy đơn hàng thành công");
       return data;
     } catch (err) {
       const message =
@@ -58,7 +58,7 @@ export const requestCancelOrder = createAsyncThunk(
       const token = thunkAPI.getState().auth.accessToken;
       const res = await requestCancelOrderApi(token, orderId, reason);
       if (res.success) {
-        showSuccess("Request for order cancellation submitted successfully");
+        showSuccess("Yêu cầu hủy đơn hàng đã được gửi");
         return res.data;
       }
       return thunkAPI.rejectWithValue(res.message);
@@ -89,7 +89,7 @@ export const reOrder = createAsyncThunk(
       return thunkAPI.rejectWithValue(payload);
     }
 
-    showSuccess(res.message);
+    showSuccess("Thêm lại sản phẩm vào giỏ hàng thành công!");
     return res.data; // { cart, added, skipped }
   }
 );

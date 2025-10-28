@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import { showError, showSuccess } from "../../../../utils/toastUtils";
 import LoadingOverlay from "../../../../components/LoadingOverlay";
 import vietnamProvinces from "../../../../data/vietnamProvinces.json";
 import categoriesData from "../../../../data/category.json";
-
+import ConfirmModal from "../../../../components/ConfirmModal";
 export default function ProductDetailModal({
   product,
   onClose,
   onSave,
+  onReload,
   mode = "view",
   globalLoading = false,
   onModeChange,
@@ -29,6 +30,7 @@ export default function ProductDetailModal({
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
   const [regions, setRegions] = useState([]);
+  const [showExitConfirm, setShowExitConfirm] = useState(false); 
 
   // Validation state
   const [errors, setErrors] = useState({});
@@ -36,6 +38,22 @@ export default function ProductDetailModal({
 
   const isCreate = currentMode === "create";
   const isView = currentMode === "view";
+  const isEdit = currentMode === "edit";
+
+  const handleClose = () => {
+    if (isEdit) {
+      setShowExitConfirm(true);
+    } else {
+      onClose();
+    }
+  };
+  
+  const confirmExitEdit = () => {
+    setShowExitConfirm(false);
+    setCurrentMode("view");
+    onModeChange?.("view");
+    onClose();
+  };
 
   useEffect(() => {
     if (product) {
@@ -52,8 +70,7 @@ export default function ProductDetailModal({
       });
       setPreviewImages(product.images || []);
     } else if (mode === "create") {
-      setForm((f) => ({
-        ...f,
+      setForm({
         name: "",
         price: "",
         salePrice: "",
@@ -63,7 +80,7 @@ export default function ProductDetailModal({
         description: "",
         images: [],
         newImages: [],
-      }));
+      });
       setPreviewImages([]);
     }
 
@@ -71,7 +88,6 @@ export default function ProductDetailModal({
     setRegions(vietnamProvinces || []);
   }, [product, mode]);
 
-  // --------- VALIDATION ---------
   const validate = (state) => {
     const MAX_IMAGES = 6;
     const MAX_IMG_SIZE = 2 * 1024 * 1024; // 2MB
@@ -208,25 +224,6 @@ export default function ProductDetailModal({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setTouched({
-      name: true,
-      price: true,
-      salePrice: true,
-      stock: true,
-      category: true,
-      region: true,
-      description: true,
-      images: true,
-    });
-
-    const v = validate(form);
-    setErrors(v);
-
-    if (Object.keys(v).length > 0) {
-      toast.error("Vui lòng kiểm tra lại các trường bị lỗi.");
-      return;
-    }
-
     setLoading(true);
     try {
       const data = new FormData();
@@ -235,22 +232,22 @@ export default function ProductDetailModal({
           form.newImages.forEach((file) => data.append("images", file));
         } else if (key === "images") {
           data.append("existingImages", JSON.stringify(form.images || []));
-        } else if (form[key] !== undefined && form[key] !== null) {
+        } else {
           data.append(key, form[key]);
         }
       });
 
       await onSave(data);
-      toast.success(
-        isCreate
-          ? "Thêm sản phẩm thành công."
-          : "Cập nhật sản phẩm thành công."
-      );
+      showSuccess(isCreate ? "Thêm sản phẩm thành công." : "Cập nhật sản phẩm thành công.");
+
+      if (product?._id) {
+        await reloadProductData(product._id);
+      }
+
       setCurrentMode("view");
       onModeChange?.("view");
     } catch (err) {
-      console.error(err);
-      toast.error(err?.message || "Có lỗi xảy ra khi lưu sản phẩm.");
+      showError("Có lỗi xảy ra khi lưu sản phẩm.");
     } finally {
       setLoading(false);
     }
@@ -265,6 +262,41 @@ export default function ProductDetailModal({
         : "border-gray-300"
     }`;
 
+  const handleEditClick = async () => {
+    if (product?._id) {
+      setLoading(true);
+      await reloadProductData(product._id);
+      setLoading(false);
+    }
+    setCurrentMode("edit");
+    onModeChange?.("edit");
+  };
+
+  const reloadProductData = async (id) => {
+    if (!onReload) return;
+    try {
+      const updated = await onReload(id);
+      if (updated?.payload) {
+        const p = updated.payload;
+        setForm({
+          name: p.name,
+          price: p.price,
+          salePrice: p.salePrice,
+          stock: p.stock,
+          category: p.category,
+          region: p.region,
+          description: p.description,
+          images: p.images || [],
+          newImages: [],
+        });
+        setPreviewImages(p.images || []);
+      }
+    } catch (err) {
+      console.error("Reload product failed:", err);
+      showError("Không thể tải lại dữ liệu sản phẩm.");
+    }
+  };
+
   const HelpText = ({ name }) =>
     errors[name] && (touched[name] || isCreate) ? (
       <p className="mt-1 text-xs text-red-600">{errors[name]}</p>
@@ -277,7 +309,7 @@ export default function ProductDetailModal({
 
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-black"
-          onClick={onClose}
+          onClick={handleClose}
           type="button"
         >
           ✕
@@ -542,7 +574,7 @@ export default function ProductDetailModal({
           <div className="col-span-2 flex justify-end gap-3 mt-4">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg"
               disabled={loading}
             >
@@ -552,10 +584,7 @@ export default function ProductDetailModal({
             {isView && (
               <button
                 type="button"
-                onClick={() => {
-                  setCurrentMode("edit");
-                  onModeChange?.("edit");
-                }}
+                onClick={handleEditClick}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 Chỉnh sửa
@@ -574,6 +603,19 @@ export default function ProductDetailModal({
           </div>
         </form>
       </div>
+
+      <ConfirmModal
+        open={showExitConfirm}
+        title="Xác nhận thoát"
+        message="Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn thoát không?"
+        confirmText="Thoát"
+        cancelText="Tiếp tục chỉnh"
+        onClose={() => setShowExitConfirm(false)}
+        onConfirm={() => {
+          confirmExitEdit();
+          onClose(); 
+        }}
+      />
     </div>
   );
 }

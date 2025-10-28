@@ -2,15 +2,15 @@ import { useState } from "react";
 import { MessageCircle } from "lucide-react";
 import ChatSidebar from "./ChatSidebar";
 import ChatWindow from "./ChatWindow";
-import { useChatSocket } from "../hooks/useChatSocket";
+//import { useChatSocket } from "../hooks/useChatSocket";
 import { getAccessToken } from "../../../utils/storage";
 import { useSelector } from "react-redux";
-
+import { useMainSocket } from "../../../hooks/useMainSocket";
 const ChatWidget = () => {
   const [open, setOpen] = useState(false);
   const { unreadCounts } = useSelector((s) => s.chat);
-  useChatSocket(open);
-
+  //useChatSocket(open);
+  useMainSocket(open);
   const token = getAccessToken(); 
   if (!token) return null; 
   const totalUnread = Object.values(unreadCounts || {}).reduce((a, b) => a + b, 0);
@@ -19,7 +19,7 @@ const ChatWidget = () => {
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-5 right-5 bg-que-primary text-white p-3 rounded-full shadow-lg hover:bg-que-secondary transition-colors"
+        className="fixed bottom-5 z-50 right-5 bg-que-primary text-white p-3 rounded-full shadow-lg hover:bg-que-secondary transition-colors"
       >
         <MessageCircle size={28} />
         {totalUnread > 0 && (

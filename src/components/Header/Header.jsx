@@ -12,7 +12,7 @@ import {
   markRead,
   markAllRead,
 } from "../../features/notification/slices/notificationSlice";
-import { useNotificationSocket } from "../../features/notification/hooks/useNotificationSocket";
+//import { useNotificationSocket } from "../../features/notification/hooks/useNotificationSocket";
 import Logo from "../Logo";
 
 const Header = () => {
@@ -22,7 +22,7 @@ const Header = () => {
   const [showNoti, setShowNoti] = useState(false);
   const { accessToken } = useSelector((state) => state.auth);
 
-  useNotificationSocket();
+  //useNotificationSocket();
 
   useEffect(() => {
     if (accessToken) {
@@ -52,11 +52,11 @@ const Header = () => {
   };
 
   const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Products", href: "/products" },
-    { name: "Services", href: "/services" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
+    { name: "Trang chủ", href: "/" },
+    { name: "Sản phẩm", href: "/products" },
+    { name: "Dịch vụ", href: "/services" },
+    { name: "Giới thiệu", href: "/about" },
+    { name: "Liên hệ", href: "/contact" },
   ];
 
   return (
@@ -107,54 +107,68 @@ const Header = () => {
                       <span className="absolute -top-1 -right-1 bg-que-danger border-2 border-white text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center animate-pulse"></span>
                     )}
                   </button>
+                    {showNoti && (
+                      <div className="absolute right-0 mt-2 w-80 bg-que-surface shadow-lg rounded-md p-3 max-h-96 overflow-y-auto z-50 border border-que-secondary/20">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-bold text-que-primary">Thông báo</span>
+                          {unreadCount > 0 && (
+                            <button
+                              onClick={() => dispatch(markAllRead())}
+                              className="text-sm text-que-secondary font-semibold hover:underline px-2 py-1 rounded transition-colors hover:bg-que-background"
+                            >
+                              Đánh dấu tất cả đã đọc
+                            </button>
+                          )}
+                        </div>
 
-                  {showNoti && (
-                    <div className="absolute right-0 mt-2 w-80 bg-que-surface shadow-lg rounded-md p-3 max-h-96 overflow-y-auto z-50 border border-que-secondary/20">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="font-bold text-que-primary">
-                          Thông báo
-                        </span>
-                        {unreadCount > 0 && (
-                          <button
-                            onClick={() => dispatch(markAllRead())}
-                            className="text-sm text-que-secondary font-semibold hover:underline px-2 py-1 rounded transition-colors hover:bg-que-background"
-                          >
-                            Đánh dấu tất cả đã đọc
-                          </button>
+                        {items.length === 0 ? (
+                          <p className="text-que-text-muted text-sm">Không có thông báo</p>
+                        ) : (
+                          <ul>
+                            {items.map((n) => (
+                              <li
+                                key={n._id}
+                                onClick={async () => {
+                                  try {
+                                    await dispatch(markRead(n._id));
+
+                                    if (n.link) {
+                                      // 🔹 Nếu là link nội bộ
+                                      if (n.link.startsWith("/")) {
+                                        navigate(n.link);
+                                      } else {
+                                        // 🔹 Nếu là link ngoài
+                                        window.open(n.link, "_blank");
+                                      }
+                                    }
+
+                                    // 🔹 Đóng dropdown sau khi click
+                                    setShowNoti(false);
+                                  } catch (err) {
+                                    console.error("Lỗi khi mở thông báo:", err);
+                                  }
+                                }}
+                                className={`relative p-2 rounded cursor-pointer hover:bg-que-secondary/10 transition-colors ${
+                                  n.isRead
+                                    ? "text-que-text-muted"
+                                    : "font-medium text-que-text-main bg-que-secondary/10"
+                                }`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span>{n.message}</span>
+                                  {!n.isRead && (
+                                    <span className="inline-block w-2 h-2 bg-que-accent rounded-full ml-1"></span>
+                                  )}
+                                </div>
+                                <div className="text-xs text-que-text-muted">
+                                  {new Date(n.createdAt).toLocaleString("vi-VN")}
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
                         )}
                       </div>
-
-                      {items.length === 0 ? (
-                        <p className="text-que-text-muted text-sm">
-                          Không có thông báo
-                        </p>
-                      ) : (
-                        <ul>
-                          {items.map((n) => (
-                            <li
-                              key={n._id}
-                              onClick={() => dispatch(markRead(n._id))}
-                              className={`relative p-2 rounded cursor-pointer hover:bg-que-secondary/10 transition-colors ${
-                                n.isRead
-                                  ? "text-que-text-muted"
-                                  : "font-medium text-que-text-main bg-que-secondary/10"
-                              }`}
-                            >
-                              <div className="flex items-center gap-2">
-                                <span>{n.message}</span>
-                                {!n.isRead && (
-                                  <span className="inline-block w-2 h-2 bg-que-accent rounded-full ml-1"></span>
-                                )}
-                              </div>
-                              <div className="text-xs text-que-text-muted">
-                                {new Date(n.createdAt).toLocaleString()}
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
+                    )}
                 </div>
 
                 {/* Divider */}

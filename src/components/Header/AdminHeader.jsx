@@ -8,7 +8,6 @@ import {
   markRead,
   markAllRead,
 } from "../../features/notification/slices/notificationSlice";
-import { useNotificationSocket } from "../../features/notification/hooks/useNotificationSocket";
 import { FiBell } from "react-icons/fi";
 import AdminMenu from "../AdminMenu";
 import { logoutAsync } from "../../features/auth/slices/authSlice";
@@ -20,13 +19,8 @@ export default function AdminHeader() {
   const { items, unreadCount } = useSelector((s) => s.notification);
   const [showNoti, setShowNoti] = useState(false);
 
-  // Kích hoạt socket để nhận realtime
-  useNotificationSocket();
-
   useEffect(() => {
-    if (accessToken) {
-      dispatch(fetchNotifications());
-    }
+    if (accessToken) dispatch(fetchNotifications());
   }, [accessToken, dispatch]);
 
   const handleLogout = async () => {
@@ -35,6 +29,24 @@ export default function AdminHeader() {
       navigate("/login");
     } catch (err) {
       console.error("Logout failed:", err);
+    }
+  };
+
+  // Khi click thông báo
+  const handleNotificationClick = async (n) => {
+    try {
+      if (!n?._id) return;
+      await dispatch(markRead(n._id));
+
+      // Nếu có link -> điều hướng nội bộ
+      if (n.link && n.link.startsWith("/")) {
+        navigate(n.link);
+      }
+
+      // Ẩn dropdown sau khi click
+      setShowNoti(false);
+    } catch (err) {
+      console.error("Lỗi khi mở thông báo:", err);
     }
   };
 
@@ -88,34 +100,38 @@ export default function AdminHeader() {
                     </p>
                   ) : (
                     <ul>
-                      {items.map((n) => (
-                        <li
-                          key={n._id}
-                          onClick={() => dispatch(markRead(n._id))}
-                          className={`relative p-2 rounded cursor-pointer transition-colors ${
-                            n.isRead
-                              ? "text-que-text-muted hover:bg-que-background"
-                              : "font-medium text-que-text-main bg-que-background hover:bg-que-secondary/10"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <span>{n.message}</span>
-                            {!n.isRead && (
-                              <span className="inline-block w-2 h-2 bg-que-secondary rounded-full ml-1" />
-                            )}
-                          </div>
-                          <div className="text-xs text-que-text-muted">
-                            {new Date(n.createdAt).toLocaleString()}
-                          </div>
-                        </li>
-                      ))}
+                      {items
+                        .filter((n) => n && n._id && n.message)
+                        .map((n) => (
+                          <li
+                            key={n._id}
+                            onClick={() => handleNotificationClick(n)}
+                            className={`relative p-2 rounded cursor-pointer transition-colors ${
+                              n.isRead
+                                ? "text-que-text-muted hover:bg-que-background"
+                                : "font-medium text-que-text-main bg-que-background hover:bg-que-secondary/10"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span>{n.message}</span>
+                              {!n.isRead && (
+                                <span className="inline-block w-2 h-2 bg-que-secondary rounded-full ml-1" />
+                              )}
+                            </div>
+                            <div className="text-xs text-que-text-muted">
+                              {n.createdAt
+                                ? new Date(n.createdAt).toLocaleString("vi-VN")
+                                : "—"}
+                            </div>
+                          </li>
+                        ))}
                     </ul>
                   )}
                 </div>
               )}
             </div>
 
-            {/* Admin dropdown (không có Đơn hàng) */}
+            {/* Admin dropdown */}
             <AdminMenu
               avatar={defaultAvatar}
               name={user?.fullName || user?.name || "Admin"}

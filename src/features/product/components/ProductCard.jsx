@@ -41,7 +41,7 @@ const ProductCard = ({ p }) => {
       })
     );
 
-    showSuccess(`${p.name} added to cart!`);
+    showSuccess(`${p.name} đã được thêm vào giỏ hàng!`);
   };
 
   return (

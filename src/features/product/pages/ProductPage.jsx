@@ -27,6 +27,8 @@ const ProductPage = () => {
     setRatingFilter,
     regionFilter,
     setRegionFilter,
+    categoryFilter, 
+    setCategoryFilter,
     products,
     loading,
     totalPage,
@@ -177,7 +179,21 @@ const ProductPage = () => {
           </div>
 
           {/* Bộ lọc cùng 1 hàng */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="w-full border rounded px-3 py-2"
+            >
+              <option value="">Tất cả danh mục</option>
+              <option value="Trái cây">Trái cây</option>
+              <option value="Đồ uống">Đồ uống</option>
+              <option value="Hải sản">Hải sản</option>
+              <option value="Bánh kẹo">Bánh kẹo</option>
+              <option value="Đặc sản">Đặc sản</option>
+              <option value="Gia vị">Gia vị</option>
+              <option value="Nông sản">Nông sản</option>
+            </select>
             <select
               value={filterCriteria}
               onChange={(e) => setFilterCriteria(e.target.value)}
@@ -289,7 +305,7 @@ const ProductPage = () => {
 
         {/* Danh sách sản phẩm */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-          {loading[filterCriteria || "all"] ? (
+          {loading.list ? (
             <p>Loading...</p>
           ) : products.length > 0 ? (
             products.map((p) => <ProductCard key={p._id} p={p} />)

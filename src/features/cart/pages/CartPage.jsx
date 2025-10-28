@@ -1,5 +1,5 @@
 import { FaShoppingCart } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import CartItem from "../components/CartItem";
 import useCart from "../hooks/useCart";
 import Header from "../../../components/Header/Header";
@@ -7,9 +7,9 @@ import Footer from "../../../components/Footer";
 import { useState, useMemo } from "react";
 import ConfirmModal from "../../../components/ConfirmModal";
 
+
 const CartPage = () => {
-  const { items, loading, handleUpdate, handleRemove, error } = useCart();
-  const navigate = useNavigate();
+  const { items, loading, handleUpdate, handleRemove, error , handleCheckout} = useCart();
 
   // state cho confirm
   const [confirmState, setConfirmState] = useState({
@@ -97,20 +97,20 @@ const CartPage = () => {
             <div className="lg:w-1/3">
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold mb-6 text-que-text-main">
-                  Order Summary
+                  Tóm tắt đơn hàng
                 </h2>
                 <div className="space-y-4 text-que-text-main">
                   <div className="flex justify-between">
-                    <span>Subtotal</span>
+                    <span>Tổng tiền</span>
                     <span>{subtotal.toLocaleString()}₫</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Delivery</span>
+                    <span>Phí vận chuyển</span>
                     <span>{delivery.toLocaleString()}₫</span>
                   </div>
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center">
-                      <span className="font-bold text-xl">Total</span>
+                      <span className="font-bold text-xl">Thành tiền</span>
                       <span className="font-bold text-xl text-que-accent">
                         {total.toLocaleString()}₫
                       </span>
@@ -118,10 +118,10 @@ const CartPage = () => {
                   </div>
                 </div>
                 <button
-                  onClick={() => navigate("/checkout")}
+                  onClick={handleCheckout}
                   className="mt-6 w-full bg-que-primary hover:bg-que-secondary text-white py-4 rounded-lg font-bold text-lg transition-colors"
                 >
-                  Proceed to Checkout
+                  Tiến hành thành toán
                 </button>
               </div>
             </div>

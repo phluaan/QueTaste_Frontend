@@ -12,7 +12,7 @@ const initialState = {
   error: null,
 };
 
-// ✅ Lấy danh sách đơn giao cho shipper
+// Lấy danh sách đơn giao cho shipper
 export const fetchShipperOrders = createAsyncThunk(
   "shipper/fetchOrders",
   async (_, thunkAPI) => {
@@ -26,7 +26,7 @@ export const fetchShipperOrders = createAsyncThunk(
   }
 );
 
-// ✅ Đánh dấu đã giao
+// Đánh dấu đã giao
 export const markAsDone = createAsyncThunk(
   "shipper/markAsDone",
   async (orderId, thunkAPI) => {
@@ -42,7 +42,7 @@ export const markAsDone = createAsyncThunk(
   }
 );
 
-// ✅ Gửi yêu cầu hủy đơn
+// Gửi yêu cầu hủy đơn
 export const requestCancel = createAsyncThunk(
   "shipper/requestCancel",
   async (orderId, thunkAPI) => {
@@ -76,11 +76,11 @@ const shipperOrderSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Không tải được danh sách đơn hàng";
       })
-      // ✅ markAsDone
+      // markAsDone
       .addCase(markAsDone.fulfilled, (state, action) => {
         state.orders = action.payload || [];
       })
-      // ✅ requestCancel
+      // requestCancel
       .addCase(requestCancel.fulfilled, (state, action) => {
         state.orders = action.payload || [];
       });

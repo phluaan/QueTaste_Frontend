@@ -25,7 +25,7 @@ export default function AdminSidebar() {
             </Link>
           </li>
 
-          {/* ✅ Quản lý sản phẩm */}
+          {/* Quản lý sản phẩm */}
           <li>
             <Link
               to="/admin/products"

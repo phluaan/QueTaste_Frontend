@@ -376,7 +376,7 @@ const AdminCouponCreatePage = () => {
               hasErrors ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
-            ✅ Tạo coupon
+            Tạo coupon
           </button>
         </form>
       </div>

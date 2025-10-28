@@ -19,7 +19,7 @@ const useProductDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
+  
   const { related, viewed, stats } = useSelector((state) => state.extraProduct);
   const { list: favorites } = useSelector((s) => s.favorite);
   const { productDetail, loading, error } = useSelector(
@@ -28,7 +28,6 @@ const useProductDetail = () => {
 
   const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState("Description");
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   
@@ -87,10 +86,13 @@ const useProductDetail = () => {
     );
 
     
-    showSuccess(`${productDetail.name} added to cart!`);
+    showSuccess(`${productDetail.name} đã được thêm vào giỏ hàng!`);
   };
 
-  const isFavorite = favorites.some((f) => f.productId === productDetail?._id);
+  const isFavorite = favorites.some(
+    (f) =>
+      f.productId?._id === productDetail?._id || f.productId === productDetail?._id
+  );
 
   const toggleFavorite = () => {
     if (!accessToken) {
@@ -112,13 +114,12 @@ const useProductDetail = () => {
     handleAddToCart,
     currentImageIndex,
     setCurrentImageIndex,
-    activeTab,
-    setActiveTab,
     related,
     viewed,
     stats,
     isFavorite,
     toggleFavorite,
+    favorites,
   };
 };
 

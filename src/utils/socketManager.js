@@ -1,34 +1,26 @@
-// src/utils/socketManager.js
 import { io } from "socket.io-client";
 import { getAccessToken } from "./storage";
 
-let sockets = {
-  chat: null,
-  notification: null,
-};
+let socket = null;
+let lastToken = null;
 
-let lastToken = {
-  chat: null,
-  notification: null,
-};
-
-export const initSocket = (type, url, options = {}) => {
+export const initMainSocket = (url, options = {}) => {
   const token = getAccessToken();
   if (!token) return null;
 
-  // Nếu đã có socket nhưng token đã đổi -> disconnect & tạo mới
-  if (sockets[type]) {
-    if (lastToken[type] === token) {
-      // Đúng token hiện tại -> đảm bảo đã connect
-      if (!sockets[type].connected) sockets[type].connect();
-      return sockets[type];
-    }
-    sockets[type].removeAllListeners();
-    sockets[type].disconnect();
-    sockets[type] = null;
+  // Nếu socket cũ còn hợp lệ
+  if (socket && lastToken === token) {
+    if (!socket.connected) socket.connect();
+    return socket;
   }
 
-  const socket = io(url, {
+  // Reset socket nếu token thay đổi
+  if (socket) {
+    socket.removeAllListeners();
+    socket.disconnect();
+  }
+
+  socket = io(url, {
     auth: { token },
     transports: ["websocket"],
     reconnection: true,
@@ -37,23 +29,24 @@ export const initSocket = (type, url, options = {}) => {
     ...options,
   });
 
-  sockets[type] = socket;
-  lastToken[type] = token;
+  lastToken = token;
+
+  // Debug
+  socket.on("connect", () => console.log("[socket] Connected", socket.id));
+  socket.on("disconnect", (reason) => console.warn("[socket] Disconnected:", reason));
+  socket.on("connect_error", (err) => console.error("[socket] Error:", err.message));
+  socket.on("reconnect", (attempt) => console.log("[socket] Reconnected after", attempt, "tries"));
 
   return socket;
 };
 
-export const disconnectSocket = (type) => {
-  if (sockets[type]) {
-    sockets[type].removeAllListeners();
-    sockets[type].disconnect();
-    sockets[type] = null;
-    lastToken[type] = null;
+export const getMainSocket = () => socket;
+
+export const disconnectMainSocket = () => {
+  if (socket) {
+    socket.removeAllListeners();
+    socket.disconnect();
+    socket = null;
+    lastToken = null;
   }
 };
-
-export const disconnectAllSockets = () => {
-  Object.keys(sockets).forEach((type) => disconnectSocket(type));
-};
-
-export const getSocket = (type) => sockets[type];

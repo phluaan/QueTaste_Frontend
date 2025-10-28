@@ -7,7 +7,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const initialForm = { fullName: "", email: "", phone: "", message: "" };
 
 const ContactPage = () => {
-  // ✅ lấy accessToken đúng chỗ (ngoài mọi hàm thường)
+  // lấy accessToken đúng chỗ (ngoài mọi hàm thường)
   const accessToken = useSelector((state) => state.auth.accessToken);
 
   const navigate = useNavigate();

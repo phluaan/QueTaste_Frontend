@@ -13,20 +13,20 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-6 mb-6">
           <div>
             <h4 className="font-semibold mb-3 text-que-text-main">
-              Quick Links
+              Truy cập nhanh
             </h4>
             <div className="space-y-1">
-              <a className="block text-que-text-muted hover:text-que-primary">
-                Shop
+              <a href="/" className="block text-que-text-muted hover:text-que-primary">
+                Trang chủ
               </a>
-              <a className="block text-que-text-muted hover:text-que-primary">
-                Categories
+              <a href="/products" className="block text-que-text-muted hover:text-que-primary">
+                Sản phẩm
               </a>
-              <a className="block text-que-text-muted hover:text-que-primary">
-                Contact
+              <a href="/contact" className="block text-que-text-muted hover:text-que-primary">
+                Liên hệ
               </a>
-              <a className="block text-que-text-muted hover:text-que-primary">
-                Blog
+              <a href="/about" className="block text-que-text-muted hover:text-que-primary">
+                Giới thiệu
               </a>
             </div>
           </div>
@@ -48,12 +48,12 @@ const Footer = () => {
 
           <div>
             <h4 className="font-semibold mb-3 text-que-text-main">
-              Contact Us
+              Liên hệ chúng tôi
             </h4>
             <div className="space-y-1 text-que-text-muted text-sm">
-              <p>1 Vo Van Ngan Street, Ho Chi Minh City</p>
+              <p>Số 1 đường Võ Văn Ngân, Thành phố Hồ Chí MInh</p>
               <p>Email: quetaste@gmail.com</p>
-              <p>Phone: (+84) 0862267674</p>
+              <p>SĐT: (+84) 0862267674</p>
             </div>
           </div>
 
