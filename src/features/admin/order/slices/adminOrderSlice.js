@@ -39,7 +39,7 @@ export const cancelOrder = createAsyncThunk(
       const token = thunkAPI.getState().auth.accessToken;
       const res = await cancelOrderApi(token, orderId);
       if (res.success) {
-        showSuccess("Order cancelled successfully");
+        showSuccess("Hủy đơn hàng thành công");
         return res.data;
       }
       return thunkAPI.rejectWithValue(res.message);
@@ -59,7 +59,7 @@ export const confirmOrderSlice = createAsyncThunk(
       const token = thunkAPI.getState().auth.accessToken;
       const res = await confirmOrderApi(token, orderId);
       if (res.success) {
-        showSuccess("Order confirmed successfully");
+        showSuccess("Xác nhận đơn hàng thành công");
         return res.data;
       }
       return thunkAPI.rejectWithValue(res.message);

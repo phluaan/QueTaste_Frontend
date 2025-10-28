@@ -23,22 +23,25 @@ const useProduct = () => {
 
   const init = getInitialState();
 
-  // lấy từ sessionStorage nếu có (quay lại từ trang khác)
+  // Các filter
   const [search, _setSearch] = useState(init.search || "");
   const [filterCriteria, _setFilterCriteria] = useState(init.filterCriteria || "newest");
   const [priceFilter, _setPriceFilter] = useState(init.priceFilter || "");
   const [ratingFilter, _setRatingFilter] = useState(init.ratingFilter || "");
   const [regionFilter, _setRegionFilter] = useState(init.regionFilter || "");
+  const [categoryFilter, _setCategoryFilter] = useState(init.categoryFilter || "");
 
   const location = useLocation();
-  // Mỗi lần thay đổi filter, reset trang 1
+
+  // Mỗi lần thay đổi filter → reset về trang 1
   const setSearch = (v) => { _setSearch(v); dispatch(setPage(1)); };
   const setFilterCriteria = (v) => { _setFilterCriteria(v); dispatch(setPage(1)); };
   const setPriceFilter = (v) => { _setPriceFilter(v); dispatch(setPage(1)); };
   const setRatingFilter = (v) => { _setRatingFilter(v); dispatch(setPage(1)); };
   const setRegionFilter = (v) => { _setRegionFilter(v); dispatch(setPage(1)); };
+  const setCategoryFilter = (v) => { _setCategoryFilter(v); dispatch(setPage(1)); };
 
-  // Lưu state khi rời ProductPage
+  // Lưu session
   useEffect(() => {
     return () => {
       sessionStorage.setItem(
@@ -51,18 +54,18 @@ const useProduct = () => {
           priceFilter,
           ratingFilter,
           regionFilter,
+          categoryFilter,
         })
       );
     };
-  }, [currentPage, search, filterCriteria, priceFilter, ratingFilter, regionFilter]);
+  }, [currentPage, search, filterCriteria, priceFilter, ratingFilter, regionFilter, categoryFilter]);
 
-  // Khi quay lại productPage → khôi phục page + scroll
+  // Khôi phục trạng thái
   useEffect(() => {
     if (location.pathname === "/product") {
       const saved = sessionStorage.getItem("productPage");
       if (saved) {
         const state = JSON.parse(saved);
-
         if (state.page && state.page !== currentPage) {
           dispatch(setPage(state.page));
         }
@@ -73,21 +76,27 @@ const useProduct = () => {
     }
   }, [location.pathname, dispatch]);
 
+  // Scroll lên đầu khi đổi trang
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
 
-  // gọi API khi filter/page đổi
+  // Gọi API
   useEffect(() => {
     const query = { page: currentPage, limit: 12 };
 
     if (search) query.search = search;
+    if (categoryFilter) query.category = categoryFilter;
 
     switch (filterCriteria) {
-      case "newest": query.sortBy = "createdAt"; query.order = "desc"; break;
-      case "best": query.sortBy = "totalSold"; query.order = "desc"; break;
-      case "views": query.sortBy = "views"; query.order = "desc"; break;
-      case "discount": break;
+      case "newest":
+        query.sortBy = "createdAt"; query.order = "desc"; break;
+      case "best":
+        query.sortBy = "totalSold"; query.order = "desc"; break;
+      case "views":
+        query.sortBy = "views"; query.order = "desc"; break;
+      case "discount":
+        break;
       default: break;
     }
 
@@ -100,19 +109,19 @@ const useProduct = () => {
     if (regionFilter) query.region = regionFilter;
 
     dispatch(fetchAllProducts(query));
-  }, [dispatch, search, filterCriteria, priceFilter, ratingFilter, regionFilter, currentPage]);
+  }, [dispatch, search, filterCriteria, priceFilter, ratingFilter, regionFilter, categoryFilter, currentPage]);
 
   const sortedProducts = filterCriteria === "discount"
-  ? [...products].sort((a, b) => {
-      const discountA = a.salePrice && a.salePrice < a.price
-        ? ((a.price - a.salePrice) / a.price) * 100
-        : 0;
-      const discountB = b.salePrice && b.salePrice < b.price
-        ? ((b.price - b.salePrice) / b.price) * 100
-        : 0;
-      return discountB - discountA;
-    })
-  : products;
+    ? [...products].sort((a, b) => {
+        const discountA = a.salePrice && a.salePrice < a.price
+          ? ((a.price - a.salePrice) / a.price) * 100
+          : 0;
+        const discountB = b.salePrice && b.salePrice < b.price
+          ? ((b.price - b.salePrice) / b.price) * 100
+          : 0;
+        return discountB - discountA;
+      })
+    : products;
 
   return {
     search, setSearch,
@@ -120,6 +129,7 @@ const useProduct = () => {
     priceFilter, setPriceFilter,
     ratingFilter, setRatingFilter,
     regionFilter, setRegionFilter,
+    categoryFilter, setCategoryFilter,
     products: sortedProducts,
     loading,
     totalPage, currentPage,

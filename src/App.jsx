@@ -1,8 +1,9 @@
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AppRoutes from "./routes/AppRoutes";
-
+import { useMainSocket } from "./hooks/useMainSocket";
 function App() {
+  useMainSocket();
   return (
     <>
       <AppRoutes />

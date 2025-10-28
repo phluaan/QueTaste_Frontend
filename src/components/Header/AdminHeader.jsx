@@ -8,7 +8,6 @@ import {
   markRead,
   markAllRead,
 } from "../../features/notification/slices/notificationSlice";
-import { useNotificationSocket } from "../../features/notification/hooks/useNotificationSocket";
 import { FiBell } from "react-icons/fi";
 import AdminMenu from "../AdminMenu";
 import { logoutAsync } from "../../features/auth/slices/authSlice";
@@ -20,13 +19,8 @@ export default function AdminHeader() {
   const { items, unreadCount } = useSelector((s) => s.notification);
   const [showNoti, setShowNoti] = useState(false);
 
-  // Kích hoạt socket để nhận realtime
-  useNotificationSocket();
-
   useEffect(() => {
-    if (accessToken) {
-      dispatch(fetchNotifications());
-    }
+    if (accessToken) dispatch(fetchNotifications());
   }, [accessToken, dispatch]);
 
   const handleLogout = async () => {
@@ -88,10 +82,12 @@ export default function AdminHeader() {
                     </p>
                   ) : (
                     <ul>
-                      {items.map((n) => (
+                      {items
+                      .filter((n) => n && n._id && n.message)
+                      .map((n) => (
                         <li
-                          key={n._id}
-                          onClick={() => dispatch(markRead(n._id))}
+                          key={n._id || `${n.message}-${n.createdAt || Math.random()}`}
+                          onClick={() => n._id && dispatch(markRead(n._id))}
                           className={`relative p-2 rounded cursor-pointer transition-colors ${
                             n.isRead
                               ? "text-que-text-muted hover:bg-que-background"
@@ -105,7 +101,9 @@ export default function AdminHeader() {
                             )}
                           </div>
                           <div className="text-xs text-que-text-muted">
-                            {new Date(n.createdAt).toLocaleString()}
+                            {n.createdAt
+                              ? new Date(n.createdAt).toLocaleString()
+                              : "—"}
                           </div>
                         </li>
                       ))}
@@ -115,7 +113,7 @@ export default function AdminHeader() {
               )}
             </div>
 
-            {/* Admin dropdown (không có Đơn hàng) */}
+            {/* Admin dropdown */}
             <AdminMenu
               avatar={defaultAvatar}
               name={user?.fullName || user?.name || "Admin"}

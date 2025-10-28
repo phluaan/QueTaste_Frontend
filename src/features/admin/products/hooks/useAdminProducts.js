@@ -10,7 +10,7 @@ import {
   bulkHideProducts as bulkHideProductsThunk,
   bulkShowProducts as bulkShowProductsThunk,
 } from "../slices/adminProductSlice";
-
+let timeout;
 const useAdminProducts = (filters) => {
   const dispatch = useDispatch();
   const { products, pagination, loading, error } = useSelector(
@@ -18,7 +18,11 @@ const useAdminProducts = (filters) => {
   );
 
   useEffect(() => {
-    dispatch(getAllProducts(filters));
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      dispatch(getAllProducts(filters));
+    }, 1000); 
+    return () => clearTimeout(timeout);
   }, [dispatch, JSON.stringify(filters)]);
 
   return {

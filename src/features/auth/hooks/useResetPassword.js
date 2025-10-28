@@ -41,8 +41,8 @@ const useResetPassword = () => {
     setResendLoading(true);
     try {
       await dispatch(forgotPassword( formData.email )).unwrap();
-      console.log("✅ Resend OTP to:", formData.email);
-      showSuccess("✅ Resend OTP to: " + formData.email)
+      console.log("Gửi OTP đến: ", formData.email);
+      showSuccess("Gửi OTP đến: " + formData.email)
       setCountdown(60); // reset countdown
     } catch (err) {
       console.error(err);
@@ -81,7 +81,7 @@ const useResetPassword = () => {
     setLoading(true);
     try {
       await dispatch(resetPassword(formData)).unwrap();
-      showSuccess("✅ Mật khẩu đã được đặt lại thành công!");
+      showSuccess("Mật khẩu đã được đặt lại thành công!");
       navigate("/login");
     } catch (err) {
       console.error("❌ Reset Password failed:", err);

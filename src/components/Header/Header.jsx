@@ -12,7 +12,7 @@ import {
   markRead,
   markAllRead,
 } from "../../features/notification/slices/notificationSlice";
-import { useNotificationSocket } from "../../features/notification/hooks/useNotificationSocket";
+//import { useNotificationSocket } from "../../features/notification/hooks/useNotificationSocket";
 import Logo from "../Logo";
 
 const Header = () => {
@@ -22,7 +22,7 @@ const Header = () => {
   const [showNoti, setShowNoti] = useState(false);
   const { accessToken } = useSelector((state) => state.auth);
 
-  useNotificationSocket();
+  //useNotificationSocket();
 
   useEffect(() => {
     if (accessToken) {
@@ -52,11 +52,11 @@ const Header = () => {
   };
 
   const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Products", href: "/products" },
-    { name: "Services", href: "/services" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
+    { name: "Trang chủ", href: "/" },
+    { name: "Sản phẩm", href: "/products" },
+    { name: "Dịch vụ", href: "/services" },
+    { name: "Giới thiệu", href: "/about" },
+    { name: "Liên hệ", href: "/contact" },
   ];
 
   return (

@@ -5,7 +5,7 @@ import useReview from "../../review/hooks/useReview";
 import ReviewItem from "../../review/components/ReviewItem";
 import ReviewPagination from "../../cart/components/ReviewPagination";
 
-const ProductDetailTabs = ({ activeTab, setActiveTab, productDetail }) => {
+const ProductDetailTabs = ({ productDetail }) => {
   const [rating, setRating] = useState(null);
   const [orderBy, setOrderBy] = useState("newest");
   const [page, setPage] = useState(1);
@@ -20,31 +20,12 @@ const ProductDetailTabs = ({ activeTab, setActiveTab, productDetail }) => {
 
   return (
     <div className="mt-16">
-      <div className="flex space-x-8 border-b">
-        {["description", "reviews", "shipping"].map((tab) => (
-          <button
-            key={tab}
-            className={`pb-4 ${
-              activeTab === tab
-                ? "border-b-2 border-que-primary text-que-primary"
-                : "text-que-text-muted"
-            }`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </button>
-        ))}
-      </div>
+
 
       {/* Tab content */}
       <div className="py-8">
-        {activeTab === "description" && (
-          <p className="text-que-text-main">{productDetail.description}</p>
-        )}
-
-        {activeTab === "reviews" && (
           <div className="space-y-6">
-            <h3 className="text-xl font-semibold">Customer Reviews</h3>
+            <h3 className="text-xl font-semibold"> Reviews</h3>
 
             {/* Bộ lọc reviews */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
@@ -104,16 +85,6 @@ const ProductDetailTabs = ({ activeTab, setActiveTab, productDetail }) => {
               setPage={setPage}
             />
           </div>
-        )}
-
-        {activeTab === "shipping" && (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold">Shipping & Returns</h3>
-            <p className="text-que-text-main">
-              Free shipping on orders over $100
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

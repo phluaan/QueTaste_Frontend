@@ -23,15 +23,13 @@ const ProductDetailPage = () => {
     handleAddToCart,
     currentImageIndex,
     setCurrentImageIndex,
-    activeTab,
-    setActiveTab,
     related,
     viewed,
     stats,
     isFavorite,
     toggleFavorite,
+    favorites,
   } = useProductDetail();
-
   if (loading.detail)
     return <p className="text-center text-que-primary"> Loading... </p>;
   if (error) return <p className="text-center text-que-danger"> ❌ {error} </p>;
@@ -44,14 +42,14 @@ const ProductDetailPage = () => {
         {/* Breadcrumb */}
         <div className="text-base md:text-lg mb-8 font-medium ml-10">
           <a href="/" className="text-que-text-main hover:text-que-primary">
-            Home
+            Trang chủ
           </a>
           <span className="text-que-text-muted mx-3">&gt;</span>
           <a
             href="/products"
             className="text-que-text-main hover:text-que-primary"
           >
-            Product
+            Sản phẩm
           </a>
           <span className="text-que-text-muted mx-3">&gt;</span>
           <span className="text-que-text-muted hover:text-que-primary">
@@ -190,16 +188,16 @@ const ProductDetailPage = () => {
 
               <div className="flex items-center space-x-4">
                 <span className="line-through text-que-text-muted">
-                  ${productDetail.price}
+                  {productDetail.price} VNĐ
                 </span>
                 <span className="text-3xl font-bold text-que-accent">
-                  ${productDetail.salePrice}
+                  {productDetail.salePrice} VNĐ
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                 <BsCheckCircleFill className="text-que-secondary" />
                 <span className="text-que-secondary">
-                  In Stock ({productDetail.stock} available)
+                  Còn hàng ({productDetail.stock} có sẵn)
                 </span>
                 {stats && (
                   <span className="text-que-text-muted">
@@ -240,62 +238,159 @@ const ProductDetailPage = () => {
                 >
                   <FiHeart className={isFavorite ? "text-que-danger" : ""} />
                   <span>
-                    {isFavorite ? "Remove from Wishlist" : "Add to Wishlist"}
+                    {isFavorite ? "Xóa khỏi yêu thích" : "Thêm vào yêu thích"}
                   </span>
                 </button>
-                <button className="flex items-center space-x-2 text-que-text-muted hover:text-que-primary">
-                  <FiRefreshCw />
-                  <span>Compare</span>
-                </button>
+
               </div>
 
-              <div className="bg-que-surface p-6 rounded-lg shadow-sm">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
-                    <BsCheckCircleFill className="text-que-primary" />
-                    <span>Free shipping over $100</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <BsCheckCircleFill className="text-que-primary" />
-                    <span>1-day return policy</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <BsCheckCircleFill className="text-que-primary" />
-                    <span>100% authentic guarantee</span>
-                  </div>
-                </div>
-              </div>
+
             </div>
           </div>
 
           {/* Product Details Tabs */}
           <ProductDetailTabs
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
             productDetail={productDetail}
           />
         </div>
-        {/* Sản phẩm tương tự */}
-        <div className="mt-10">
-          <h2 className="text-xl font-bold mb-4">Sản phẩm tương tự</h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {related.map((p) => (
-              <ProductCard key={p._id} p={p} />
-            ))}
-          </div>
-        </div>
+          {/* Sản phẩm tương tự */}
+          <div className="mt-14 relative">
+            <h2 className="text-xl font-bold mb-5">Sản phẩm tương tự</h2>
 
-        {/* Sản phẩm đã xem */}
-        <div className="mt-10">
-          <h2 className="text-xl font-bold mb-5">Bạn đã xem gần đây</h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {viewed
-              .filter((v) => v._id !== productDetail._id)
-              .map((p) => (
-                <ProductCard key={p._id} p={p} />
+            <Swiper
+              modules={[Navigation]}
+              slidesPerView={2}
+              spaceBetween={16}
+              breakpoints={{
+                640: { slidesPerView: 2, spaceBetween: 16 },
+                768: { slidesPerView: 3, spaceBetween: 20 },
+                1024: { slidesPerView: 4, spaceBetween: 24 },
+              }}
+              navigation={{
+                nextEl: ".related-next-btn",
+                prevEl: ".related-prev-btn",
+              }}
+              onSwiper={(swiper) => {
+                setTimeout(() => {
+                  swiper.navigation.init();
+                  swiper.navigation.update();
+                });
+              }}
+            >
+              {related.map((p) => (
+                <SwiperSlide key={p._id}>
+                  <ProductCard p={p} />
+                </SwiperSlide>
               ))}
+            </Swiper>
+
+            {/* Nút điều hướng trái/phải */}
+            {related.length > 4 && (
+              <>
+                <div className="related-prev-btn absolute -left-8 top-1/2 -translate-y-1/2 bg-que-surface/80 hover:bg-que-surface rounded-full p-3 shadow cursor-pointer z-10 text-lg">
+                  ‹
+                </div>
+                <div className="related-next-btn absolute -right-8 top-1/2 -translate-y-1/2 bg-que-surface/80 hover:bg-que-surface rounded-full p-3 shadow cursor-pointer z-10 text-lg">
+                  ›
+                </div>
+              </>
+            )}
           </div>
-        </div>
+
+          {/* Sản phẩm đã xem gần đây */}
+          <div className="mt-14 relative">
+            <h2 className="text-xl font-bold mb-5">Bạn đã xem gần đây</h2>
+
+            <Swiper
+              modules={[Navigation]}
+              slidesPerView={2}
+              spaceBetween={16}
+              breakpoints={{
+                640: { slidesPerView: 2, spaceBetween: 16 },
+                768: { slidesPerView: 3, spaceBetween: 20 },
+                1024: { slidesPerView: 4, spaceBetween: 24 },
+              }}
+              navigation={{
+                nextEl: ".viewed-next-btn",
+                prevEl: ".viewed-prev-btn",
+              }}
+              onSwiper={(swiper) => {
+                setTimeout(() => {
+                  swiper.navigation.init();
+                  swiper.navigation.update();
+                });
+              }}
+            >
+              {viewed
+                .filter((v) => v._id !== productDetail._id)
+                .map((p) => (
+                  <SwiperSlide key={p._id}>
+                    <ProductCard p={p} />
+                  </SwiperSlide>
+                ))}
+            </Swiper>
+
+            {/* Nút điều hướng trái/phải */}
+            {viewed.length > 4 && (
+              <>
+                <div className="viewed-prev-btn absolute -left-8 top-1/2 -translate-y-1/2 bg-que-surface/80 hover:bg-que-surface rounded-full p-3 shadow cursor-pointer z-10 text-lg">
+                  ‹
+                </div>
+                <div className="viewed-next-btn absolute -right-8 top-1/2 -translate-y-1/2 bg-que-surface/80 hover:bg-que-surface rounded-full p-3 shadow cursor-pointer z-10 text-lg">
+                  ›
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Sản phẩm yêu thích */}
+          <div className="mt-14 relative">
+            <h2 className="text-xl font-bold mb-5">Sản phẩm bạn yêu thích</h2>
+
+            <Swiper
+              modules={[Navigation]}
+              slidesPerView={2}
+              spaceBetween={16}
+              breakpoints={{
+                640: { slidesPerView: 2, spaceBetween: 16 },
+                768: { slidesPerView: 3, spaceBetween: 20 },
+                1024: { slidesPerView: 4, spaceBetween: 24 },
+              }}
+              navigation={{
+                nextEl: ".favorite-next-btn",
+                prevEl: ".favorite-prev-btn",
+              }}
+              onSwiper={(swiper) => {
+                setTimeout(() => {
+                  swiper.navigation.init();
+                  swiper.navigation.update();
+                });
+              }}
+            >
+              {favorites
+                ?.map((f) => f.productId || f) 
+                ?.filter((p) => p && p.isActive && p.stock > 0)
+                ?.filter((p) => p._id !== productDetail._id)
+                ?.map((p) => (
+                  <SwiperSlide key={p._id}>
+                    <ProductCard p={p} />
+                  </SwiperSlide>
+                ))}
+            </Swiper>
+
+            {/* Nút điều hướng trái/phải */}
+            {favorites?.filter((f) => f?.productId?.isActive && f?.productId?.stock > 0)?.length > 4 && (
+              <>
+                <div className="favorite-prev-btn absolute -left-8 top-1/2 -translate-y-1/2 bg-que-surface/80 hover:bg-que-surface rounded-full p-3 shadow cursor-pointer z-10 text-lg">
+                  ‹
+                </div>
+                <div className="favorite-next-btn absolute -right-8 top-1/2 -translate-y-1/2 bg-que-surface/80 hover:bg-que-surface rounded-full p-3 shadow cursor-pointer z-10 text-lg">
+                  ›
+                </div>
+              </>
+            )}
+          </div>
+
       </main>
     </div>
   );

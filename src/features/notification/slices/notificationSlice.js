@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosClient from "../../../utils/axiosClient";
 
-// Lấy danh sách notification từ API
 export const fetchNotifications = createAsyncThunk(
   "notification/fetchNotifications",
   async (params = {}, { rejectWithValue }) => {
@@ -13,7 +12,6 @@ export const fetchNotifications = createAsyncThunk(
   }
 );
 
-// Đánh dấu 1 cái đã đọc
 export const markRead = createAsyncThunk(
   "notification/markRead",
   async (id, { rejectWithValue }) => {
@@ -25,7 +23,6 @@ export const markRead = createAsyncThunk(
   }
 );
 
-// Đánh dấu tất cả đã đọc
 export const markAllRead = createAsyncThunk(
   "notification/markAllRead",
   async (_, { rejectWithValue }) => {
@@ -46,10 +43,13 @@ const notificationSlice = createSlice({
     error: null,
   },
   reducers: {
-    // Nhận realtime từ socket
     addNotification: (state, action) => {
-      state.items.unshift(action.payload);
-      state.unreadCount += 1;
+      const newNoti = action.payload;
+      if (!newNoti?._id || !newNoti?.message) return;
+      if (!state.items.some((n) => n._id === newNoti._id)) {
+        state.items.unshift(newNoti);
+        state.unreadCount += 1;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -59,17 +59,17 @@ const notificationSlice = createSlice({
       })
       .addCase(fetchNotifications.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload.data.items;
-        state.unreadCount = action.payload.data.unreadCount;
+        state.items = action.payload.data.items || [];
+        state.unreadCount = action.payload.data.unreadCount || 0;
       })
       .addCase(fetchNotifications.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       .addCase(markRead.fulfilled, (state, action) => {
-        const id = action.payload.data.item._id;
-        const idx = state.items.findIndex((n) => n._id === id);
-        if (idx !== -1) state.items[idx] = action.payload.data.item;
+        const updated = action.payload.data.item;
+        const idx = state.items.findIndex((n) => n._id === updated._id);
+        if (idx !== -1) state.items[idx] = updated;
         state.unreadCount = action.payload.data.unreadCount;
       })
       .addCase(markAllRead.fulfilled, (state) => {

@@ -333,6 +333,11 @@ export default function AdminProductsPage() {
                   setModalMode(null);
                 }}
                 onSave={handleSave}
+                onReload={async (id) => {
+                  const res = await getProductById(id);
+                  if (res?.payload) setSelectedProduct(res.payload);
+                  return res;
+                }}
                 globalLoading={loading}
               />
             )}

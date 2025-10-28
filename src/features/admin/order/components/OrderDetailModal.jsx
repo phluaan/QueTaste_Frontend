@@ -24,7 +24,6 @@ export default function OrderDetailModal({
       currency: "VND",
     }).format(Number(n || 0));
 
-  // 🔹 Các bước trạng thái
   const steps = [
     { key: "new", label: "Chờ xác nhận", icon: <Clock size={16} /> },
     { key: "confirmed", label: "Đã xác nhận", icon: <CheckCircle size={16} /> },
