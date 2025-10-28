@@ -32,6 +32,24 @@ export default function AdminHeader() {
     }
   };
 
+  // Khi click thông báo
+  const handleNotificationClick = async (n) => {
+    try {
+      if (!n?._id) return;
+      await dispatch(markRead(n._id));
+
+      // Nếu có link -> điều hướng nội bộ
+      if (n.link && n.link.startsWith("/")) {
+        navigate(n.link);
+      }
+
+      // Ẩn dropdown sau khi click
+      setShowNoti(false);
+    } catch (err) {
+      console.error("Lỗi khi mở thông báo:", err);
+    }
+  };
+
   return (
     <header className="h-16 bg-que-surface shadow flex items-center justify-between px-6">
       {/* Logo */}
@@ -83,30 +101,30 @@ export default function AdminHeader() {
                   ) : (
                     <ul>
                       {items
-                      .filter((n) => n && n._id && n.message)
-                      .map((n) => (
-                        <li
-                          key={n._id || `${n.message}-${n.createdAt || Math.random()}`}
-                          onClick={() => n._id && dispatch(markRead(n._id))}
-                          className={`relative p-2 rounded cursor-pointer transition-colors ${
-                            n.isRead
-                              ? "text-que-text-muted hover:bg-que-background"
-                              : "font-medium text-que-text-main bg-que-background hover:bg-que-secondary/10"
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <span>{n.message}</span>
-                            {!n.isRead && (
-                              <span className="inline-block w-2 h-2 bg-que-secondary rounded-full ml-1" />
-                            )}
-                          </div>
-                          <div className="text-xs text-que-text-muted">
-                            {n.createdAt
-                              ? new Date(n.createdAt).toLocaleString()
-                              : "—"}
-                          </div>
-                        </li>
-                      ))}
+                        .filter((n) => n && n._id && n.message)
+                        .map((n) => (
+                          <li
+                            key={n._id}
+                            onClick={() => handleNotificationClick(n)}
+                            className={`relative p-2 rounded cursor-pointer transition-colors ${
+                              n.isRead
+                                ? "text-que-text-muted hover:bg-que-background"
+                                : "font-medium text-que-text-main bg-que-background hover:bg-que-secondary/10"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span>{n.message}</span>
+                              {!n.isRead && (
+                                <span className="inline-block w-2 h-2 bg-que-secondary rounded-full ml-1" />
+                              )}
+                            </div>
+                            <div className="text-xs text-que-text-muted">
+                              {n.createdAt
+                                ? new Date(n.createdAt).toLocaleString("vi-VN")
+                                : "—"}
+                            </div>
+                          </li>
+                        ))}
                     </ul>
                   )}
                 </div>

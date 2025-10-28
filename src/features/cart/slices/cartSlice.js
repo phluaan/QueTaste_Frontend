@@ -101,7 +101,7 @@ const cartSlice = createSlice({
         state.items = action.payload || [];
       })
 
-      // ✅ reOrder: lấy items từ payload.cart
+      // reOrder: lấy items từ payload.cart
       .addCase(reOrder.pending, (state) => {
         state.loading = true;
         state.error = null;

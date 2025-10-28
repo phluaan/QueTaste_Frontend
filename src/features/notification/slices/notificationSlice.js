@@ -41,6 +41,7 @@ const notificationSlice = createSlice({
     loading: false,
     unreadCount: 0,
     error: null,
+    
   },
   reducers: {
     addNotification: (state, action) => {

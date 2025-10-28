@@ -99,7 +99,7 @@ export const confirmOrdersSlice = createAsyncThunk(
         showError(`Không tìm thấy: ${notFound.length} đơn`);
       }
 
-      // ✅ trả về payload để fulfilled xử lý
+      // trả về payload để fulfilled xử lý
       return {
         updatedIds: updated.map((o) => String(o._id)),
         skippedInvalid, // [{ id, status }]
@@ -141,7 +141,7 @@ export const cancelOrdersSlice = createAsyncThunk(
         showError(`Không tìm thấy: ${notFound.length} đơn`);
       }
 
-      // ✅ trả về payload để fulfilled xử lý
+      // trả về payload để fulfilled xử lý
       return {
         updatedIds: updated.map((o) => String(o._id)),
         skippedInvalid, // [{ id, status }]
@@ -183,7 +183,7 @@ export const callShipper = createAsyncThunk(
         showError(`Không tìm thấy: ${notFound.length} đơn`);
       }
 
-      // ✅ trả về payload để fulfilled xử lý
+      // trả về payload để fulfilled xử lý
       return {
         updatedIds: updated.map((o) => String(o._id)),
         skippedInvalid, // [{ id, status }]

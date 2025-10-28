@@ -32,7 +32,7 @@ const PaymentResultPage = () => {
             resultCode: Number(resultCode),
           });
 
-          console.log("✅ update-status response:", res);
+          console.log("update-status response:", res);
 
           if (resultCode === "0") {
             showSuccess("Thanh toán MoMo thành công 🎉");
