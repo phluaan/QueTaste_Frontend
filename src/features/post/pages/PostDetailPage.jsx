@@ -99,12 +99,7 @@ const PostDetailPage = () => {
             </div>
           </div>
         )}
-
-        {/* Comments */}
-        <div className="mt-8 p-4 bg-que-background rounded border">
-          <h2 className="font-semibold mb-2 text-que-text-main">Bình luận</h2>
-          <p className="text-que-text-muted">Chưa có bình luận</p>
-        </div>
+        
       </main>
     </div>
   );

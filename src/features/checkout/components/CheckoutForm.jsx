@@ -2,13 +2,11 @@ import { useState } from "react";
 import useVietnamProvinces from "../hooks/useVietnamProvinces";
 
 import codImg from "../../../assets/cod.png";
-import vnpayImg from "../../../assets/vnpay.png";
 import momoImg from "../../../assets/momo.png";
 
 const paymentMethods = [
   { id: "COD", label: "Cash on Delivery", image: codImg },
   { id: "momo", label: "MoMo", image: momoImg },
-  { id: "vnpay", label: "VNPAY", image: vnpayImg },
 ];
 
 const RequiredLabel = ({ htmlFor, children }) => (
@@ -243,7 +241,7 @@ const CheckoutForm = ({ onSubmit }) => {
       </div>
 
       <h3 className="text-xl font-bold mt-6 mb-2 text-que-primary">Payment Method</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {paymentMethods.map((method) => (
           <label
             key={method.id}
