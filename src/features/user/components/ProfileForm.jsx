@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import useProfile from "../hooks/useProfile";
-import { FiCamera } from "react-icons/fi";
+import { FiCamera, FiLoader } from "react-icons/fi";
 import useVietnamProvinces from "../../checkout/hooks/useVietnamProvinces";
 
 const ProfileForm = () => {
@@ -13,6 +13,7 @@ const ProfileForm = () => {
     setFormData,
     previewAvatar,
     errors,
+    isLoading,
   } = useProfile();
 
   const { provinces, districts, wards, fetchDistricts, fetchWards } =
@@ -82,88 +83,182 @@ const ProfileForm = () => {
 
       {/* Body */}
       <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-que-text-sub">
-            Số điện thoại
-          </label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone || ""}
-            onChange={handleChange}
-            className="w-full border border-que-border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-que-primary/30 focus:border-que-primary"
-          />
-          {errors.phone && (
-            <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-          )}
+        <div className="flex gap-4">
+          {/* Cột trái - Số điện thoại */}
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-que-text-sub">
+              Số điện thoại
+            </label>
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone || ""}
+              onChange={handleChange}
+              className="w-full border border-que-border rounded-lg px-3 py-2 mt-1 focus:ring focus:ring-que-primary/30 focus:border-que-primary"
+            />
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+            )}
+          </div>
+
+          {/* Cột phải - Điểm tích lũy + tooltip */}
+          <div className="w-40 flex flex-col justify-end">
+            <label className="block text-sm font-medium text-que-text-sub flex items-center gap-1">
+              Điểm tích lũy
+              {/* Tooltip container */}
+              <div className="relative group">
+                <span className="cursor-pointer bg-que-primary text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-semibold">
+                  ?
+                </span>
+
+                {/* Tooltip nội dung */}
+                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap shadow-lg">
+                  Điểm này dùng để đổi coupon giảm giá, được tích lũy khi mua
+                  hàng và để lại đánh giá.
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                </div>
+              </div>
+            </label>
+
+            <div className="mt-1 border border-que-border rounded-lg px-3 py-2 bg-gray-50 text-que-text font-semibold text-center">
+              {user?.pointsBalance ?? 0}
+            </div>
+          </div>
         </div>
 
         {/* Province – District – Ward */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <select
-            name="province"
-            value={formData.personalInfo.shippingAddress?.province || ""}
-            onChange={(e) => {
-              const code = Number(e.target.value);
-              setFormData((prev) => ({
-                ...prev,
-                personalInfo: {
-                  ...prev.personalInfo,
-                  shippingAddress: {
-                    ...prev.personalInfo.shippingAddress,
-                    province: code,
-                    district: null,
-                    ward: null,
-                    postalCode: code,
-                  },
-                },
-              }));
-              fetchDistricts(code);
-            }}
-            className="w-full border border-que-border p-3 rounded-lg focus:ring focus:ring-que-primary/30 focus:border-que-primary"
-            required
-          >
-            <option value="">Chọn Tỉnh/Thành phố</option>
-            {provinces.map((p) => (
-              <option key={p.code} value={p.code}>
-                {p.name}
-              </option>
-            ))}
-          </select>
+        <div className="mt-4">
+          <label className="block text-sm font-medium text-que-text-sub flex items-center gap-1 mb-2">
+            Tỉnh / Quận / Phường
+            {/* Tooltip container */}
+            <div className="relative group">
+              <span className="cursor-pointer bg-que-primary text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-semibold">
+                ?
+              </span>
 
-          <select
-            name="district"
-            value={formData.personalInfo.shippingAddress?.district || ""}
-            onChange={(e) => {
-              const code = Number(e.target.value);
-              setFormData((prev) => ({
-                ...prev,
-                personalInfo: {
-                  ...prev.personalInfo,
-                  shippingAddress: {
-                    ...prev.personalInfo.shippingAddress,
-                    district: code,
-                    ward: null,
-                  },
-                },
-              }));
-              fetchWards(code);
-            }}
-            disabled={!formData.personalInfo.shippingAddress?.province}
-            className="w-full border border-que-border p-3 rounded-lg focus:ring focus:ring-que-primary/30 focus:border-que-primary"
-            required
-          >
-            <option value="">Chọn Quận/Huyện</option>
-            {districts.map((d) => (
-              <option key={d.code} value={d.code}>
-                {d.name}
-              </option>
-            ))}
-          </select>
+              {/* Tooltip nội dung */}
+              <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap shadow-lg">
+                Vui lòng chọn theo thứ tự: Tỉnh/Thành phố → Quận/Huyện →
+                Phường/Xã
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+              </div>
+            </div>
+          </label>
 
-          <select
-            name="ward"
-            value={formData.personalInfo.shippingAddress?.ward || ""}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <select
+              name="province"
+              value={formData.personalInfo.shippingAddress?.province || ""}
+              onChange={(e) => {
+                const code = Number(e.target.value);
+                setFormData((prev) => ({
+                  ...prev,
+                  personalInfo: {
+                    ...prev.personalInfo,
+                    shippingAddress: {
+                      ...prev.personalInfo.shippingAddress,
+                      province: code,
+                      district: null,
+                      ward: null,
+                      postalCode: code,
+                    },
+                  },
+                }));
+                fetchDistricts(code);
+              }}
+              className="w-full border border-que-border p-3 rounded-lg focus:ring focus:ring-que-primary/30 focus:border-que-primary"
+              required
+            >
+              <option value="">Chọn Tỉnh/Thành phố</option>
+              {provinces.map((p) => (
+                <option key={p.code} value={p.code}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              name="district"
+              value={formData.personalInfo.shippingAddress?.district || ""}
+              onChange={(e) => {
+                const code = Number(e.target.value);
+                setFormData((prev) => ({
+                  ...prev,
+                  personalInfo: {
+                    ...prev.personalInfo,
+                    shippingAddress: {
+                      ...prev.personalInfo.shippingAddress,
+                      district: code,
+                      ward: null,
+                    },
+                  },
+                }));
+                fetchWards(code);
+              }}
+              disabled={!formData.personalInfo.shippingAddress?.province}
+              className="w-full border border-que-border p-3 rounded-lg focus:ring focus:ring-que-primary/30 focus:border-que-primary"
+              required
+            >
+              <option value="">Chọn Quận/Huyện</option>
+              {districts.map((d) => (
+                <option key={d.code} value={d.code}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              name="ward"
+              value={formData.personalInfo.shippingAddress?.ward || ""}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  personalInfo: {
+                    ...prev.personalInfo,
+                    shippingAddress: {
+                      ...prev.personalInfo.shippingAddress,
+                      ward: Number(e.target.value),
+                    },
+                  },
+                }))
+              }
+              disabled={!formData.personalInfo.shippingAddress?.district}
+              className="w-full border border-que-border p-3 rounded-lg focus:ring focus:ring-que-primary/30 focus:border-que-primary"
+              required
+            >
+              <option value="">Chọn Xã/Phường</option>
+              {wards.map((w) => (
+                <option key={w.code} value={w.code}>
+                  {w.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Street */}
+        <div className="mt-4">
+          <label className="block text-sm font-medium text-que-text-sub flex items-center gap-1">
+            Địa chỉ cụ thể
+            {/* Tooltip container */}
+            <div className="relative group">
+              <span className="cursor-pointer bg-que-primary text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-semibold">
+                ?
+              </span>
+
+              {/* Tooltip nội dung */}
+              <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 hidden group-hover:block bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap shadow-lg">
+                Nhập số nhà, tên đường, khu phố... (ví dụ: 123 Nguyễn Trãi, P.5)
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+              </div>
+            </div>
+          </label>
+
+          <input
+            type="text"
+            name="street"
+            placeholder="Ví dụ: 123 Nguyễn Trãi, P.5"
+            value={formData.personalInfo.shippingAddress?.street || ""}
             onChange={(e) =>
               setFormData((prev) => ({
                 ...prev,
@@ -171,44 +266,15 @@ const ProfileForm = () => {
                   ...prev.personalInfo,
                   shippingAddress: {
                     ...prev.personalInfo.shippingAddress,
-                    ward: Number(e.target.value),
+                    street: e.target.value,
                   },
                 },
               }))
             }
-            disabled={!formData.personalInfo.shippingAddress?.district}
-            className="w-full border border-que-border p-3 rounded-lg focus:ring focus:ring-que-primary/30 focus:border-que-primary"
+            className="w-full border border-que-border p-3 rounded-lg mt-1 focus:ring focus:ring-que-primary/30 focus:border-que-primary"
             required
-          >
-            <option value="">Chọn Xã/Phường</option>
-            {wards.map((w) => (
-              <option key={w.code} value={w.code}>
-                {w.name}
-              </option>
-            ))}
-          </select>
+          />
         </div>
-
-        {/* Street */}
-        <input
-          type="text"
-          name="street"
-          placeholder="Địa chỉ (Số nhà, tên đường...)"
-          value={formData.personalInfo.shippingAddress?.street || ""}
-          onChange={(e) =>
-            setFormData((prev) => ({
-              ...prev,
-              personalInfo: {
-                ...prev.personalInfo,
-                shippingAddress: {
-                  ...prev.personalInfo.shippingAddress,
-                  street: e.target.value,
-                },
-              },
-            }))
-          }
-          className="w-full border border-que-border p-3 rounded-lg mt-4 focus:ring focus:ring-que-primary/30 focus:border-que-primary"
-        />
 
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -258,9 +324,16 @@ const ProfileForm = () => {
         </button>
         <button
           type="submit"
-          className="px-6 py-2 rounded-lg bg-que-primary text-white font-semibold hover:bg-que-primary/90 transition"
+          disabled={isLoading}
+          className={`px-6 py-2 rounded-lg font-semibold transition flex items-center justify-center gap-2 text-white
+    ${
+      isLoading
+        ? "bg-que-primary/60 cursor-not-allowed"
+        : "bg-que-primary hover:bg-que-primary/90"
+    }`}
         >
-          Lưu
+          {isLoading && <FiLoader className="animate-spin" />}
+          {isLoading ? "Đang lưu..." : "Lưu"}
         </button>
       </div>
     </form>

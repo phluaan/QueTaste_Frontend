@@ -82,7 +82,7 @@ export default function OrderToolbar({
           <Search size={18} className="text-gray-500" />
           <input
             type="text"
-            placeholder="Tìm kiếm đơn hàng..."
+            placeholder="Tìm kiếm đơn hàng theo khách hàng"
             className="flex-1 outline-none text-gray-700 placeholder-gray-400"
             onChange={(e) => onSearch?.(e.target.value)}
           />
