@@ -1,79 +1,94 @@
-# 🌾 QueTaste Frontend – Vị của quê hương
+# 🌾 QueTaste Frontend – Giao diện bán đặc sản vùng miền
 
-Đây là **frontend** của dự án **QueTaste** – website thương mại điện tử giới thiệu và bán các đặc sản quê hương.  
-Ứng dụng được xây dựng bằng **ReactJS** và **Tailwind CSS** để mang lại trải nghiệm người dùng hiện đại, trực quan và dễ sử dụng.  
-
----
-
-## 🚀 Công nghệ sử dụng
-- **ReactJS** – Thư viện xây dựng giao diện người dùng  
-- **Tailwind CSS** – Framework CSS tiện lợi cho việc thiết kế responsive UI  
-- **Axios / Fetch API** – Giao tiếp với backend  
-- **React Router DOM** – Điều hướng giữa các trang  
+Đây là frontend của hệ thống QueTaste, nơi người dùng có thể duyệt đặc sản địa phương, thêm vào giỏ, đặt hàng và theo dõi đơn hàng.
+Giao diện được xây dựng với React + Tailwind, tối ưu cho trải nghiệm đơn giản, rõ ràng và responsive.
 
 ---
 
-## 📌 Các chức năng chính (Frontend)
+## 🛠 Tech Stack
 
-### 👨‍👩‍👧‍👦 Người dùng (Customer)
-- Giao diện đăng ký / đăng nhập  
-- Trang danh sách sản phẩm, lọc và tìm kiếm theo loại / giá / địa phương  
-- Giỏ hàng: thêm, chỉnh sửa, xóa sản phẩm  
-- Trang đặt hàng và theo dõi trạng thái đơn hàng  
-- Trang giới thiệu đặc sản và vùng miền  
-
-### 🛒 Quản trị viên (Admin UI)
-- Trang quản lý sản phẩm (thêm / sửa / xóa)  
-- Trang quản lý danh mục  
-- Trang quản lý đơn hàng  
-- Trang quản lý người dùng  
-- Trang quản lý nội dung quảng bá  
+- ReactJS
+- Tailwind CSS (UI responsive, component-based)
+- React Router DOM (điều hướng trang)
+- Axios (gọi API backend)
+- Context / custom hooks (quản lý auth, giỏ hàng, thông báo realtime)
 
 ---
 
-## ⚙️ Cài đặt & Chạy dự án
+## 👨‍👩‍👧‍👦 Tính năng giao diện
 
-1. Clone repo về máy:
-   ```bash
-   git clone https://github.com/phluaan/QueTaste_Frontend.git
-   cd quetaste-frontend
-   ```
+### Khách vãng lai
+- Xem danh sách sản phẩm, lọc theo loại / vùng / giá
+- Tìm kiếm sản phẩm + gợi ý khi gõ
+- Xem chi tiết sản phẩm (mô tả, hình ảnh, giá, đánh giá, sản phẩm tương tự)
+- Đăng ký / Đăng nhập / Quên mật khẩu (OTP email)
 
-2. Cài đặt dependencies:
-   ```bash
-   npm install
-   ```
+### Khách hàng (đã đăng nhập)
+- Giỏ hàng: thêm sản phẩm, chỉnh số lượng, xóa
+- Thanh toán: nhập địa chỉ nhận hàng, chọn phương thức thanh toán (COD / ví điện tử), áp mã giảm giá
+- Theo dõi đơn hàng, hủy đơn trong giới hạn cho phép, xác nhận đã nhận hàng, mua lại đơn cũ
+- Lưu sản phẩm yêu thích
+- Xem sản phẩm đã xem gần đây
+- Đánh giá sản phẩm đã mua
+- Chat với quản trị viên / nhận thông báo (trạng thái đơn hàng, khuyến mãi)
 
-3. Chạy ứng dụng ở môi trường development:
-   ```bash
-   npm start
-   ```
-
-4. Mở trình duyệt tại:
-   ```
-   http://localhost:5173
-   ```
+### Giao diện quản trị (Admin UI)
+- Quản lý sản phẩm: tạo mới, chỉnh sửa, ẩn/hiện, cập nhật tồn kho và giá
+- Quản lý đơn hàng: duyệt đơn, phân công giao hàng, hủy đơn
+- Quản lý người dùng
+- Quản lý phiếu giảm giá / ưu đãi
+- Thống kê cơ bản: doanh thu, sản phẩm bán chạy, hiệu suất khuyến mãi
 
 ---
 
 ## 📂 Cấu trúc thư mục (tham khảo)
-```
-quetaste-frontend/
-│── src/
-│   ├── assets/        # Hình ảnh, icon
-│   ├── components/    # Component dùng chung
-│   ├── pages/         # Các trang chính (Home, Product, Cart, Admin...)
-│   ├── hooks/         # Custom hooks
-│   ├── services/      # Gọi API (Axios)
-│   ├── context/       # React Context API (Auth, Cart...)
-│   ├── App.js
-│   └── index.js
-│── public/
-│── package.json
-```
+
+frontend/
+├─ src/
+│  ├─ assets/        # Hình ảnh, icon
+│  ├─ components/    # Component dùng chung (Button, Card, Modal, ...)
+│  ├─ pages/         # Trang (Home, ProductDetail, Cart, Checkout, Orders, Admin, ...)
+│  ├─ hooks/         # Custom hooks (auth, cart, product search, ...)
+│  ├─ services/      # Gọi API qua Axios
+│  ├─ context/       # State người dùng / giỏ hàng / thông báo
+│  ├─ App.jsx
+│  └─ main.jsx
+└─ tailwind.config.js
 
 ---
 
-## 📝 Ghi chú
-- Repo này **chỉ chứa frontend**.
-- Để chạy đầy đủ, cần kết nối với **backend QueTaste** ([repo backend](https://github.com/MihnNathja/QueTaste.git)).  
+## ⚙️ Chạy Frontend cục bộ
+
+1. Clone repo
+   git clone https://github.com/phluaan/QueTaste_Frontend.git
+   cd QueTaste_Frontend
+
+2. Cài đặt dependency
+   npm install
+
+3. Tạo file .env (ví dụ)
+
+   VITE_API_BASE_URL=http://localhost:8080/api
+
+4. Chạy dev
+   npm run dev
+
+Frontend mặc định chạy tại http://localhost:5173
+
+---
+
+## 🔄 Kết nối Backend
+
+Ứng dụng frontend cần API từ service backend (Express + MongoDB).
+Hãy đảm bảo VITE_API_BASE_URL khớp với URL backend đang chạy (local hoặc deploy).
+
+---
+
+## 👥 Nhóm thực hiện
+
+Nhóm 13 – Khoa CNTT, ĐH Sư phạm Kỹ thuật TP.HCM
+- Đỗ Phú Luân – 22110372
+- Huỳnh Minh Mẫn – 22110377
+- Đặng Minh Nhật – 22110389
+
+Giảng viên hướng dẫn: ThS. Nguyễn Hữu Trung
