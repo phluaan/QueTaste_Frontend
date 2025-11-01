@@ -70,7 +70,18 @@ frontend/
 
 3. Tạo file .env (ví dụ)
 
-   VITE_API_BASE_URL=http://localhost:8080/api
+   # Base URL của API backend mà frontend sẽ gọi
+   VITE_API_BASE_URL=http://localhost:8088/api
+   
+   # URL cho WebSocket / Socket.io
+   VITE_SOCKET_URL=http://localhost:8088
+   
+   # MongoDB connection string
+   MONGO_URI=mongodb://localhost:27017/mydb
+   
+   # JWT secrets cho frontend
+   JWT_SECRET=<your_jwt_secret>
+   JWT_REFRESH_SECRET=<your_jwt_refresh_secret>
 
 4. Chạy dev
    npm run dev
