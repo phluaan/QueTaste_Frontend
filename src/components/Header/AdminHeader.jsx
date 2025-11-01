@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../assets/gauhai.png";
 import defaultAvatar from "../../assets/defaultAvatar.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -11,6 +10,7 @@ import {
 import { FiBell } from "react-icons/fi";
 import AdminMenu from "../AdminMenu";
 import { logoutAsync } from "../../features/auth/slices/authSlice";
+import Logo from "../Logo"; // ⬅ dùng chung logo với user header
 
 export default function AdminHeader() {
   const dispatch = useDispatch();
@@ -51,13 +51,10 @@ export default function AdminHeader() {
   };
 
   return (
-    <header className="h-16 bg-que-surface shadow flex items-center justify-between px-6">
-      {/* Logo */}
-      <Link to="/" className="flex items-center gap-2">
-        <img src={logo} alt="Logo" className="h-8 w-8" />
-        <span className="font-bold text-xl text-que-primary">
-          QueTaste Admin
-        </span>
+    <header className="h-16 bg-que-surface shadow flex items-center justify-between px-6 border-b border-que-secondary/20">
+      {/* Logo (giống user header) */}
+      <Link to="/admin" className="flex items-center gap-2">
+        <Logo />
       </Link>
 
       <div className="flex items-center gap-4">
