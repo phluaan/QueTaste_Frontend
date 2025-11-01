@@ -43,6 +43,7 @@ Giao diện được xây dựng với React + Tailwind, tối ưu cho trải ng
 
 ## 📂 Cấu trúc thư mục (tham khảo)
 
+```txt
 frontend/
 ├─ src/
 │  ├─ assets/        # Hình ảnh, icon
@@ -55,10 +56,11 @@ frontend/
 │  └─ main.jsx
 └─ tailwind.config.js
 
----
+```
 
 ## ⚙️ Chạy Frontend cục bộ
 
+```txt
 1. Clone repo
    git clone https://github.com/phluaan/QueTaste_Frontend.git
    cd QueTaste_Frontend
@@ -75,14 +77,7 @@ frontend/
 
 Frontend mặc định chạy tại http://localhost:5173
 
----
-
-## 🔄 Kết nối Backend
-
-Ứng dụng frontend cần API từ service backend (Express + MongoDB).
-Hãy đảm bảo VITE_API_BASE_URL khớp với URL backend đang chạy (local hoặc deploy).
-
----
+```
 
 ## 👥 Nhóm thực hiện
 
