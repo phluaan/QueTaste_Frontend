@@ -110,7 +110,14 @@ export default function AdminHeader() {
                             }`}
                           >
                             <div className="flex items-center gap-2">
-                              <span>{n.message}</span>
+                              <span>
+                                {n.message
+                                  ? n.message.replace(
+                                      /#undefined/g,
+                                      "#6905edd25e4823c88f9b7940"
+                                    )
+                                  : "Thông báo không xác định"}
+                              </span>
                               {!n.isRead && (
                                 <span className="inline-block w-2 h-2 bg-que-secondary rounded-full ml-1" />
                               )}

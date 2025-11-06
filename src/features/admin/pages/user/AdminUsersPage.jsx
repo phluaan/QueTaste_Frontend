@@ -255,7 +255,7 @@ export default function AdminUsersPage() {
                 labelFormatter={(m) => monthNames[m - 1]}
                 formatter={(val, key) => [
                   fmt(val),
-                  key === "buyers" ? "Có mua hàng" : "Chỉ đăng ký",
+                  key === "Có mua hàng" ? "Có mua hàng" : "Chỉ đăng ký",
                 ]}
               />
               <Legend />

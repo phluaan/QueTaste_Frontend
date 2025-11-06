@@ -172,7 +172,7 @@ const ProductDetailPage = () => {
 
                 <div className="flex items-center mt-2">
                   <span className="ml-2 text-que-text-muted mr-1">
-                    {productDetail.averageRating}
+                    {productDetail.averageRating?.toFixed(1)}
                   </span>
                   {[...Array(5)].map((_, idx) => (
                     <FaStar

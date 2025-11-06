@@ -14,7 +14,6 @@ const ChangePasswordForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submit đổi mật khẩu:", formData);
-    // TODO: Gọi API đổi mật khẩu ở đây
   };
 
   return (
