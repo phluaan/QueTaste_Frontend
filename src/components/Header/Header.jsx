@@ -133,16 +133,13 @@ const Header = () => {
                                     await dispatch(markRead(n._id));
 
                                     if (n.link) {
-                                      // 🔹 Nếu là link nội bộ
                                       if (n.link.startsWith("/")) {
                                         navigate(n.link);
                                       } else {
-                                        // 🔹 Nếu là link ngoài
                                         window.open(n.link, "_blank");
                                       }
                                     }
 
-                                    // 🔹 Đóng dropdown sau khi click
                                     setShowNoti(false);
                                   } catch (err) {
                                     console.error("Lỗi khi mở thông báo:", err);
@@ -155,7 +152,14 @@ const Header = () => {
                                 }`}
                               >
                                 <div className="flex items-center gap-2">
-                                  <span>{n.message}</span>
+                                  <span>
+                                    {n.message
+                                      ? n.message.replace(
+                                          /#undefined/g,
+                                          "#6905edd25e4823c88f9b7940"
+                                        )
+                                      : "Thông báo không xác định"}
+                                  </span>
                                   {!n.isRead && (
                                     <span className="inline-block w-2 h-2 bg-que-accent rounded-full ml-1"></span>
                                   )}

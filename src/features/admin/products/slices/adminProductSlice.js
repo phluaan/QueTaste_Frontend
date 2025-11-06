@@ -30,7 +30,7 @@ export const bulkHideProducts = createAsyncThunk(
   }
 );
 
-// 👇 NEW: Hiện nhiều
+//  Hiện nhiều
 export const bulkShowProducts = createAsyncThunk(
   "adminProducts/bulkShowProducts",
   async (ids, thunkAPI) => {

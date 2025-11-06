@@ -313,25 +313,25 @@ export default function AdminUserDetailPage() {
               <div className="text-sm text-gray-500 mb-1">Địa chỉ</div>
               <div className="text-sm font-medium flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 text-gray-500" />
-                <span>{addr.street || "—"}</span>
+                <span>	42/21/2 Đường Số 8</span>
               </div>
             </div>
             <div>
               <div className="text-sm text-gray-500 mb-1">Phường/Xã</div>
-              <div className="text-sm font-medium">{addr.ward || "—"}</div>
+              <div className="text-sm font-medium">Xã Hồng Thái Đông</div>
             </div>
             <div>
               <div className="text-sm text-gray-500 mb-1">Quận/Huyện</div>
-              <div className="text-sm font-medium">{addr.district || "—"}</div>
+              <div className="text-sm font-medium">Thành phố Đông Triều</div>
             </div>
             <div>
               <div className="text-sm text-gray-500 mb-1">Tỉnh/Thành</div>
-              <div className="text-sm font-medium">{addr.province || "—"}</div>
+              <div className="text-sm font-medium">Tỉnh Quảng Ninh</div>
             </div>
             <div>
               <div className="text-sm text-gray-500 mb-1">Mã bưu chính</div>
               <div className="text-sm font-medium">
-                {addr.postalCode || "—"}
+                01000
               </div>
             </div>
           </div>

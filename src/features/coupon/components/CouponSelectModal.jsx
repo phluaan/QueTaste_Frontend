@@ -25,7 +25,7 @@ const CouponSelectModal = ({ open, onClose, onSelect }) => {
       footer={null}
       width={1000}
       centered
-      destroyOnClose
+      destroyOnHidden
     >
       {loading.list ? (
         <div className="flex justify-center p-10">
